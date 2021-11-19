@@ -1,0 +1,3 @@
+/Users/caniseed/Desktop/minishell/minishell/pipex/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/caniseed/Desktop/minishell/minishell/pipex/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/caniseed/Desktop/minishell/minishell/pipex/cmake-build-debug/CMakeFiles/pipex.dir
