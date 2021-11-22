@@ -34,14 +34,17 @@ int main(int argc, char **argv, char **env)
 	t_list *arguments = NULL;
 	arguments = init_list();
 	signals_ms();
+	
 	while(1)
 	{
-		if (!(str = readline("minishell-0.1$ ")))
+		if (!(str = readline("\033[0;36m\033[1mminishell-0.1$ \033[0m")))
 			exit (1);
 		add_history(str);
 		str = lexe(str, env);
-		parce(arguments, str, env);
-		print_all_lists(arguments);
+		
+		printf("STR: %s\n", str);
+//		parce(arguments, str, env);
+//		print_all_lists(arguments);
 		free(str);
 		status = execute(arguments);
 		delete_all_lists(arguments);

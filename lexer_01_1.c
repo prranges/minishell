@@ -188,8 +188,6 @@ char	*dollar(char *str, int *i, char **env, t_lexer *lex)
 		printf("RET dollar - %s\n", ret);
 		printf("ret[*i] - %c\n", ret[*i]);
 	}
-	else
-		return (str);
 	free_lexer(lex);
 	return (ret);
 }
