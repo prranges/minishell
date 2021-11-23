@@ -165,7 +165,6 @@ char    *lexe(char *str, char **env)
     int        i;
     lex = (t_lexer *)malloc(sizeof(t_lexer));
     i = -1;
-	(void)env;
     while (str[++i])
     {
         if (str[i] == '\'')
