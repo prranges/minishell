@@ -12,13 +12,11 @@
 
 #include "minishell.h"
 
-void  parce(t_list *lst, char *str, char **env)
+void  parce(t_list *lst, char **strs, char **env)
 {
     (void)env;
     int i = -1;
-    char **args;
     
-    args = ft_split(str, ' ');
-    while (args[++i])
-        lst = add_list(lst, args[i]);
+    while (strs[++i])
+		lst = add_list(lst, strs[i]);
 }

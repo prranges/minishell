@@ -56,7 +56,7 @@ t_list	*add_list(t_list *lst, char *str);
 void	signals_ms(void);
 char	*lexe(char *str, char **env);
 char	*dollar(char *str, int *i, char **env, t_lexer *lex);
-void	parce(t_list *lst, char *str, char **env);
+void  	parce(t_list *lst, char **strs, char **env);
 void    print_all_lists(t_list *lst);
 void    delete_all_lists(t_list *lst);
 int 	execute(t_list *lst);

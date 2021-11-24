@@ -89,12 +89,12 @@ char	*double_quotes(char *str, int *i, char **env, t_lexer *lex)
 	before = ft_substr(str, 0, lex->j);
 	while (str[++(*i)] != '\"')
 	{
-		if (str[*i] == '\\' && (str[*i + 1] == '\"' || str[*i + 1] == '$' || str[*i + 1] == '\\'))
-		{
-			str = backslash(str, i, lex);
-			if (str[*i] == '\"')
-				--*i;
-		}
+//		if (str[*i] == '\\' && (str[*i + 1] == '\"' || str[*i + 1] == '$' || str[*i + 1] == '\\'))
+//		{
+//			str = backslash(str, i, lex);
+//			if (str[*i] == '\"')
+//				--*i;
+//		}
 		if (str[*i] == '$')
 			str = dollar(str, i, env, lex);
 	}
@@ -169,8 +169,8 @@ char    *lexe(char *str, char **env)
     {
         if (str[i] == '\'')
             str = single_quotes(str, &i, lex);
-        if (str[i] == '\\')
-            str = backslash(str, &i, lex);
+//        if (str[i] == '\\')
+//            str = backslash(str, &i, lex);
         if (str[i] == '\"')
             str = double_quotes(str, &i, env, lex);
         if (str[i] == '$')
