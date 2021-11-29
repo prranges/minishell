@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int execute(t_list *lst)
+int execute(t_token *lst)
 {
     if (!lst)
         return (ERROR);

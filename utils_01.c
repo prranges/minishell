@@ -12,12 +12,12 @@
 
 #include "minishell.h"
 
-t_list  *add_list(t_list *lst, char *str)
+t_token  *add_token(t_token *lst, char *str)
 {
-    t_list    *temp;
-    t_list    *p;
+    t_token    *temp;
+    t_token    *p;
     
-    temp = (t_list *)malloc(sizeof(t_list));
+    temp = (t_token *)malloc(sizeof(t_token));
     temp->str = ft_strdup(str);
     
     p = lst->next;
@@ -30,21 +30,59 @@ t_list  *add_list(t_list *lst, char *str)
     return (temp);
 }
 
-void    print_all_lists(t_list *lst)
+t_env 	*add_env(t_env *lst, char *str)
 {
-    t_list *p;
+    t_env	*temp;
+    t_env	*p;
+	int		i;
     
-    p = lst;
+	i = 0;
+    temp = (t_env *)malloc(sizeof(t_env));
+	while (*str && str[i] != '=')
+		i++;
+	temp->key = ft_substr(str, 0, i - 1);
+	if (str[i] == '=')
+	{
+		temp->separator = '=';
+		temp->value = ft_strdup(str + i + 1);
+	}
+	
+    p = lst->next;
+    temp->next = p;
+    lst->next = temp;
+
+    return (temp);
+}
+
+void    print_all_lists(t_token *lst)
+{
+    t_token *p;
+    
+    p = lst->next;
     while (p != NULL)
     {
-        printf("list - %s\n", p->str);
+        printf("token - %s\n", p->str);
         p = p->next;
     }
 }
 
-void    delete_all_lists(t_list *lst)
+void    print_env(t_env *lst)
 {
-    t_list *p;
+    t_env *p;
+    
+    p = lst->next;
+    while (p != NULL)
+    {
+        printf("%s", p->key);
+		printf("%c", p->separator);
+		printf("%s\n", p->value);
+        p = p->next;
+    }
+}
+
+void    delete_all_lists(t_token *lst)
+{
+    t_token *p;
     
     while (lst->next != NULL)
     {
