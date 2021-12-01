@@ -12,11 +12,11 @@
 
 #include "minishell.h"
 
-void  parce(t_token *lst, char **strs, char **env)
-{
-    (void)env;
-    int i = -1;
-    
-    while (strs[++i])
-		lst = add_token(lst, strs[i]);
-}
+//void  parce(t_token *lst, char **strs, t_env *env)
+//{
+//    (void)env;
+//    int i = -1;
+//
+//    while (strs[++i])
+//		lst = add_token(lst, strs[i]);
+//}

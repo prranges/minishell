@@ -12,14 +12,29 @@
 
 #include "minishell.h"
 
-t_token  *add_token(t_token *lst, char *str)
+int	free_double_massive(char **str)
+{
+	if (!*str)
+		return (0);
+	while (*str)
+		free(*str);
+	free(str);
+	return (0);
+}
+
+t_token  *add_token(t_token *lst, char **cmd)
 {
     t_token    *temp;
     t_token    *p;
     
     temp = (t_token *)malloc(sizeof(t_token));
-    temp->str = ft_strdup(str);
-    
+	temp->cmd = cmd;
+	
+	temp->type = lst->type + 1;
+	
+	printf("%d\n", temp->type);
+	print_double_massive(temp->cmd); //распечатка двумерника
+		
     p = lst->next;
     temp->next = p;
     temp->prev = lst;
@@ -40,7 +55,7 @@ t_env 	*add_env(t_env *lst, char *str)
     temp = (t_env *)malloc(sizeof(t_env));
 	while (*str && str[i] != '=')
 		i++;
-	temp->key = ft_substr(str, 0, i - 1);
+	temp->key = ft_substr(str, 0, i);
 	if (str[i] == '=')
 	{
 		temp->separator = '=';
@@ -61,7 +76,11 @@ void    print_all_lists(t_token *lst)
     p = lst->next;
     while (p != NULL)
     {
-        printf("token - %s\n", p->str);
+		while (*p->cmd)
+		{
+			printf("token - %s\n", *p->cmd);
+			p->cmd++;
+		}
         p = p->next;
     }
 }
@@ -88,6 +107,24 @@ void    delete_all_lists(t_token *lst)
     {
         p = lst->next;
         lst->next = p->next;
+		free_double_massive(p->cmd);
         free(p);
+		free(lst);
     }
+}
+
+
+
+
+
+
+
+
+void	print_double_massive(char **sub_strs)
+{
+	while (*sub_strs)
+	{
+		printf("sub_str - %s\n", *sub_strs);
+		sub_strs++;
+	}
 }

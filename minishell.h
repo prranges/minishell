@@ -21,6 +21,7 @@
 # include <stdlib.h>
 # include <signal.h>
 
+
 # define ERROR		1
 # define SUCCESS	0
 
@@ -35,7 +36,7 @@
 typedef struct s_token
 {
     int				type;
-    char			*str;
+    char			**cmd;
     struct s_token	*next;
     struct s_token	*prev;
 } t_token;
@@ -60,15 +61,19 @@ typedef struct s_lexer
 } t_lexer;
 
 
-t_token	*add_token(t_token *lst, char *str);
+t_token	*add_token(t_token *lst, char **str);
 t_env 	*add_env(t_env *env, char *str);
 void	signals_ms(void);
-char	*lexe(char *str, char **env);
-char	*dollar(char *str, int *i, char **env, t_lexer *lex);
-void  	parce(t_token *lst, char **strs, char **env);
+char	*lexe(char *str, t_env *env);
+char	*dollar(char *str, int *i, t_env *env, t_lexer *lex);
+void  	parce(t_token *lst, char **strs, t_env *env);
 void    print_all_lists(t_token *lst);
 void    print_env(t_env *lst);
 void    delete_all_lists(t_token *lst);
 int 	execute(t_token *lst);
+int		free_double_massive(char **str);
+
+
+void	print_double_massive(char **sub_strs);
 
 #endif

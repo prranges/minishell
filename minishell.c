@@ -18,7 +18,7 @@ t_token	*init_tokens(void)
 	
 	lst = (t_token *)malloc(sizeof(t_token));
 	lst->type = 0;
-	lst->str = NULL;
+	lst->cmd = NULL;
 	lst->next = NULL;
 	lst->prev = NULL;
 	return (lst);
@@ -69,7 +69,7 @@ void	error_print(int id)
 		printf("minishell: no str\n");
 }
 
-void	find_parts_of_str(char *str, int	**start_end_i)
+void	find_parts_of_str(char *str, int **start_end_i)
 {
 	int	i;
 	int s = 0;
@@ -135,25 +135,89 @@ void	env_read(t_env *env, char **arge)
 		env = add_env(env, arge[i]);
 }
 
+int	number_of_pipes(char *str)
+{
+	int count;
+	int flag_sq = 2;
+	int flag_dq = 2;
+	
+	count = 0;
+	while (*str)
+	{
+		if ((*str == '|') && (!(flag_sq % 2)) && (!(flag_dq % 2)))
+			count++;
+		if (*str == '\'' && (!(flag_dq % 2)))
+			flag_sq++;
+		if (*str == '\"' && (!(flag_sq % 2)))
+			flag_dq++;
+		str++;
+	}
+	return (count);
+}
+
+int	find_pipe_index(char *str)
+{
+	int i;
+	int flag_sq = 2;
+	int flag_dq = 2;
+	
+	i = -1;
+	while (str[++i])
+	{
+		if ((str[i] == '|') && (!(flag_sq % 2)) && (!(flag_dq % 2)))
+			return (i);
+		if (str[i] == '\'' && (!(flag_dq % 2)))
+			flag_sq++;
+		if (str[i] == '\"' && (!(flag_sq % 2)))
+			flag_dq++;
+	}
+	return (i);
+}
+
+char	**make_substrs_pipe_devided(char *str)
+{
+	int 	i;
+	int		start;
+	int 	len;
+	char	*p;
+	char 	**sub_strs;
+	
+	i = 0;
+	p = str;
+//	printf("p - %s\n", p);
+	sub_strs = malloc(sizeof(char **) + (sizeof(char *) * number_of_pipes(p) + 2));
+
+	start = 0;
+	while (p[start])
+	{
+		len = find_pipe_index(p + start);
+
+		sub_strs[i] = ft_substr(p, start, len);
+		start += len + 1;
+		i++;
+	}
+	sub_strs[i] = NULL;
+	return (sub_strs);
+}
+
 int main(int argc, char **argv, char **arge)
 {
+	(void)argc;
+	(void)argv;
+	
 	int		s;
 	char	*str;
-	char	**strs;
+	char	**cmd;
+	char	**sub_strs;
 	int		status;
 	int		number_of_parts;
 	
 	
-	
-	(void)argc;
-	(void)argv;
 	int	**start_end_i;
 	t_token *tokens;
 	t_env	*env;
-	tokens = init_tokens();
 	env = init_env();
 	env_read(env, arge);
-//	printf("env - %s\n", env->key);
 
 	signals_ms();
 	
@@ -162,36 +226,87 @@ int main(int argc, char **argv, char **arge)
 		if (!(str = readline("\033[0;36m\033[1mminishell-0.2$ \033[0m")))
 			exit (1);
 		add_history(str);
-		number_of_parts = find_number_of_parts(str);
-		if (number_of_parts < 0)
-			error_print(-1);
-		else
+		tokens = init_tokens();
+		sub_strs = make_substrs_pipe_devided(str);
+				
+		
+		while (*sub_strs)
 		{
-			start_end_i = malloc(sizeof(int **) * 2);
+			number_of_parts = find_number_of_parts(*sub_strs);
+			start_end_i = malloc(sizeof(int **));
 			start_end_i[0] = malloc(sizeof(int *) * number_of_parts);
 			start_end_i[1] = malloc(sizeof(int *) * number_of_parts);
-			strs = malloc(sizeof(char **) * number_of_parts + 1);
-			find_parts_of_str(str, start_end_i);
+			cmd = malloc(sizeof(char **) * number_of_parts + 1);
+			find_parts_of_str(*sub_strs, start_end_i);
 			s = -1;
 			while (number_of_parts > ++s)
 			{
-				strs[s] = ft_substr(str, start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
-				strs[s] = lexe(strs[s], arge);
+				cmd[s] = ft_substr(sub_strs[0], start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
+				cmd[s] = lexe(cmd[s], env);
 			}
-			strs[s] = NULL;
-			parce(tokens, strs, arge);
-			
-
-			print_all_lists(tokens);
-//			print_env(env);
-			free(str);
+			cmd[s] = NULL;
+			tokens = add_token(tokens, cmd);
+//			print_double_massive(strs);
 			free(start_end_i[0]);
 			free(start_end_i[1]);
 			free(start_end_i);
-			free(strs);
-			status = execute(tokens);
-			delete_all_lists(tokens);
+//			free(cmd);
+			sub_strs++;
+//
 		}
+//		printf("list 1 srt 0 - %s\n", tokens->);
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+//		number_of_parts = find_number_of_parts(sub_strs[0]);
+//		if (number_of_parts < 0)
+//			error_print(-1);
+////		printf("number of parts - %d\n", number_of_parts);
+//		else
+//		{
+//			start_end_i = malloc(sizeof(int **));
+//			start_end_i[0] = malloc(sizeof(int *) * number_of_parts);
+//			start_end_i[1] = malloc(sizeof(int *) * number_of_parts);
+//			strs = malloc(sizeof(char **) * number_of_parts + 1);
+//
+//			find_parts_of_str(sub_strs[0], start_end_i);
+//			s = -1;
+//			while (number_of_parts > ++s)
+//			{
+//				strs[s] = ft_substr(sub_strs[0], start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
+//				strs[s] = lexe(strs[s], env);
+//			}
+//			strs[s] = NULL;
+//
+//			print_double_massive(strs);
+//
+////			parce(tokens, strs, env);
+//
+//
+//
+//			print_all_lists(tokens);
+////			print_env(env);
+			free(str);
+//			free(start_end_i[0]);
+//			free(start_end_i[1]);
+//			free(start_end_i);
+//			free(strs);
+//			status = execute(tokens);
+			delete_all_lists(tokens);
+//		}
+//		free(sub_strs);
+//		free_double_massive(sub_strs);
 	}
     return (status);
 }

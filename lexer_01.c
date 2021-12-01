@@ -77,7 +77,7 @@ char	*backslash(char *str, int *i, t_lexer *lex)
 	return (ret);
 }
 
-char	*double_quotes(char *str, int *i, char **env, t_lexer *lex)
+char	*double_quotes(char *str, int *i, t_env *env, t_lexer *lex)
 {
 	char	*ret;
 	char	*before;
@@ -123,9 +123,12 @@ void	if_no_key_in_env(char *str, int *i, t_lexer *lex)
 		lex->in = ft_substr(str, lex->j + 2, *i - lex->j - 1);
 }
 
-char	*dollar(char *str, int *i, char **env, t_lexer *lex)
+char	*dollar(char *str, int *i, t_env *env, t_lexer *lex)
 {
-	char	*ret = NULL;
+	t_env *p;
+    
+    p = env->next;
+	char	*ret;
 	init_lexer(lex);
 	lex->j = *i;
 	lex->e = -1;
@@ -136,15 +139,15 @@ char	*dollar(char *str, int *i, char **env, t_lexer *lex)
 	if (lex->key)
 	{
 		lex->before = ft_substr(str, 0, lex->j);
-		while (env[++lex->e])
+		while (p->next != NULL)
 		{
-			lex->p = ft_strnstr(env[lex->e], lex->key, ft_strlen(lex->key));
-			if (lex->p && lex->p[ft_strlen(lex->key)] == '=')
-				lex->in = ft_strdup(env[lex->e] + ft_strlen(lex->key) + 1);
+			if ((ft_strcmp(p->key, lex->key)) == 0)
+				lex->in = ft_strdup(p->value);
+			p = p->next;
 		}
 		if (!lex->in)
 			if_no_key_in_env(str, i, lex);
-		lex->after = ft_strdup(str + *i); //*i - ???
+		lex->after = ft_strdup(str + *i);
 		free(str);
 		ret = ft_strjoin(lex->before, lex->in);
 		*i = (int)ft_strlen(ret) - 1;
@@ -159,7 +162,7 @@ char	*dollar(char *str, int *i, char **env, t_lexer *lex)
 	return (ret);
 }
 
-char    *lexe(char *str, char **env)
+char    *lexe(char *str, t_env *env)
 {
     t_lexer    *lex;
     int        i;
