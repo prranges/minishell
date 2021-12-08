@@ -33,10 +33,22 @@
 //# define
 //# define
 
+typedef struct s_redir
+{
+	char			*file_name;
+	char			*lim;
+	int				cmd_list;
+    int				out_in;
+	int				dbl;
+    struct s_redir	*next;
+} t_redir;
+
 typedef struct s_token
 {
-    int				type;
+    int				list_num;
     char			**cmd;
+	t_redir			*in;
+	t_redir			*out;
     struct s_token	*next;
     struct s_token	*prev;
 } t_token;
@@ -60,9 +72,22 @@ typedef struct s_lexer
 	char	*after;
 } t_lexer;
 
+typedef struct s_arg
+{
+	t_token	*tokens;
+//	int		num;
+	t_redir	*redir;
+	t_env	*env;
+//	char	**env;
+//	int		**fd;
+//	int		errnum;
+} t_arg;
 
-t_token	*add_token(t_token *lst, char **str);
+
 t_env 	*add_env(t_env *env, char *str);
+t_env   *init_env(void);
+void    env_read(t_env *env, char **arge);
+t_token	*add_token(t_token *lst, char **str);
 void	signals_ms(void);
 char	*lexe(char *str, t_env *env);
 char	*dollar(char *str, int *i, t_env *env, t_lexer *lex);
@@ -71,9 +96,12 @@ void    print_all_lists(t_token *lst);
 void    print_env(t_env *lst);
 void    delete_all_lists(t_token *lst);
 int 	execute(t_token *lst);
-int		free_double_massive(char **str);
-
-
-void	print_double_massive(char **sub_strs);
+int		free_double_array(char **str);
+void	print_double_array(char **sub_strs);
+char    **make_substrs_pipe_devided(char *str);
+int		redirect(char *str, int i, t_arg *args);
+t_redir *init_redir(void);
+void    delete_all_redirs(t_arg *args);
+t_redir	*last_redir(t_redir *redir);
 
 #endif

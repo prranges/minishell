@@ -12,39 +12,38 @@
 
 #include "minishell.h"
 
-void    init_lexer(t_lexer *lex)
+void	init_lexer(t_lexer *lex)
 {
-    lex->j = 0;
-    lex->e = 0;
-    lex->p = NULL;
-    lex->key = NULL;
-    lex->before = NULL;
-    lex->in = NULL;
-    lex->after = NULL;
+	lex->j = 0;
+	lex->e = 0;
+	lex->p = NULL;
+	lex->key = NULL;
+	lex->before = NULL;
+	lex->in = NULL;
+	lex->after = NULL;
 }
 
-void    free_lexer(t_lexer *lex)
+void	free_lexer(t_lexer *lex)
 {
-    if (lex->p)
-        lex->p = NULL;
-    if (lex->key)
-        free(lex->key);
-    if (lex->before)
-        free(lex->before);
-    if (lex->in)
-        free(lex->in);
-    if (lex->after)
-        free(lex->after);
-    init_lexer(lex);
+	if (lex->p)
+		lex->p = NULL;
+	if (lex->key)
+		free(lex->key);
+	if (lex->before)
+		free(lex->before);
+	if (lex->in)
+		free(lex->in);
+	if (lex->after)
+		free(lex->after);
+	init_lexer(lex);
 }
 
-char    *single_quotes(char *str, int *i, t_lexer *lex)
+char	*single_quotes(char *str, int *i, t_lexer *lex)
 {
+	char	*ret;
+
 	init_lexer(lex);
 	lex->j = *i;
-
-	char	*ret;
-	
 	lex->before = ft_substr(str, 0, lex->j);
 	while (str[++*i] != '\'')
 		;
@@ -63,7 +62,7 @@ char    *single_quotes(char *str, int *i, t_lexer *lex)
 char	*backslash(char *str, int *i, t_lexer *lex)
 {
 	char	*ret;
-	
+
 	init_lexer(lex);
 	lex->before = ft_substr(str, 0, *i);
 	lex->after = ft_strdup(str + *i + 1);
@@ -82,7 +81,7 @@ char	*double_quotes(char *str, int *i, t_env *env, t_lexer *lex)
 	char	*ret;
 	char	*before;
 	int		j;
-	
+
 	init_lexer(lex);
 	lex->j = *i;
 	j = *i;
@@ -125,10 +124,10 @@ void	if_no_key_in_env(char *str, int *i, t_lexer *lex)
 
 char	*dollar(char *str, int *i, t_env *env, t_lexer *lex)
 {
-	t_env *p;
-    
-    p = env->next;
+	t_env	*p;
 	char	*ret;
+
+	p = env->next;
 	init_lexer(lex);
 	lex->j = *i;
 	lex->e = -1;
@@ -162,23 +161,24 @@ char	*dollar(char *str, int *i, t_env *env, t_lexer *lex)
 	return (ret);
 }
 
-char    *lexe(char *str, t_env *env)
+char	*lexe(char *str, t_env *env)
 {
-    t_lexer    *lex;
-    int        i;
-    lex = (t_lexer *)malloc(sizeof(t_lexer));
-    i = -1;
-    while (str[++i])
-    {
-        if (str[i] == '\'')
-            str = single_quotes(str, &i, lex);
+	t_lexer	*lex;
+	int		i;
+
+	lex = (t_lexer *)malloc(sizeof(t_lexer));
+	i = -1;
+	while (str[++i])
+	{
+		if (str[i] == '\'')
+			str = single_quotes(str, &i, lex);
 //        if (str[i] == '\\')
 //            str = backslash(str, &i, lex);
-        if (str[i] == '\"')
-            str = double_quotes(str, &i, env, lex);
-        if (str[i] == '$')
-            str = dollar(str, &i, env, lex);
-    }
+		if (str[i] == '\"')
+			str = double_quotes(str, &i, env, lex);
+		if (str[i] == '$')
+			str = dollar(str, &i, env, lex);
+	}
 //    printf("str lexer - %s\n", str);
-    return (str);
+	return (str);
 }

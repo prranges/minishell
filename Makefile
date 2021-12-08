@@ -16,8 +16,11 @@ LIBFT	= ./libft/libft.a
 LFT_DIR = ./libft
 
 SRCS	= minishell.c \
-		  utils_01.c \
+		  env_01.c \
 		  signals.c \
+		  pipe_01.c \
+		  utils_01.c \
+		  redir_01.c \
 		  lexer_01.c \
 		  parcer_01.c \
 		  executer_01.c \
