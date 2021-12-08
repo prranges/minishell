@@ -26,7 +26,7 @@ SRCS	= minishell.c \
 		  executer_01.c \
 		  builtins_01.c \
 		  builtins_02.c \
-		  preparcer_01.c
+		  ./pipex/pipex.c
 
 CC	= gcc
 CFLAGS 	= -Wall -Wextra -Werror
@@ -50,6 +50,7 @@ $(LIBFT): FORCE
 
 $(OBJS_DIR):
 	mkdir $@
+	mkdir $@/pipex
 
 $(OBJS_DIR)/%.o: %.c Makefile $(OBJS_DIR)
 	gcc -g $(CFLAGS) $(HDR) $(LFT_HDR) -c $< -o $@
