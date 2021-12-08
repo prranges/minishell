@@ -83,7 +83,7 @@ typedef struct s_arg
 //	int		errnum;
 } t_arg;
 
-
+int		prepercer(char *str);
 t_env 	*add_env(t_env *env, char *str);
 t_env   *init_env(void);
 void    env_read(t_env *env, char **arge);

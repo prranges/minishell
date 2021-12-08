@@ -132,73 +132,50 @@ int main(int argc, char **argv, char **arge)
 		if (!(str = readline("\033[0;36m\033[1mminishell-0.3$ \033[0m")))
 			exit (1);
 		add_history(str);
-		args->tokens = init_tokens();
-		sub_strs = make_substrs_pipe_devided(str);
-				
 		
-		while (*sub_strs)
+		
+		if (prepercer(str))
+			printf("minishell: syntax error near unexpected token\n");
+		else
 		{
-			number_of_parts = find_number_of_parts(*sub_strs);
-			start_end_i = malloc(sizeof(int **));
-			start_end_i[0] = malloc(sizeof(int *) * number_of_parts);
-			start_end_i[1] = malloc(sizeof(int *) * number_of_parts);
-			cmd = malloc(sizeof(char **) * number_of_parts + 1);
-			find_parts_of_str(*sub_strs, start_end_i, args);
-			s = -1;
-			while (number_of_parts > ++s)
+			args->tokens = init_tokens();
+			sub_strs = make_substrs_pipe_devided(str);
+			while (*sub_strs)
 			{
-				cmd[s] = ft_substr(sub_strs[0], start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
-				cmd[s] = lexe(cmd[s], env);
+				number_of_parts = find_number_of_parts(*sub_strs);
+				start_end_i = malloc(sizeof(int **));
+				start_end_i[0] = malloc(sizeof(int *) * number_of_parts);
+				start_end_i[1] = malloc(sizeof(int *) * number_of_parts);
+				cmd = malloc(sizeof(char **) * number_of_parts + 1);
+				find_parts_of_str(*sub_strs, start_end_i, args);
+				s = -1;
+				while (number_of_parts > ++s)
+				{
+					cmd[s] = ft_substr(sub_strs[0], start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
+					cmd[s] = lexe(cmd[s], env);
+				}
+				cmd[s] = NULL;
+				args->tokens = add_token(args->tokens, cmd);
+	//			print_double_array(strs);
+				free(start_end_i[0]);
+				free(start_end_i[1]);
+				free(start_end_i);
+	//			free(cmd);
+				sub_strs++;
 			}
-			cmd[s] = NULL;
-			args->tokens = add_token(args->tokens, cmd);
-//			print_double_array(strs);
-			free(start_end_i[0]);
-			free(start_end_i[1]);
-			free(start_end_i);
-//			free(cmd);
-			sub_strs++;
-		}
-		if (args->redir)
-			printf("last redir - %s\n", last_redir(args->redir)->file_name); // print last redir
+			if (args->redir)
+				printf("last redir - %s\n", last_redir(args->redir)->file_name); // print last redir
 
-//		number_of_parts = find_number_of_parts(sub_strs[0]);
-//		if (number_of_parts < 0)
-//			error_print(-1);
-////		printf("number of parts - %d\n", number_of_parts);
-//		else
-//		{
-//			start_end_i = malloc(sizeof(int **));
-//			start_end_i[0] = malloc(sizeof(int *) * number_of_parts);
-//			start_end_i[1] = malloc(sizeof(int *) * number_of_parts);
-//			strs = malloc(sizeof(char **) * number_of_parts + 1);
-//
-//			find_parts_of_str(sub_strs[0], start_end_i);
-//			s = -1;
-//			while (number_of_parts > ++s)
-//			{
-//				strs[s] = ft_substr(sub_strs[0], start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
-//				strs[s] = lexe(strs[s], env);
-//			}
-//			strs[s] = NULL;
-//
-//			print_double_massive(strs);
-//
-////			parce(tokens, strs, env);
-//
-//
-//
-//			print_all_lists(tokens);
-////			print_env(env);
-			free(str);
-//			free(start_end_i[0]);
-//			free(start_end_i[1]);
-//			free(start_end_i);
-//			free(strs);
-//			status = execute(tokens);
-			delete_all_redirs(args);
-			delete_all_lists(args->tokens);
-//		}
+
+				free(str);
+	//			free(start_end_i[0]);
+	//			free(start_end_i[1]);
+	//			free(start_end_i);
+	//			free(strs);
+	//			status = execute(tokens);
+				delete_all_redirs(args);
+				delete_all_lists(args->tokens);
+		}
 //		free(sub_strs);
 //		free_double_massive(sub_strs);
 	}

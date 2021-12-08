@@ -25,7 +25,8 @@ SRCS	= minishell.c \
 		  parcer_01.c \
 		  executer_01.c \
 		  builtins_01.c \
-		  builtins_02.c
+		  builtins_02.c \
+		  preparcer_01.c
 
 CC	= gcc
 CFLAGS 	= -Wall -Wextra -Werror
