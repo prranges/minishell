@@ -34,7 +34,7 @@ int	number_of_pipes(char *str)
 	return (count);
 }
 
-int	find_pipe_index(char *str)
+int	find_pipe(char *str)
 {
 	int	i;
 	int	flag_sq;
@@ -70,7 +70,7 @@ char	**make_substrs_pipe_devided(char *str)
 	start = 0;
 	while (p[start])
 	{
-		len = find_pipe_index(p + start);
+		len = find_pipe(p + start);
 		sub_strs[i] = ft_substr(p, start, len);
 		start += len + 1;
 		i++;

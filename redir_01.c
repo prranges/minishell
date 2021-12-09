@@ -19,24 +19,11 @@ t_redir *init_redir(void)
 	redir = (t_redir *)malloc(sizeof(t_redir));
     redir->file_name = NULL;
     redir->lim = NULL;
-    redir->cmd_list = 0;
+    redir->cmd_list_num = 0;
     redir->out_in = 0;
     redir->dbl = 0;
     redir->next = NULL;
 	return (redir);
-}
-
-void    delete_all_redirs(t_arg *args)
-{
-    t_redir *p;
-    
-    while (args->redir)
-    {
-        p = args->redir;
-        args->redir = args->redir->next;
-		free(p->file_name);
-        free(p);
-    }
 }
 
 t_redir	*last_redir(t_redir *redir)
@@ -52,7 +39,10 @@ void	add_redir(t_redir **redir, t_redir *new)
 
 	temp = *redir;
 	if (!temp)
+	{
+		
 		*redir = new;
+	}
 	else
 		last_redir(*redir)->next = new;
 }
@@ -70,7 +60,7 @@ int check_redirect(char *str, int i, t_redir *redir)
     return (i);
 }
 
-int redirect(char *str, int i, t_arg *args)
+int redirect(char *str, int i, t_arg *args, int num)
 {
     int j;
     t_redir *new;
@@ -82,10 +72,8 @@ int redirect(char *str, int i, t_arg *args)
     j = i;
     while (str[i] && str[i] != ' ' && str[i] != '\t' && str[i] != '>' && str[i] != '<')
         i++;
-
-//	new->file_name = ft_substr(str, j, i - j);
 	new->file_name = lexe(ft_substr(str, j, i - j), args->env);
-	
+	new->cmd_list_num = num;
 	add_redir(&args->redir, new);
 	
 //  printf("FILE NAME - %s\n", new->file_name);
@@ -102,7 +90,7 @@ int redirect(char *str, int i, t_arg *args)
     while (str[i] == ' ' || str[i] == '\t')
         i++;
     if (str[i] == '<' || str[i] == '>')
-        i = redirect(str, i, args);
+        i = redirect(str, i, args, num);
     
     return (i);
 }

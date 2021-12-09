@@ -20,6 +20,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <signal.h>
+# include <fcntl.h>
 
 
 # define ERROR		1
@@ -37,7 +38,7 @@ typedef struct s_redir
 {
 	char			*file_name;
 	char			*lim;
-	int				cmd_list;
+	int				cmd_list_num;
     int				out_in;
 	int				dbl;
     struct s_redir	*next;
@@ -83,7 +84,8 @@ typedef struct s_arg
 //	int		errnum;
 } t_arg;
 
-int		prepercer(char *str);
+int		preparcer(char *str);
+t_token	*init_tokens(void);
 t_env 	*add_env(t_env *env, char *str);
 t_env   *init_env(void);
 void    env_read(t_env *env, char **arge);
@@ -99,9 +101,12 @@ int 	execute(t_token *lst);
 int		free_double_array(char **str);
 void	print_double_array(char **sub_strs);
 char    **make_substrs_pipe_devided(char *str);
-int		redirect(char *str, int i, t_arg *args);
+int		redirect(char *str, int i, t_arg *args, int num);
 t_redir *init_redir(void);
 void    delete_all_redirs(t_arg *args);
 t_redir	*last_redir(t_redir *redir);
+void    add_redirs_to_cmd(t_redir *redir, t_token *tokens);
+int		find_number_of_parts(char *str);
+void	find_parts_of_str(char *str, int **start_end_i, t_arg *args, int num);
 
 #endif

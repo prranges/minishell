@@ -12,95 +12,6 @@
 
 #include "minishell.h"
 
-t_token	*init_tokens(void)
-{
-	t_token *lst;
-	
-	lst = (t_token *)malloc(sizeof(t_token));
-	lst->list_num = 0;
-	lst->cmd = NULL;
-	lst->next = NULL;
-	lst->prev = NULL;
-	return (lst);
-}
-
-int	find_number_of_parts(char *str)
-{
-	int	i;
-	int count;
-	int flag_sq = 2;
-	int flag_dq = 2;
-	
-	i = - 1;
-	count = 0;
-	if (str[0] != '\0' && str[0] != ' ' && str[0] != '\t')
-		count++;
-	while (str[++i])
-	{
-		if ((str[i] == ' ' || str[i] == '\t')
-		&& (str[i + 1] != ' ' && str[i + 1] != '\t' && str[i + 1] != '>'
-		&& str[i + 1] != '<' && str[i + 1] != '\0') && (!(flag_sq % 2))
-		&& (!(flag_dq % 2)))
-			count++;
-		if ((str[i] == '<' || str[i] == '>') && (str[i + 1] == ' ' || str[i + 1] == '\t'))
-			count--;
-		if (str[i] == '\'' && (!(flag_dq % 2)))
-			flag_sq++;
-		if (str[i] == '\"' && (!(flag_sq % 2)))
-			flag_dq++;
-	}
-	if ((flag_sq % 2) || (flag_dq % 2))
-		return (-1);
-	return (count);
-}
-
-void	error_print(int id)
-{
-	if (id == -1)
-		printf("minishell: syntax error with unclosed quotes\n");
-	if (id == 0)
-		printf("minishell: no str\n");
-}
-
-void	find_parts_of_str(char *str, int **start_end_i, t_arg *args)
-{
-	int	i;
-	int s = 0;
-	int e = 0;
-	int flag_sq = 2;
-	int flag_dq = 2;
-	
-	i = -1;
-	if (str[0] != '\0' && str[0] != ' ' && str[0] != '\t' && str[i + 1] != '>' && str[i + 1] != '<')
-		start_end_i[0][s++] = 0;
-	while (str[++i])
-	{
-		if (!(flag_sq % 2) && !(flag_dq % 2))
-		{
-			if ((str[i] == ' ' || str[i] == '\t'))
-			{
-				if (i != 0 && (str[i - 1] != ' ' && str[i - 1] != '\t'))
-					start_end_i[1][e++] = i;
-				if ((str[i + 1] != ' ' && str[i + 1] != '\t' && str[i + 1] != '>' && str[i + 1] != '<' && str[i + 1] != '\0'))
-					start_end_i[0][s++] = i + 1;
-			}
-			if ((str[i] == '>' || str[i] == '<'))
-			{
-				if (i != 0 && (str[i - 1] != ' ' && str[i - 1] != '\t'))
-					start_end_i[1][e++] = i;
-				i = redirect(str, i, args);
-				start_end_i[0][s++] = i;
-			}
-		}
-		if (str[i] == '\'' && (!(flag_dq % 2)))
-			flag_sq++;
-		if (str[i] == '\"' && (!(flag_sq % 2)))
-			flag_dq++;
-	}
-	if ((str[i] == '\0') && (str[i - 1] != ' ' && str[i - 1] != '\t') && (!(flag_sq % 2)) && (!(flag_dq % 2)))
-		start_end_i[1][e++] = i;
-}
-
 int main(int argc, char **argv, char **arge)
 {
 	(void)argc;
@@ -112,6 +23,7 @@ int main(int argc, char **argv, char **arge)
 	char	**sub_strs;
 	int		status;
 	int		number_of_parts;
+	int		num;
 	
 	
 	int	**start_end_i;
@@ -129,25 +41,29 @@ int main(int argc, char **argv, char **arge)
 	
 	while(1)
 	{
-		if (!(str = readline("\033[0;36m\033[1mminishell-0.3$ \033[0m")))
+		num = 0;
+		if (!(str = readline("\033[0;36m\033[1mminishell-0.31$ \033[0m")))
 			exit (1);
 		add_history(str);
 		
 		
-		if (prepercer(str))
+		if (preparcer(str) == 1)
 			printf("minishell: syntax error near unexpected token\n");
-		else
+		else if (preparcer(str) == 2)
+			printf("minishell: syntax error near unclosed quotes\n");
+		else if (!preparcer(str))
 		{
 			args->tokens = init_tokens();
 			sub_strs = make_substrs_pipe_devided(str);
 			while (*sub_strs)
 			{
+				num++;
 				number_of_parts = find_number_of_parts(*sub_strs);
 				start_end_i = malloc(sizeof(int **));
 				start_end_i[0] = malloc(sizeof(int *) * number_of_parts);
 				start_end_i[1] = malloc(sizeof(int *) * number_of_parts);
 				cmd = malloc(sizeof(char **) * number_of_parts + 1);
-				find_parts_of_str(*sub_strs, start_end_i, args);
+				find_parts_of_str(*sub_strs, start_end_i, args, num);
 				s = -1;
 				while (number_of_parts > ++s)
 				{
@@ -163,14 +79,20 @@ int main(int argc, char **argv, char **arge)
 	//			free(cmd);
 				sub_strs++;
 			}
+			add_redirs_to_cmd(args->redir, args->tokens->next);
 			if (args->redir)
-				printf("last redir - %s\n", last_redir(args->redir)->file_name); // print last redir
+			{
+				printf("\n");
+				printf("LAST REDIR - %s\n", last_redir(args->redir)->file_name); // print last redir
+				printf("DOUBLE - %d\n", last_redir(args->redir)->dbl);
+				printf("CMD LIST# - %d\n", last_redir(args->redir)->cmd_list_num);
+				printf("OUT/IN - %d\n", last_redir(args->redir)->out_in);
+				printf("\n");
+			}
 
 
 				free(str);
-	//			free(start_end_i[0]);
-	//			free(start_end_i[1]);
-	//			free(start_end_i);
+
 	//			free(strs);
 	//			status = execute(tokens);
 				delete_all_redirs(args);

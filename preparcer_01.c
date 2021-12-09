@@ -73,13 +73,41 @@ int	check_redirect_without_filename(char *str)
 	return (0);
 }
 
-int	prepercer(char *str)
+int	check_open_quotes(char *str)
 {
 	int	i;
+	int	flag_sq;
+	int	flag_dq;
 
 	i = 0;
+	flag_sq = 2;
+	flag_dq = 2;
 	while (str[i])
 	{
+		if (str[i] == '\'' && (!(flag_dq % 2)))
+			flag_sq++;
+		if (str[i] == '\"' && (!(flag_sq % 2)))
+			flag_dq++;
+		i++;
+	}
+	if ((flag_sq % 2) || (flag_dq % 2))
+		return (1);
+	return (0);
+}
+
+int	preparcer(char *str)
+{
+	int	i;
+	int	count;
+
+	count = 0;
+	i = -1;
+	if (check_open_quotes(str))
+		return (2);
+	while (str[++i])
+	{
+		if (str[i] != ' ' && str[i] != '\t')
+			count++;
 		if (str[i] == '|')
 		{
 			if (check_start_and_double_pipe(str))
@@ -90,7 +118,8 @@ int	prepercer(char *str)
 			if (check_redirect_without_filename(str))
 				return (1);
 		}
-		i++;
 	}
+	if (count == 0)
+		return (-1);
 	return (0);
 }
