@@ -12,64 +12,48 @@
 
 #include "minishell.h"
 
-int	free_double_array(char **str)
+//int	free_double_array(char **str)
+//{
+//	if (!*str)
+//		return (0);
+//	while (*str)
+//		free(*str);
+//	free(str);
+//	return (0);
+//}
+
+void	print_all_lists(t_arg *args)
 {
-	if (!*str)
-		return (0);
-	while (*str)
-		free(*str);
-	free(str);
-	return (0);
-}
-
-t_token	*add_token(t_token *lst, char **cmd)
-{
-	t_token	*temp;
-	t_token	*p;
-
-	temp = (t_token *)malloc(sizeof(t_token));
-	temp->cmd = cmd;
-	temp->list_num = lst->list_num + 1;
-	printf("%d\n", temp->list_num);
-	print_double_array(temp->cmd);
-	p = lst->next;
-	temp->next = p;
-	temp->prev = lst;
-	lst->next = temp;
-	if (p != NULL)
-		p->prev = temp;
-	return (temp);
-}
-
-void	print_all_lists(t_token *lst)
-{
-	t_token	*p;
-
-	p = lst->next;
-	while (p != NULL)
+	int i;
+	
+	printf("Number of arguments - %d\n\n", args->num);
+	while (args->tokens)
 	{
-		while (*p->cmd)
+		i = 0;
+		printf("Token number - %d\n", args->tokens->list_num);
+		while (args->tokens->cmd[i])
 		{
-			printf("token - %s\n", *p->cmd);
-			p->cmd++;
+			printf("str[%d] - %s\n", i, args->tokens->cmd[i]);
+			i++;
 		}
-		p = p->next;
+		if (args->tokens->in)
+		{
+			if (args->tokens->in->dbl)
+				printf("double ");
+			printf("redirect IN - %s\n", args->tokens->in->file_name);
+		}
+		if (args->tokens->out)
+		{
+			if (args->tokens->out->dbl)
+				printf("double ");
+			printf("redirect OUT - %s\n", args->tokens->out->file_name);
+		}
+		args->tokens = args->tokens->next;
+		printf("\n");
 	}
 }
 
-void	delete_all_lists(t_token *lst)
-{
-	t_token	*p;
 
-	while (lst->next != NULL)
-	{
-		p = lst->next;
-		lst->next = p->next;
-		free_double_array(p->cmd);
-		free(p);
-		free(lst);
-	}
-}
 
 void	print_double_array(char **sub_strs)
 {

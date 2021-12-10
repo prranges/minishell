@@ -40,7 +40,6 @@ void	add_redir(t_redir **redir, t_redir *new)
 	temp = *redir;
 	if (!temp)
 	{
-		
 		*redir = new;
 	}
 	else

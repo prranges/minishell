@@ -12,18 +12,6 @@
 
 #include "minishell.h"
 
-t_token	*init_tokens(void)
-{
-	t_token *lst;
-	
-	lst = (t_token *)malloc(sizeof(t_token));
-	lst->list_num = 0;
-	lst->cmd = NULL;
-	lst->next = NULL;
-	lst->prev = NULL;
-	return (lst);
-}
-
 int	find_number_of_parts(char *str)
 {
 	int	i;

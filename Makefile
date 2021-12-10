@@ -23,6 +23,7 @@ SRCS	= minishell.c \
 		  redir_01.c \
 		  redir_02.c \
 		  lexer_01.c \
+		  token_01.c \
 		  parcer_01.c \
 		  executer_01.c \
 		  builtins_01.c \

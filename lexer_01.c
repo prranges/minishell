@@ -127,7 +127,7 @@ char	*dollar(char *str, int *i, t_env *env, t_lexer *lex)
 	t_env	*p;
 	char	*ret;
 
-	p = env->next;
+	p = env;
 	init_lexer(lex);
 	lex->j = *i;
 	lex->e = -1;

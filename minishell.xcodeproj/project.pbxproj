@@ -21,6 +21,7 @@
 		24A64292275DE5AC0041D1FE /* env_01.c in Sources */ = {isa = PBXBuildFile; fileRef = 24A64291275DE5AC0041D1FE /* env_01.c */; };
 		24A64294275DF98D0041D1FE /* pipe_01.c in Sources */ = {isa = PBXBuildFile; fileRef = 24A64293275DF98D0041D1FE /* pipe_01.c */; };
 		24A64296275E30BC0041D1FE /* redir_01.c in Sources */ = {isa = PBXBuildFile; fileRef = 24A64295275E30BC0041D1FE /* redir_01.c */; };
+		24DFE1022763557B00D1807F /* token_01.c in Sources */ = {isa = PBXBuildFile; fileRef = 24DFE1012763557A00D1807F /* token_01.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -36,7 +37,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		2405E1D927622693004DA724 /* redir_02.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = redir_02.c; sourceTree = "<group>"; };
+		2405E1D927622693004DA724 /* redir_02.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = redir_02.c; sourceTree = "<group>"; usesTabs = 1; };
 		244DC3E5274391D6000F2B68 /* executer_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = executer_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		244DC3E727439580000F2B68 /* builtins_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		244DC3E9274395BA000F2B68 /* builtins_02.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_02.c; sourceTree = "<group>"; usesTabs = 1; };
@@ -52,6 +53,7 @@
 		24A64291275DE5AC0041D1FE /* env_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = env_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		24A64293275DF98D0041D1FE /* pipe_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pipe_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		24A64295275E30BC0041D1FE /* redir_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = redir_01.c; sourceTree = "<group>"; usesTabs = 1; };
+		24DFE1012763557A00D1807F /* token_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = token_01.c; sourceTree = "<group>"; };
 		24E771B62742B7AF009C80C1 /* libft */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libft; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -84,6 +86,7 @@
 				2405E1D927622693004DA724 /* redir_02.c */,
 				246BC4252760C4E200D22C2F /* preparcer_01.c */,
 				246BEBCC273EA50800BF36F4 /* utils_01.c */,
+				24DFE1012763557A00D1807F /* token_01.c */,
 				246BEBCA273EA40A00BF36F4 /* parcer_01.c */,
 				246BEBBE273E99A600BF36F4 /* Products */,
 			);
@@ -154,6 +157,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24DFE1022763557B00D1807F /* token_01.c in Sources */,
 				244DC3E827439580000F2B68 /* builtins_01.c in Sources */,
 				244DC3EE2743C406000F2B68 /* signals.c in Sources */,
 				246BEBCB273EA40A00BF36F4 /* parcer_01.c in Sources */,

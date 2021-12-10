@@ -24,42 +24,53 @@ t_env	*init_env(void)
 	return (lst);
 }
 
-void	env_read(t_env *env, char **arge)
+void	env_read(t_arg *args, char **arge)
 {
 	int	i;
 
 	i = -1;
 	while (arge[++i])
-		env = add_env(env, arge[i]);
+		add_env(&args->env, arge[i]);
 }
 
-t_env	*add_env(t_env *lst, char *str)
+t_env	*last_env(t_env *env)
 {
+	while (env->next)
+		env = env->next;
+	return (env);
+}
+
+void	add_env(t_env **env, char *str)
+{
+	t_env	*new;
 	t_env	*temp;
-	t_env	*p;
 	int		i;
 
+	temp = *env;
 	i = 0;
-	temp = (t_env *)malloc(sizeof(t_env));
+	new = init_env();
 	while (*str && str[i] != '=')
 		i++;
-	temp->key = ft_substr(str, 0, i);
+	new->key = ft_substr(str, 0, i);
 	if (str[i] == '=')
 	{
-		temp->separator = '=';
-		temp->value = ft_strdup(str + i + 1);
+		new->separator = '=';
+		new->value = ft_strdup(str + i + 1);
 	}
-	p = lst->next;
-	temp->next = p;
-	lst->next = temp;
-	return (temp);
+	if (!temp)
+	{
+		*env = new;
+	}
+	else
+		last_env(*env)->next = new;
+	
 }
 
-void	print_env(t_env *lst)
+void	print_env(t_env *env)
 {
 	t_env	*p;
 
-	p = lst->next;
+	p = env;
 	while (p != NULL)
 	{
 		printf("%s", p->key);

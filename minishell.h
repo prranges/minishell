@@ -51,7 +51,6 @@ typedef struct s_token
 	t_redir			*in;
 	t_redir			*out;
     struct s_token	*next;
-    struct s_token	*prev;
 } t_token;
 
 typedef struct s_env
@@ -76,27 +75,27 @@ typedef struct s_lexer
 typedef struct s_arg
 {
 	t_token	*tokens;
-//	int		num;
+	int		num;
 	t_redir	*redir;
 	t_env	*env;
 //	char	**env;
 //	int		**fd;
-//	int		errnum;
+	int		errnum;
 } t_arg;
 
 int		preparcer(char *str);
 t_token	*init_tokens(void);
-t_env 	*add_env(t_env *env, char *str);
+void 	add_env(t_env **env, char *str);
 t_env   *init_env(void);
-void    env_read(t_env *env, char **arge);
-t_token	*add_token(t_token *lst, char **str);
+void    env_read(t_arg *arg, char **arge);
+int		add_token(t_token **lst, char **str);
 void	signals_ms(void);
 char	*lexe(char *str, t_env *env);
 char	*dollar(char *str, int *i, t_env *env, t_lexer *lex);
 void  	parce(t_token *lst, char **strs, t_env *env);
-void    print_all_lists(t_token *lst);
+void    print_all_lists(t_arg *args);
 void    print_env(t_env *lst);
-void    delete_all_lists(t_token *lst);
+void    delete_all_tokens(t_arg *args);
 int 	execute(t_token *lst);
 int		free_double_array(char **str);
 void	print_double_array(char **sub_strs);

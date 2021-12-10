@@ -12,6 +12,15 @@
 
 #include "minishell.h"
 
+void	init_args(t_arg *args)
+{
+	args->tokens = NULL;
+	args->num = 0;
+	args->redir = NULL;
+	args->env = NULL;
+	args->errnum = 0;
+}
+
 int main(int argc, char **argv, char **arge)
 {
 	(void)argc;
@@ -24,25 +33,20 @@ int main(int argc, char **argv, char **arge)
 	int		status;
 	int		number_of_parts;
 	int		num;
-	
-	
 	int	**start_end_i;
 	t_arg	*args;
-	t_env	*env;
-	env = init_env();
 	
 	args = (t_arg *)malloc(sizeof(t_arg));
-	args->env = env;
-	args->redir = NULL;
-	
-	env_read(env, arge);
+	init_args(args);
+
+	env_read(args, arge);
 
 	signals_ms();
 	
 	while(1)
 	{
 		num = 0;
-		if (!(str = readline("\033[0;36m\033[1mminishell-0.31$ \033[0m")))
+		if (!(str = readline("\033[0;36m\033[1mminishell-0.32$ \033[0m")))
 			exit (1);
 		add_history(str);
 		
@@ -53,7 +57,6 @@ int main(int argc, char **argv, char **arge)
 			printf("minishell: syntax error near unclosed quotes\n");
 		else if (!preparcer(str))
 		{
-			args->tokens = init_tokens();
 			sub_strs = make_substrs_pipe_devided(str);
 			while (*sub_strs)
 			{
@@ -68,38 +71,27 @@ int main(int argc, char **argv, char **arge)
 				while (number_of_parts > ++s)
 				{
 					cmd[s] = ft_substr(sub_strs[0], start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
-					cmd[s] = lexe(cmd[s], env);
+					cmd[s] = lexe(cmd[s], args->env);
 				}
 				cmd[s] = NULL;
-				args->tokens = add_token(args->tokens, cmd);
-	//			print_double_array(strs);
+				args->num = add_token(&args->tokens, cmd);
 				free(start_end_i[0]);
 				free(start_end_i[1]);
 				free(start_end_i);
-	//			free(cmd);
 				sub_strs++;
 			}
-			add_redirs_to_cmd(args->redir, args->tokens->next);
-			if (args->redir)
-			{
-				printf("\n");
-				printf("LAST REDIR - %s\n", last_redir(args->redir)->file_name); // print last redir
-				printf("DOUBLE - %d\n", last_redir(args->redir)->dbl);
-				printf("CMD LIST# - %d\n", last_redir(args->redir)->cmd_list_num);
-				printf("OUT/IN - %d\n", last_redir(args->redir)->out_in);
-				printf("\n");
-			}
-
-
-				free(str);
-
-	//			free(strs);
-	//			status = execute(tokens);
-				delete_all_redirs(args);
-				delete_all_lists(args->tokens);
+			add_redirs_to_cmd(args->redir, args->tokens);
+				
+			print_all_lists(args);
+//			print_env(args->env);
+			
+			free(str);
+	//		free(strs);
+	//		status = execute(tokens);
+			delete_all_redirs(args);
+			delete_all_tokens(args);
 		}
 //		free(sub_strs);
-//		free_double_massive(sub_strs);
 	}
     return (status);
 }
