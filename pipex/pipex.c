@@ -12,19 +12,69 @@
 
 #include "../minishell.h"
 
+char	**find_path(t_env *env)
+{
+	t_env	*p;
+	char 	**path;
+	int		i;
+
+	p = env;
+	i = 0;
+	while (p != NULL)
+	{
+		if (ft_strncmp(p->key, "PATH", 4) == 0)
+			break ;
+		p = p->next;
+	}
+	path = ft_split(p->value, ':');
+	return (path);
+}
+
+char *create_path(t_arg *data, char **all_paths)
+{
+	int i;
+	char *temp;
+	char *path;
+	(void)data;
+
+	i = 1;
+
+	//printf("111\n");
+	while (*all_paths)
+	{
+		//printf("111\n");
+		temp = ft_strjoin(*all_paths, "/");
+		//printf("222\n");
+		path = ft_strjoin(temp, data->tokens->cmd[0]);
+		//printf("%s\n", path);
+		if (access(path, X_OK) != -1)
+			return (path);
+		//free(temp);
+		//free(path);
+		all_paths++;
+	}
+	return (NULL);
+}
+
+//void close_fd(int fd)
+
 int pipex(int argc, char **argv, char **env, t_arg *data)
 {
-	(void)data;
 	(void)argv;
 
 	int **fd;
+	int fd2;
+	char **path;
+	char *path_exec;
 	pid_t *pid;
 	int i;
 	//int j = 0;
-	int file;
-	int fd_out;
+	//int file;
+	//int fd_out;
+	char *flag;
 
 	i = 0;
+	flag = "-l";
 	fd = malloc(sizeof(int *) * (argc - 4));
 	while(i < argc - 4)
 	{
@@ -42,7 +92,15 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 	}
 	pid = malloc(sizeof(pid_t *));
 	i = 0;
-	while(i < argc - 3)
+	path = find_path(data->env);
+//	while (*path)
+//	{
+//		printf("%s\n", *path);
+//		path++;
+//	}
+	path_exec = create_path(data, path);
+	//printf("%s\n", path_exec);
+	while(i < data->num)
 	{
 		pid[i] = fork();
 		if (pid[i] < 0)
@@ -52,25 +110,27 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 		}
 		else if (pid[i] == 0)
 		{
+			//printf("111\n");
 			if (i == 0)
 			{
-				char **arr;
-				arr = malloc(sizeof(char *) * 2);
-				arr[0] = malloc(sizeof(char) * 8);
-				arr[1] = NULL;
-				arr[0] = "/bin/pwd";
-				file = open("/Users/caniseed/Desktop/minishell/minishell/minishell/pipex/input.txt", O_WRONLY);
+//				char **arr;
+//				arr = malloc(sizeof(char *) * 2);
+//				arr[0] = malloc(sizeof(char) * 8);
+//				arr[1] = NULL;
+//				arr[0] = "/bin/pwd";
+//				file = open("/Users/caniseed/Desktop/minishell/minishell/minishell/pipex/input.txt", O_WRONLY);
 //				if (!file){}
-				printf("fd before - %d\n", file);
-				fd_out = open("/Users/caniseed/Desktop/minishell/minishell/minishell/pipex/output.txt", O_WRONLY | O_CREAT | O_TRUNC, \
-			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
-				printf("fd out - %d\n", fd_out);
-				dup2(file, 0);
-				printf("fd after - %d\n", file);
-				dup2(fd_out, 1);
-				printf("111\n");
-//				close_fds(info, fd);
-				execve(arr[0], arr, env);
+				//printf("fd before - %d\n", file);
+//				fd_out = open("/Users/caniseed/Desktop/minishell/minishell/minishell/pipex/output.txt", O_WRONLY | O_CREAT | O_TRUNC, \
+//			S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+				//printf("fd out - %d\n", fd_out);
+				fd2 = open(path_exec, O_WRONLY);
+				dup2(fd2, 1);
+				//printf("fd after - %d\n", file);
+				//dup2(fd_out, 1);
+			//	printf("111\n");
+//				close(fd2);
+				execve(path_exec, data->tokens->cmd, env);
 			}
 			else
 			{
@@ -79,9 +139,14 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 				printf("222\n");
 //				close_fds(info, fd);
 //				execve(cmd[0], cmd, env);
-				//execve("/bin/pwd",  "-P", env);
+				execve(path_exec, data->tokens->cmd, env);
 			}
 		}
+		i++;
+	}
+	i = 0;
+	while (i < data->num) {
+		waitpid(pid[i], NULL, 0);
 		i++;
 	}
 	return (0);

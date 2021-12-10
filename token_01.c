@@ -58,7 +58,7 @@ void	delete_all_tokens(t_arg *args)
 	while (args->tokens)
 	{
 		i = 0;
-		printf("DELETE\n");
+		//printf("DELETE\n");
 		p = args->tokens;
 		args->tokens = args->tokens->next;
 		while (p->cmd[i])

@@ -108,5 +108,6 @@ t_redir	*last_redir(t_redir *redir);
 void	add_redirs_to_cmd(t_redir *redir, t_token *tokens);
 int		find_number_of_parts(char *str);
 void	find_parts_of_str(char *str, int **start_end_i, t_arg *args, int num);
+int		pipex(int argc, char **argv, char **env, t_arg *data);
 
 #endif

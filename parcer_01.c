@@ -32,6 +32,8 @@ int	find_number_of_parts(char *str)
 			count++;
 		if ((str[i] == '<' || str[i] == '>') && (str[i + 1] == ' ' || str[i + 1] == '\t'))
 			count--;
+		if ((str[i] == '<' || str[i] == '>'))
+			count--;
 		if (str[i] == '\'' && (!(flag_dq % 2)))
 			flag_sq++;
 		if (str[i] == '\"' && (!(flag_sq % 2)))
