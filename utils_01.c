@@ -24,8 +24,8 @@
 
 void	print_all_lists(t_arg *args)
 {
-	int i;
-	
+	int	i;
+
 	printf("Number of arguments - %d\n\n", args->num);
 	while (args->tokens)
 	{
@@ -52,8 +52,6 @@ void	print_all_lists(t_arg *args)
 		printf("\n");
 	}
 }
-
-
 
 void	print_double_array(char **sub_strs)
 {

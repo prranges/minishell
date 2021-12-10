@@ -15,10 +15,10 @@
 int	find_number_of_parts(char *str)
 {
 	int	i;
-	int count;
-	int flag_sq = 2;
-	int flag_dq = 2;
-	
+	int	count;
+	int	flag_sq = 2;
+	int	flag_dq = 2;
+
 	i = - 1;
 	count = 0;
 	if (str[0] != '\0' && str[0] != ' ' && str[0] != '\t')
@@ -37,18 +37,8 @@ int	find_number_of_parts(char *str)
 		if (str[i] == '\"' && (!(flag_sq % 2)))
 			flag_dq++;
 	}
-//	if ((flag_sq % 2) || (flag_dq % 2)) // по идее эта проверка уже не нужна
-//		return (-1);
 	return (count);
 }
-
-//void	error_print(int id)
-//{
-//	if (id == -1)
-//		printf("minishell: syntax error with unclosed quotes\n");
-//	if (id == 0)
-//		printf("minishell: no str\n");
-//}
 
 void	find_parts_of_str(char *str, int **start_end_i, t_arg *args, int num)
 {

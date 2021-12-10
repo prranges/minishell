@@ -22,7 +22,8 @@ SRCS	= minishell.c \
 		  utils_01.c \
 		  redir_01.c \
 		  redir_02.c \
-		  lexer_01.c \
+		  lexer_01_quotes.c \
+		  lexer_02_dollar.c \
 		  token_01.c \
 		  parcer_01.c \
 		  executer_01.c \

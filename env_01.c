@@ -63,7 +63,6 @@ void	add_env(t_env **env, char *str)
 	}
 	else
 		last_env(*env)->next = new;
-	
 }
 
 void	print_env(t_env *env)

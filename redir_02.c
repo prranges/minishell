@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-void    delete_all_redirs(t_arg *args)
+void	delete_all_redirs(t_arg *args)
 {
-	t_redir *p;
+	t_redir	*p;
 
 	while (args->redir)
 	{
@@ -25,9 +25,9 @@ void    delete_all_redirs(t_arg *args)
 	}
 }
 
-void    add_redirs_to_cmd(t_redir *redir, t_token *tokens)
+void	add_redirs_to_cmd(t_redir *redir, t_token *tokens)
 {
-	int i;
+	int	i;
 	int	cmd_num;
 
 	if (!tokens)

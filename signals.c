@@ -12,8 +12,8 @@
 
 #include "minishell.h"
 
-void    signals_ms()
+void	signals_ms(void)
 {
-    signal(SIGINT, SIG_IGN);
-    signal(SIGQUIT, SIG_IGN);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }

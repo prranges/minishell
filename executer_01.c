@@ -12,9 +12,9 @@
 
 #include "minishell.h"
 
-int execute(t_token *lst)
+int	execute(t_token *lst)
 {
-    if (!lst)
-        return (ERROR);
-    return (SUCCESS);
+	if (!lst)
+		return (ERROR);
+	return (SUCCESS);
 }
