@@ -21,6 +21,7 @@
 # include <stdlib.h>
 # include <signal.h>
 # include <fcntl.h>
+# include <errno.h>
 
 # define ERROR		1
 # define SUCCESS	0

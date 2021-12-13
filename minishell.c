@@ -81,7 +81,7 @@ int	main(int argc, char **argv, char **arge)
 			printf("minishell: syntax error near unclosed quotes\n");
 		else if (!preparcer(str))
 			parcer(str, &num, args);
-	//	print_all_lists(args);
+		print_all_lists(args);
 //		print_env(args->env);
 		pipex(argc, argv, arge, args);
 		free(str);

@@ -74,6 +74,7 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 	char *flag;
 
 	i = 0;
+    errno = 0;
 	flag = "-l";
 	fd = malloc(sizeof(int *) * (argc - 4));
 	while(i < argc - 4)
@@ -105,7 +106,7 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 		pid[i] = fork();
 		if (pid[i] < 0)
 		{
-			perror("error");
+			perror("minishell");
 			exit(1);
 		}
 		else if (pid[i] == 0)

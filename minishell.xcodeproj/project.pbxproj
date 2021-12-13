@@ -39,6 +39,7 @@
 
 /* Begin PBXFileReference section */
 		2405E1D927622693004DA724 /* redir_02.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = redir_02.c; sourceTree = "<group>"; usesTabs = 1; };
+		2421380B276737F400999A2D /* pipex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pipex; sourceTree = "<group>"; };
 		244DC3E5274391D6000F2B68 /* executer_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = executer_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		244DC3E727439580000F2B68 /* builtins_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		244DC3E9274395BA000F2B68 /* builtins_02.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_02.c; sourceTree = "<group>"; usesTabs = 1; };
@@ -55,7 +56,7 @@
 		24A64293275DF98D0041D1FE /* pipe_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pipe_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		24A64295275E30BC0041D1FE /* redir_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = redir_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		24DFE1012763557A00D1807F /* token_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = token_01.c; sourceTree = "<group>"; usesTabs = 1; };
-		24DFE1032763833200D1807F /* lexer_02_dollar.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lexer_02_dollar.c; sourceTree = "<group>"; };
+		24DFE1032763833200D1807F /* lexer_02_dollar.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lexer_02_dollar.c; sourceTree = "<group>"; usesTabs = 1; };
 		24E771B62742B7AF009C80C1 /* libft */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libft; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -73,6 +74,7 @@
 		246BEBB4273E99A600BF36F4 = {
 			isa = PBXGroup;
 			children = (
+				2421380B276737F400999A2D /* pipex */,
 				24E771B62742B7AF009C80C1 /* libft */,
 				244DC3ED2743C406000F2B68 /* signals.c */,
 				24A64293275DF98D0041D1FE /* pipe_01.c */,
