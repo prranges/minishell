@@ -49,7 +49,7 @@ void	add_env(t_env **env, char *str)
 	temp = *env;
 	i = 0;
 	new = init_env();
-	while (*str && str[i] != '=')
+	while (str[i] && str[i] != '=')
 		i++;
 	new->key = ft_substr(str, 0, i);
 	if (str[i] == '=')
@@ -58,23 +58,40 @@ void	add_env(t_env **env, char *str)
 		new->value = ft_strdup(str + i + 1);
 	}
 	if (!temp)
-	{
 		*env = new;
-	}
 	else
 		last_env(*env)->next = new;
 }
 
-void	print_env(t_env *env)
+void	edit_env(t_env **env, char *str)
 {
 	t_env	*p;
+	int		i;
 
-	p = env;
-	while (p != NULL)
+	p = *env;
+	i = 0;
+	while (str[i] && str[i] != '=')
+		i++;
+	if (str[i] == '=')
 	{
-		printf("%s", p->key);
-		printf("%c", p->separator);
-		printf("%s\n", p->value);
-		p = p->next;
+		p->separator = '=';
+		free(p->value);
+		p->value = ft_strdup(str + i + 1);
 	}
+}
+
+void	remove_env(t_arg *args, t_env *remove_list, t_env *prev_p)
+{
+	t_env	*prev;
+	t_env	*remove;
+
+	prev = prev_p;
+	remove = remove_list;
+	if (prev)
+		prev->next = remove->next;
+	else
+		args->env = args->env->next;
+	free(remove_list->key);
+	free(remove_list->value);
+	free(remove_list);
 }

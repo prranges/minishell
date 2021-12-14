@@ -27,7 +27,7 @@ void    pwd_ms(void)
     
 }
 
-void    export_ms(void)
+void    exit_ms(void)
 {
 
 }

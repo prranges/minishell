@@ -12,30 +12,30 @@
 
 #include "minishell.h"
 
-int    if_key(char c)
+int	if_key(char c)
 {
-    if (c != '_' && !ft_isalnum(c))
-        return (0);
-    return (1);
+	if (c != '_' && !ft_isalnum(c))
+		return (0);
+	return (1);
 }
 
-void    if_no_key_in_env(char *str, int *i, t_lexer *lex)
+void	if_no_key_in_env(char *str, int *i, t_lexer *lex)
 {
-    if (ft_isalpha(lex->key[0]) || !lex->key[1])
-        lex->in = ft_strdup("");
-    else
-        lex->in = ft_substr(str, lex->j + 2, *i - lex->j - 1);
+	if (ft_isalpha(lex->key[0]) || !lex->key[1])
+		lex->in = ft_strdup("");
+	else
+		lex->in = ft_substr(str, lex->j + 2, *i - lex->j - 1);
 }
 
-char    *find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p)
+char	*find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p)
 {
-	char    *ret;
-	
+	char	*ret;
+
 	lex->before = ft_substr(str, 0, lex->j);
 	while (p->next != NULL)
 	{
 		if ((ft_strcmp(p->key, lex->key)) == 0)
-		lex->in = ft_strdup(p->value);
+			lex->in = ft_strdup(p->value);
 		p = p->next;
 	}
 	if (!lex->in)
@@ -48,12 +48,12 @@ char    *find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p)
 	return (ret);
 }
 
-char	*if_question(char *str, int *i, t_lexer *lex)//, t_arg *args)
+char	*if_question(char *str, int *i, t_lexer *lex, t_arg *args)
 {
 	char    *ret;
 	
 	lex->before = ft_substr(str, 0, lex->j);
-	lex->in = ft_itoa(123);
+	lex->in = ft_itoa(args->errnum);
 	lex->after = ft_strdup(str + *i + 2);
 	free(str);
 	ret = ft_strjoin(lex->before, lex->in);
@@ -62,17 +62,17 @@ char	*if_question(char *str, int *i, t_lexer *lex)//, t_arg *args)
 	return (ret);
 }
 
-char    *dollar(char *str, int *i, t_env *env, t_lexer *lex)
+char    *dollar(char *str, int *i, t_arg *args, t_lexer *lex)
 {
     t_env    *p;
     char    *ret;
 
-    p = env;
+    p = args->env;
     init_lexer(lex);
     lex->j = *i;
     lex->e = -1;
 	if (str[*i + 1] == '?')
-		ret = if_question(str, i, lex);
+		ret = if_question(str, i, lex, args);
 	else
 	{
 		while (if_key(str[++(*i)]))

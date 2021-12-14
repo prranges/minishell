@@ -70,7 +70,7 @@ int	redirect(char *str, int i, t_arg *args, int num)
 	while (str[i] && str[i] != ' ' && str[i] != '\t'
 		   && str[i] != '>' && str[i] != '<')
 		i++;
-	new->file_name = lexe(ft_substr(str, j, i - j), args->env);
+	new->file_name = lexe(ft_substr(str, j, i - j), args);
 	new->cmd_list_num = num;
 	add_redir(&args->redir, new);
 	while (str[i] == ' ' || str[i] == '\t')

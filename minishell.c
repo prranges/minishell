@@ -18,7 +18,7 @@ void	init_args(t_arg *args)
 	args->num = 0;
 	args->redir = NULL;
 	args->env = NULL;
-	args->errnum = 0;
+	args->errnum = 99;
 }
 
 void	parcer(char *str, int *num, t_arg *args)
@@ -44,7 +44,7 @@ void	parcer(char *str, int *num, t_arg *args)
 		{
 			cmd[s] = ft_substr(sub_strs[0], start_end_i[0][s], \
 							   start_end_i[1][s] - start_end_i[0][s]);
-			cmd[s] = lexe(cmd[s], args->env);
+			cmd[s] = lexe(cmd[s], args);
 		}
 		cmd[s] = NULL;
 		args->num = add_token(&args->tokens, cmd);
@@ -72,7 +72,7 @@ int	main(int argc, char **argv, char **arge)
 	{
 		num = 0;
 		args->num = 0;
-		if (!(str = readline("\033[0;36m\033[1mminishell-0.32$ \033[0m")))
+		if (!(str = readline("\033[0;36m\033[1mminishell-0.33$ \033[0m")))
 			exit (1);
 		add_history(str);
 		if (preparcer(str) == 1)
@@ -82,8 +82,16 @@ int	main(int argc, char **argv, char **arge)
 		else if (!preparcer(str))
 			parcer(str, &num, args);
 		print_all_lists(args);
-//		print_env(args->env);
+		
+		if (ft_strcmp(args->tokens->cmd[0], "export") == 0)
+			export_ms(args);
+		if (ft_strcmp(args->tokens->cmd[0], "unset") == 0)
+			unset_ms(args);
+		if (ft_strcmp(args->tokens->cmd[0], "env") == 0)
+			env_ms(args->env);
+
 		pipex(argc, argv, arge, args);
+		
 		free(str);
 		delete_all_redirs(args);
 		delete_all_tokens(args);

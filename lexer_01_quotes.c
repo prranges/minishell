@@ -76,7 +76,7 @@ char	*single_quotes(char *str, int *i, t_lexer *lex)
 //	return (ret);
 //}
 
-char	*double_quotes(char *str, int *i, t_env *env, t_lexer *lex)
+char	*double_quotes(char *str, int *i, t_arg *args, t_lexer *lex)
 {
 	char	*ret;
 	char	*before;
@@ -95,7 +95,7 @@ char	*double_quotes(char *str, int *i, t_env *env, t_lexer *lex)
 //				--*i;
 //		}
 		if (str[*i] == '$')
-			str = dollar(str, i, env, lex);
+			str = dollar(str, i, args, lex);
 	}
 	lex->in = ft_substr(str, j + 1, *i - j - 1);
 	lex->after = ft_strdup(str + *i + 1);
@@ -107,7 +107,7 @@ char	*double_quotes(char *str, int *i, t_env *env, t_lexer *lex)
 	return (ret);
 }
 
-char	*lexe(char *str, t_env *env)
+char	*lexe(char *str, t_arg *args)
 {
 	t_lexer	*lex;
 	int		i;
@@ -121,9 +121,9 @@ char	*lexe(char *str, t_env *env)
 //        if (str[i] == '\\')
 //            str = backslash(str, &i, lex);
 		if (str[i] == '\"')
-			str = double_quotes(str, &i, env, lex);
+			str = double_quotes(str, &i, args, lex);
 		if (str[i] == '$')
-			str = dollar(str, &i, env, lex);
+			str = dollar(str, &i, args, lex);
 	}
 //    printf("str lexer - %s\n", str);
 	return (str);
