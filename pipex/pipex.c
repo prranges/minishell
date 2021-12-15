@@ -80,7 +80,7 @@ char *get_cmd_arg(int i, t_arg *data, char **env, char **cmd)
 		perror("Error");
 		exit(EXIT_FAILURE);
 	}
-	printf("cmd - %s\n", path_executive);
+	//printf("cmd - %s\n", path_executive);
 //	printf("PATH -- %s\n", path_executive);
 //		execve(path_executive, &cmd[i], env);
 	return (path_executive);
@@ -90,42 +90,23 @@ void child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 {
 	char *cmd_ex;
 //	(void)env;
-
-		if (i == 0)
+	(void)fd;
+		//if (input)
+		/*else*/if (i > 0) //&& fd
 		{
 			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
-//			if (!file){}
-//			printf("fd before - %d\n", file);
-//			printf("fd out - %d\n", fd_out);
-//			fd2 = open(cmd_ex, O_WRONLY);
-		//	fd[i][0] =  open(cmd_ex, O_WRONLY);
-//			dup2(fd2, 0);
-			dup2(fd[i][0], STDIN_FILENO);
-			//dup2(fd[i][1], STDOUT_FILENO);
-		//	close_fds(data, fd);
-			printf("cmd_ex - %s\n", cmd_ex);
-			printf("&cmd - %s\n", token->cmd[0]);
+			dup2(fd[i - 1][0], STDIN_FILENO);//input
+			close_fds(data, fd);
 			execve(cmd_ex, token->cmd, env);
 		}
-		else if (i == data->num - 1)
+		else if (i < data->num - 1) // && fd
 		{
 			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
-//			dup2(fd[i - 1][0], STDOUT_FILENO);//input
-//			dup2(fd[i][1], STDOUT_FILENO);//output
-//			printf("222\n");
-//			close_fds(data, fd);
+			dup2(fd[i][1], STDOUT_FILENO);//output
+			close_fds(data, fd);
 			execve(cmd_ex, token->cmd, env);
 		}
-		else
-		{
-			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
-//			cmd_ex = create_cmd_path(data, path);
-//			fd[i][0] = open(cmd_ex, O_WRONLY);
-//			dup2(fd[i - 1][0], STDIN_FILENO);//input
-//			dup2(fd[i][1], STDOUT_FILENO);//output
-			//close_fds(data, fd);
-			execve(cmd_ex, token->cmd, env);
-		}
+		//else if (output)
 }
 
 //char *make_cmd() {
@@ -141,7 +122,7 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 	int		**fd;
 	//char	*cmd_ex;
 	t_token	*node;
-	char	**cmd;
+//	char	**cmd;
 //	int fd2 = 0;
 //	char	**path;
 //	char	*path_executive;
@@ -161,7 +142,7 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 		i++;
 	}
 	i = 0;
-	cmd = data->tokens->cmd;
+	//cmd = data->tokens->cmd;
 	node = data->tokens;
 	while (i < data->num)
 	{
