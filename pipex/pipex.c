@@ -49,7 +49,7 @@ char *create_cmd_path(t_arg *data, char **all_paths, char *cmd)
 	return (NULL);
 }
 
-void	close_fds(t_arg *data, int **fd)
+void	close_fds(t_arg *data, int **fd, int *file)
 {
 	int	i;
 
@@ -60,6 +60,12 @@ void	close_fds(t_arg *data, int **fd)
 		close(fd[i][1]);
 		i++;
 	}
+	if (!file)
+		return ;
+	if (file[0])
+		close(file[0]);
+	if (file[1])
+		close(file[1]);
 }
 
 char *get_cmd_arg(int i, t_arg *data, char **env, char **cmd)
@@ -82,31 +88,65 @@ char *get_cmd_arg(int i, t_arg *data, char **env, char **cmd)
 	}
 	//printf("cmd - %s\n", path_executive);
 //	printf("PATH -- %s\n", path_executive);
-//		execve(path_executive, &cmd[i], env);
 	return (path_executive);
 }
 
-void child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
-{
+//void child_process(int i, t_arg *data, char **env, t_token *token)
+void child_process(int i, t_arg *data, int **fd, char **env, t_token *token) {
 	char *cmd_ex;
+	int file[2];
+	int dup2_fd;
 //	(void)env;
-	(void)fd;
 
-	/*else*/if (i > 0) /*&& fd*/
+	dup2_fd = 0;
+	file[0] = -2;
+	if (token->in)
+		file[0] = open(token->in->file_name, O_RDONLY);
+//	write(file[0], "qwerty\n", 7);
+//	printf("file name - %s\n", token->in->file_name);
+//	printf("fd - %d\n", file[0]);
+	if (file[0] == -1) {
+		perror("Error tut");
+		exit(EXIT_FAILURE);
+	}
+	file[1] = -2;
+	if (token->out && token->out->dbl)
+		file[1] = open(token->out->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	else if (token->out && !token->out->dbl)
+		file[1] = open(token->out->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (file[1] == -1) {
+		perror("Error");
+		exit(EXIT_FAILURE);
+	}
+	if (token->in)
+	{
+//		printf("fd - %d\n", file[0]);
+		dup2(file[0], STDIN_FILENO);
+//		printf("fd - %d\n", file[0]);
+//		file[0] = -5;
+//		printf("fd - %d\n", file[0]);
+	}
+	else if (i > 0)// && data->fd)
 		{
 			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
-			dup2(fd[i - 1][0], STDIN_FILENO);//input
-			close_fds(data, fd);
+//			dup2(data->fd[i - 1][0], STDIN_FILENO);//input
+			dup2(fd[i - 1][0], STDIN_FILENO);
+//			close_fds(data, data->fd);
+			close_fds(data, fd, file);
 			execve(cmd_ex, token->cmd, env);
 		}
-		else if (i < data->num - 1) // && fd
+	if (token->out)
+		dup2(file[1], STDOUT_FILENO);
+	else if (i < data->num - 1)// && data->fd)
 		{
 			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
+//			dup2(data->fd[i][1], STDOUT_FILENO);//output
 			dup2(fd[i][1], STDOUT_FILENO);//output
-			close_fds(data, fd);
+			close_fds(data, fd, file);
+//			close_fds(data, data->fd);
 			execve(cmd_ex, token->cmd, env);
 		}
-		else if (data->num == 1)
+		else if (data->num == 1)// && !data->fd)
 		{
 			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
 			execve(cmd_ex, token->cmd, env);
@@ -136,7 +176,7 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 
 	i = 0;
 	fd = malloc(sizeof(int *) * data->num);
-	while(i < data->num)
+	while (i < data->num)
 	{
 		fd[i] = malloc(sizeof(int) * 2);
 		if (!(fd[i]))
@@ -147,7 +187,6 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 		i++;
 	}
 	i = 0;
-	//cmd = data->tokens->cmd;
 	node = data->tokens;
 	while (i < data->num)
 	{
@@ -159,8 +198,6 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 		i++;
 	}
 	pid = malloc(sizeof(pid_t *) * data->num);
-	//path = find_path(data->env);
-	//path_executive = create_cmd_path(data, path);
 	i = 0;
 	while (i < data->num)
 	{
@@ -172,20 +209,19 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 		}
 		if (pid[i] == 0) //child process
 			 {
-				//cmd_ex = get_cmd_arg(i, data, env, node->cmd);
-				//	printf("%s\n", cmd_ex);
 				child_process(i, data, fd, env, node);
+//				child_process(i, data, env, node);
 			}
 			i++;
 			if (node->next)
-			{
 				node = node->next;
-			}
 		}
-		close_fds(data, fd);
+		close_fds(data, fd, NULL);
 		i = 0;
-		while (i != data->num) {
-			waitpid(pid[i], NULL, 0);
+		while (i < data->num)
+		{
+//			waitpid(pid[i], NULL, 0);
+			waitpid(-1, NULL, 0);
 			i++;
 		}
 	return (0);
