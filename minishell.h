@@ -26,13 +26,13 @@
 # define ERROR		1
 # define SUCCESS	0
 
-//# define
-//# define
-//# define
-//# define
-//# define
-//# define
-//# define
+# define EXPORT		1
+# define UNSET		2
+# define ENV		3
+# define PWD		4
+# define ECHO		5
+# define CD			6
+# define EXIT		7
 
 typedef struct s_redir
 {
@@ -50,6 +50,7 @@ typedef struct s_token
 	char			**cmd;
 	t_redir			*in;
 	t_redir			*out;
+	int				builtin;
 	struct s_token	*next;
 }	t_token;
 
@@ -116,5 +117,9 @@ void	edit_env(t_env **env, char *str);
 int		if_key(char c);
 void	remove_env(t_arg *args, t_env *remove_list, t_env *prev_p);
 int		unset_ms(t_arg *args);
+int		pwd_ms(t_arg *args);
+int		echo_ms(t_arg *args);
+int    	cd_ms(t_arg *args);
+int		exit_ms(void);
 
 #endif

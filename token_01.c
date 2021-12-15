@@ -21,6 +21,7 @@ t_token	*init_tokens(void)
 	lst->cmd = NULL;
 	lst->in = NULL;
 	lst->out = NULL;
+	lst->builtin = 0;
 	lst->next = NULL;
 	return (lst);
 }
@@ -32,6 +33,25 @@ t_token	*last_token(t_token *token)
 	return (token);
 }
 
+int	check_builtin(char *cmd)
+{
+	if (ft_strcmp(cmd, "export") == 0)
+		return (EXPORT);
+	if (ft_strcmp(cmd, "unset") == 0)
+		return (UNSET);
+	if (ft_strcmp(cmd, "env") == 0)
+		return (ENV);
+	if (ft_strcmp(cmd, "pwd") == 0)
+		return (PWD);
+	if (ft_strcmp(cmd, "echo") == 0)
+		return (ECHO);
+	if (ft_strcmp(cmd, "cd") == 0)
+		return (CD);
+	if (ft_strcmp(cmd, "exit") == 0)
+		return (EXIT);
+	return (0);
+}
+
 int	add_token(t_token **token, char **cmd)
 {
 	t_token	*new;
@@ -40,6 +60,7 @@ int	add_token(t_token **token, char **cmd)
 	temp = *token;
 	new = init_tokens();
 	new->cmd = cmd;
+	new->builtin = check_builtin(cmd[0]);
 	if (!temp)
 		*token = new;
 	else

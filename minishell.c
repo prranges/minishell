@@ -19,7 +19,6 @@ void	init_args(t_arg *args)
 	args->redir = NULL;
 	args->env = NULL;
 	args->errnum = 99;
-	args->fd = NULL;
 }
 
 void	parcer(char *str, int *num, t_arg *args)
@@ -57,6 +56,25 @@ void	parcer(char *str, int *num, t_arg *args)
 	add_redirs_to_cmd(args->redir, args->tokens);
 }
 
+int	start_builtin(t_arg *args)
+{
+	if (args->tokens->builtin == EXPORT)
+		export_ms(args);
+	else if (args->tokens->builtin == UNSET)
+		unset_ms(args);
+	else if (args->tokens->builtin == ENV)
+		env_ms(args->env);
+	else if (args->tokens->builtin == PWD)
+		pwd_ms(args);
+	else if (args->tokens->builtin == ECHO)
+		echo_ms(args);
+	else if (args->tokens->builtin == CD)
+		cd_ms(args);
+	else if (args->tokens->builtin == EXIT)
+		exit_ms();
+	return (0);
+}
+
 int	main(int argc, char **argv, char **arge)
 {
 	char	*str;
@@ -73,7 +91,7 @@ int	main(int argc, char **argv, char **arge)
 	{
 		num = 0;
 		args->num = 0;
-		if (!(str = readline("\033[0;36m\033[1mminishell-0.33$ \033[0m")))
+		if (!(str = readline("\033[0;36m\033[1mminishell-0.40$ \033[0m")))
 			exit (1);
 		add_history(str);
 		if (preparcer(str) == 1)
@@ -82,16 +100,16 @@ int	main(int argc, char **argv, char **arge)
 			printf("minishell: syntax error near unclosed quotes\n");
 		else if (!preparcer(str))
 			parcer(str, &num, args);
+		
 //		print_all_lists(args);
-
-		if (ft_strcmp(args->tokens->cmd[0], "export") == 0)
-			export_ms(args);
-		if (ft_strcmp(args->tokens->cmd[0], "unset") == 0)
-			unset_ms(args);
-		if (ft_strcmp(args->tokens->cmd[0], "env") == 0)
-			env_ms(args->env);
-
-		pipex(argc, argv, arge, args);
+		
+		if (num)
+		{
+			if (args->tokens->builtin)
+				start_builtin(args);
+			else
+				pipex(argc, argv, arge, args);
+		}
 		
 		free(str);
 		delete_all_redirs(args);

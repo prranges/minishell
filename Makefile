@@ -27,8 +27,11 @@ SRCS	= minishell.c \
 		  token_01.c \
 		  parcer_01.c \
 		  executer_01.c \
-		  builtins_01.c \
-		  builtins_02.c \
+		  builtins_01_cd.c \
+		  builtins_02_export.c \
+		  builtins_03_unset.c \
+		  builtins_04_env_exit.c \
+		  builtins_05_pwd_echo.c \
 		  preparcer_01.c \
 		  pipex/pipex.c
 
@@ -54,7 +57,7 @@ $(LIBFT): FORCE
 
 $(OBJS_DIR):
 	mkdir $@
-	mkdir $@/pipex/
+	mkdir $@/pipex
 
 $(OBJS_DIR)/%.o: %.c Makefile $(OBJS_DIR)
 	gcc -g $(CFLAGS) $(HDR) $(LFT_HDR) -c $< -o $@

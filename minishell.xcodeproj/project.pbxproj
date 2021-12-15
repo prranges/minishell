@@ -9,8 +9,8 @@
 /* Begin PBXBuildFile section */
 		2405E1DA27622693004DA724 /* redir_02.c in Sources */ = {isa = PBXBuildFile; fileRef = 2405E1D927622693004DA724 /* redir_02.c */; };
 		244DC3E6274391D6000F2B68 /* executer_01.c in Sources */ = {isa = PBXBuildFile; fileRef = 244DC3E5274391D6000F2B68 /* executer_01.c */; };
-		244DC3E827439580000F2B68 /* builtins_01.c in Sources */ = {isa = PBXBuildFile; fileRef = 244DC3E727439580000F2B68 /* builtins_01.c */; };
-		244DC3EA274395BA000F2B68 /* builtins_02.c in Sources */ = {isa = PBXBuildFile; fileRef = 244DC3E9274395BA000F2B68 /* builtins_02.c */; };
+		244DC3E827439580000F2B68 /* builtins_01_cd.c in Sources */ = {isa = PBXBuildFile; fileRef = 244DC3E727439580000F2B68 /* builtins_01_cd.c */; };
+		244DC3EA274395BA000F2B68 /* builtins_02_export.c in Sources */ = {isa = PBXBuildFile; fileRef = 244DC3E9274395BA000F2B68 /* builtins_02_export.c */; };
 		244DC3EE2743C406000F2B68 /* signals.c in Sources */ = {isa = PBXBuildFile; fileRef = 244DC3ED2743C406000F2B68 /* signals.c */; };
 		246BC4262760C4E200D22C2F /* preparcer_01.c in Sources */ = {isa = PBXBuildFile; fileRef = 246BC4252760C4E200D22C2F /* preparcer_01.c */; };
 		246BEBC9273E99D100BF36F4 /* minishell.c in Sources */ = {isa = PBXBuildFile; fileRef = 246BEBC8273E99D100BF36F4 /* minishell.c */; };
@@ -23,6 +23,9 @@
 		24A64296275E30BC0041D1FE /* redir_01.c in Sources */ = {isa = PBXBuildFile; fileRef = 24A64295275E30BC0041D1FE /* redir_01.c */; };
 		24DFE1022763557B00D1807F /* token_01.c in Sources */ = {isa = PBXBuildFile; fileRef = 24DFE1012763557A00D1807F /* token_01.c */; };
 		24DFE1042763833200D1807F /* lexer_02_dollar.c in Sources */ = {isa = PBXBuildFile; fileRef = 24DFE1032763833200D1807F /* lexer_02_dollar.c */; };
+		24F00587276A343700623E9D /* builtins_03_unset.c in Sources */ = {isa = PBXBuildFile; fileRef = 24F00586276A343700623E9D /* builtins_03_unset.c */; };
+		24F00589276A35E500623E9D /* builtins_04_env_exit.c in Sources */ = {isa = PBXBuildFile; fileRef = 24F00588276A35E500623E9D /* builtins_04_env_exit.c */; };
+		24F0058B276A5CC000623E9D /* builtins_05_pwd_echo.c in Sources */ = {isa = PBXBuildFile; fileRef = 24F0058A276A5CC000623E9D /* builtins_05_pwd_echo.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,10 +42,9 @@
 
 /* Begin PBXFileReference section */
 		2405E1D927622693004DA724 /* redir_02.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = redir_02.c; sourceTree = "<group>"; usesTabs = 1; };
-		2421380B276737F400999A2D /* pipex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pipex; sourceTree = "<group>"; };
 		244DC3E5274391D6000F2B68 /* executer_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = executer_01.c; sourceTree = "<group>"; usesTabs = 1; };
-		244DC3E727439580000F2B68 /* builtins_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_01.c; sourceTree = "<group>"; usesTabs = 1; };
-		244DC3E9274395BA000F2B68 /* builtins_02.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_02.c; sourceTree = "<group>"; usesTabs = 1; };
+		244DC3E727439580000F2B68 /* builtins_01_cd.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_01_cd.c; sourceTree = "<group>"; usesTabs = 1; };
+		244DC3E9274395BA000F2B68 /* builtins_02_export.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_02_export.c; sourceTree = "<group>"; usesTabs = 1; };
 		244DC3ED2743C406000F2B68 /* signals.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = signals.c; sourceTree = "<group>"; tabWidth = 4; usesTabs = 1; };
 		246BC4252760C4E200D22C2F /* preparcer_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = preparcer_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		246BEBBD273E99A600BF36F4 /* minishell */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = minishell; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -52,12 +54,16 @@
 		246BEBCC273EA50800BF36F4 /* utils_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = utils_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		246BEBCE273EBB8700BF36F4 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; usesTabs = 1; };
 		247C569E27477C6F005BAD05 /* lexer_01_quotes.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lexer_01_quotes.c; sourceTree = "<group>"; usesTabs = 1; };
+		249D75B62769B9B000072C9B /* pipex */ = {isa = PBXFileReference; lastKnownFileType = folder; path = pipex; sourceTree = "<group>"; };
 		24A64291275DE5AC0041D1FE /* env_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = env_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		24A64293275DF98D0041D1FE /* pipe_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = pipe_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		24A64295275E30BC0041D1FE /* redir_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = redir_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		24DFE1012763557A00D1807F /* token_01.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = token_01.c; sourceTree = "<group>"; usesTabs = 1; };
 		24DFE1032763833200D1807F /* lexer_02_dollar.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = lexer_02_dollar.c; sourceTree = "<group>"; usesTabs = 1; };
 		24E771B62742B7AF009C80C1 /* libft */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libft; sourceTree = "<group>"; };
+		24F00586276A343700623E9D /* builtins_03_unset.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_03_unset.c; sourceTree = "<group>"; };
+		24F00588276A35E500623E9D /* builtins_04_env_exit.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_04_env_exit.c; sourceTree = "<group>"; };
+		24F0058A276A5CC000623E9D /* builtins_05_pwd_echo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_05_pwd_echo.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,7 +80,7 @@
 		246BEBB4273E99A600BF36F4 = {
 			isa = PBXGroup;
 			children = (
-				2421380B276737F400999A2D /* pipex */,
+				249D75B62769B9B000072C9B /* pipex */,
 				24E771B62742B7AF009C80C1 /* libft */,
 				244DC3ED2743C406000F2B68 /* signals.c */,
 				24A64293275DF98D0041D1FE /* pipe_01.c */,
@@ -82,8 +88,11 @@
 				244DC3E5274391D6000F2B68 /* executer_01.c */,
 				247C569E27477C6F005BAD05 /* lexer_01_quotes.c */,
 				24DFE1032763833200D1807F /* lexer_02_dollar.c */,
-				244DC3E727439580000F2B68 /* builtins_01.c */,
-				244DC3E9274395BA000F2B68 /* builtins_02.c */,
+				244DC3E727439580000F2B68 /* builtins_01_cd.c */,
+				244DC3E9274395BA000F2B68 /* builtins_02_export.c */,
+				24F00586276A343700623E9D /* builtins_03_unset.c */,
+				24F00588276A35E500623E9D /* builtins_04_env_exit.c */,
+				24F0058A276A5CC000623E9D /* builtins_05_pwd_echo.c */,
 				246BEBCE273EBB8700BF36F4 /* Makefile */,
 				246BEBC7273E99D100BF36F4 /* minishell.h */,
 				246BEBC8273E99D100BF36F4 /* minishell.c */,
@@ -163,7 +172,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				24DFE1022763557B00D1807F /* token_01.c in Sources */,
-				244DC3E827439580000F2B68 /* builtins_01.c in Sources */,
+				244DC3E827439580000F2B68 /* builtins_01_cd.c in Sources */,
 				244DC3EE2743C406000F2B68 /* signals.c in Sources */,
 				246BEBCB273EA40A00BF36F4 /* parcer_01.c in Sources */,
 				244DC3E6274391D6000F2B68 /* executer_01.c in Sources */,
@@ -171,13 +180,16 @@
 				24A64292275DE5AC0041D1FE /* env_01.c in Sources */,
 				247C569F27477C6F005BAD05 /* lexer_01_quotes.c in Sources */,
 				246BEBC9273E99D100BF36F4 /* minishell.c in Sources */,
+				24F00589276A35E500623E9D /* builtins_04_env_exit.c in Sources */,
 				24A64294275DF98D0041D1FE /* pipe_01.c in Sources */,
-				244DC3EA274395BA000F2B68 /* builtins_02.c in Sources */,
+				24F00587276A343700623E9D /* builtins_03_unset.c in Sources */,
+				244DC3EA274395BA000F2B68 /* builtins_02_export.c in Sources */,
 				2405E1DA27622693004DA724 /* redir_02.c in Sources */,
 				24DFE1042763833200D1807F /* lexer_02_dollar.c in Sources */,
 				246BEBCF273EBB8700BF36F4 /* Makefile in Sources */,
 				246BC4262760C4E200D22C2F /* preparcer_01.c in Sources */,
 				246BEBCD273EA50800BF36F4 /* utils_01.c in Sources */,
+				24F0058B276A5CC000623E9D /* builtins_05_pwd_echo.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

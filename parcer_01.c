@@ -21,7 +21,8 @@ int	find_number_of_parts(char *str)
 
 	i = - 1;
 	count = 0;
-	if (str[0] != '\0' && str[0] != ' ' && str[0] != '\t')
+	if (str[0] != '\0' && str[0] != ' ' && str[0] != '\t' && str[0] != '>'
+	&& str[0] != '<')
 		count++;
 	while (str[++i])
 	{
@@ -32,8 +33,6 @@ int	find_number_of_parts(char *str)
 			count++;
 		if ((str[i] == '<' || str[i] == '>') && (str[i + 1] == ' ' || str[i + 1] == '\t'))
 			count--;
-//		if ((str[i] == '<' || str[i] == '>'))
-//			count--;
 		if (str[i] == '\'' && (!(flag_dq % 2)))
 			flag_sq++;
 		if (str[i] == '\"' && (!(flag_sq % 2)))
