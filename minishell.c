@@ -19,6 +19,7 @@ void	init_args(t_arg *args)
 	args->redir = NULL;
 	args->env = NULL;
 	args->errnum = 99;
+	args->fd = NULL;
 }
 
 void	parcer(char *str, int *num, t_arg *args)
@@ -81,8 +82,8 @@ int	main(int argc, char **argv, char **arge)
 			printf("minishell: syntax error near unclosed quotes\n");
 		else if (!preparcer(str))
 			parcer(str, &num, args);
-		print_all_lists(args);
-		
+//		print_all_lists(args);
+
 		if (ft_strcmp(args->tokens->cmd[0], "export") == 0)
 			export_ms(args);
 		if (ft_strcmp(args->tokens->cmd[0], "unset") == 0)

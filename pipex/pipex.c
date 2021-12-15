@@ -91,8 +91,8 @@ void child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 	char *cmd_ex;
 //	(void)env;
 	(void)fd;
-		//if (input)
-		/*else*/if (i > 0) //&& fd
+
+	/*else*/if (i > 0) /*&& fd*/
 		{
 			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
 			dup2(fd[i - 1][0], STDIN_FILENO);//input
@@ -104,6 +104,11 @@ void child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
 			dup2(fd[i][1], STDOUT_FILENO);//output
 			close_fds(data, fd);
+			execve(cmd_ex, token->cmd, env);
+		}
+		else if (data->num == 1)
+		{
+			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
 			execve(cmd_ex, token->cmd, env);
 		}
 		//else if (output)
@@ -157,7 +162,7 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 	//path = find_path(data->env);
 	//path_executive = create_cmd_path(data, path);
 	i = 0;
-	while(i < data->num)
+	while (i < data->num)
 	{
 		pid[i] = fork();
 		if (pid[i] < 0)
@@ -166,23 +171,22 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 			exit(1);
 		}
 		if (pid[i] == 0) //child process
-		{
-			//cmd_ex = get_cmd_arg(i, data, env, node->cmd);
-//			printf("%s\n", cmd_ex);
-			child_process(i, data, fd, env, node);
+			 {
+				//cmd_ex = get_cmd_arg(i, data, env, node->cmd);
+				//	printf("%s\n", cmd_ex);
+				child_process(i, data, fd, env, node);
+			}
+			i++;
+			if (node->next)
+			{
+				node = node->next;
+			}
 		}
-		i++;
-		if (node->next)
-		{
-			node = node->next;
+		close_fds(data, fd);
+		i = 0;
+		while (i != data->num) {
+			waitpid(pid[i], NULL, 0);
+			i++;
 		}
-	}
-	close_fds(data, fd);
-	i = 0;
-	while (i != data->num)
-	{
-		waitpid(pid[i], NULL, 0);
-		i++;
-	}
 	return (0);
 }
