@@ -121,5 +121,8 @@ int		pwd_ms(t_arg *args);
 int		echo_ms(t_arg *args);
 int    	cd_ms(t_arg *args);
 int		exit_ms(void);
+int		start_builtin(t_arg *args);
+int		make_builtin_dup(t_token *token);
+void	builtin_dup_error_check(int fd);
 
 #endif

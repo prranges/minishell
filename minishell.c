@@ -79,6 +79,7 @@ int	main(int argc, char **argv, char **arge)
 	char	*str;
 	int		num;
 	t_arg	*args;
+	int 	fd;
 
 	(void)argc;
 	(void)argv;
@@ -103,7 +104,11 @@ int	main(int argc, char **argv, char **arge)
 		if (num)
 		{
 			if (args->tokens->builtin)
+			{
+				fd = make_builtin_dup(args->tokens);
 				start_builtin(args);
+				builtin_dup_error_check(fd);
+			}
 			else
 				pipex(argc, argv, arge, args);
 		}
