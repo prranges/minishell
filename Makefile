@@ -17,6 +17,7 @@ LFT_DIR = ./libft
 
 SRCS	= minishell.c \
 		  env_01.c \
+		  env_02.c \
 		  signals.c \
 		  pipe_01.c \
 		  utils_01.c \

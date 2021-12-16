@@ -173,7 +173,7 @@ int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 		start_builtin(data);
 		builtin_dup_error_check(fd_builtin);
 	}
-    if (execve(cmd_ex, token->cmd, env))
+    else if (execve(cmd_ex, token->cmd, env))
     {
         printf("minishell: %s: command not found\n", token->cmd[0]);
         data->errnum = 127;

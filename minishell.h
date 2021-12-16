@@ -40,7 +40,7 @@ typedef struct s_redir
 	char			*file_name;
 	char			*lim; //limiter
 	int				cmd_list_num;
-	int				out_in;//out = 0 in = 1
+	int				out_in; //out = 0 in = 1
 	int				dbl;
 	struct s_redir	*next;
 }	t_redir;
@@ -83,6 +83,7 @@ typedef struct s_arg
 	char	**env_str;
 	int		**fd;
 	int		errnum;
+	char	*home;
 }	t_arg;
 
 int		preparcer(char *str);
@@ -121,12 +122,13 @@ int		unset_ms(t_arg *args);
 int		pwd_ms(t_arg *args);
 int		echo_ms(t_arg *args);
 int    	cd_ms(t_arg *args);
-int		exit_ms(void);
+int		exit_ms(t_arg *args);
 int		start_builtin(t_arg *args);
 int		make_builtin_dup(t_token *token);
 void	builtin_dup_error_check(int fd);
 int		precreate_or_preopen(t_arg *data);
 void	heredoc(t_arg *data, char *limiter);//, char *file_name);
+void    env_lists_to_str(t_arg *args);
 
 /*gnl*/
 char	*get_line(char *saved_buf);

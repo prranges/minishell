@@ -18,7 +18,10 @@ void	init_args(t_arg *args)
 	args->num = 0;
 	args->redir = NULL;
 	args->env = NULL;
+	args->env_str = NULL;
+	args->fd = NULL;
 	args->errnum = 99;
+	args->home = NULL;
 }
 
 void	parcer(char *str, int *num, t_arg *args)
@@ -68,9 +71,9 @@ int	start_builtin(t_arg *args)
 	else if (args->tokens->builtin == ECHO)
 		echo_ms(args);
 	else if (args->tokens->builtin == CD)
-		cd_ms(args);
+		return (cd_ms(args));
 	else if (args->tokens->builtin == EXIT)
-		exit_ms();
+		exit_ms(args);
 	return (0);
 }
 
@@ -79,13 +82,15 @@ int	main(int argc, char **argv, char **arge)
 	char	*str;
 	int		num;
 	t_arg	*args;
-	int res;
 
 	(void)argc;
 	(void)argv;
 	args = (t_arg *)malloc(sizeof(t_arg));
 	init_args(args);
 	env_read(args, arge);
+	
+	env_lists_to_str(args);
+	
 	signals_ms();
 	while (1)
 	{
@@ -100,12 +105,11 @@ int	main(int argc, char **argv, char **arge)
 			printf("minishell: syntax error near unclosed quotes\n");
 		else if (!preparcer(str))
 			parcer(str, &num, args);
-		res = precreate_or_preopen(args);
 //		print_all_lists(args);
 		if (num)
-				pipex(argc, argv, arge, args);
-//		if ((ft_strcmp(args->tokens->cmd[0], "")) == 0)
-//			printf("HELLO\n");
+			pipex(argc, argv, arge, args);
+		//		if ((ft_strcmp(args->tokens->cmd[0], "")) == 0)
+		//			printf("HELLO\n");
 		free(str);
 		delete_all_redirs(args);
 		delete_all_tokens(args);

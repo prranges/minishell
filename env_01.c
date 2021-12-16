@@ -26,11 +26,26 @@ t_env	*init_env(void)
 
 void	env_read(t_arg *args, char **arge)
 {
-	int	i;
-
+	int		i;
+	t_env	*p;
+	int		shlvl;
+	
+	shlvl = 1;
 	i = -1;
 	while (arge[++i])
 		add_env(&args->env, arge[i]);
+	p = args->env;
+	while(p)
+	{
+		if (ft_strcmp(p->key, "HOME") == 0)
+			args->home = ft_strdup(p->value);
+		if (ft_strcmp(p->key, "SHLVL") == 0)
+		{
+			shlvl += ft_atoi(p->value);
+			p->value = ft_itoa(shlvl);
+		}
+		p = p->next;
+	}
 }
 
 t_env	*last_env(t_env *env)
