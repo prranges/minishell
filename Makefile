@@ -33,7 +33,9 @@ SRCS	= minishell.c \
 		  builtins_04_env_exit.c \
 		  builtins_05_pwd_echo.c \
 		  preparcer_01.c \
-		  pipex/pipex.c
+		  pipex/pipex.c \
+		  get_next_line/get_next_line.c \
+		  get_next_line/get_next_line_utils.c
 
 CC	= gcc
 CFLAGS 	= -Wall -Wextra -Werror
@@ -59,6 +61,7 @@ $(LIBFT): FORCE
 $(OBJS_DIR):
 	mkdir $@
 	mkdir $@/pipex
+	mkdir $@/get_next_line
 
 $(OBJS_DIR)/%.o: %.c Makefile $(OBJS_DIR)
 	gcc -g $(CFLAGS) $(HDR) $(LFT_HDR) -c $< -o $@

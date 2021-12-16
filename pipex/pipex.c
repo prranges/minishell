@@ -136,6 +136,7 @@ int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 {
 	char *cmd_ex;
 	int file[2];
+	int fd_builtin;
 
 	file[0] = -2;
     data->errnum = 0;
@@ -167,12 +168,100 @@ int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
     cmd_ex = get_cmd_arg(i, data, env, token->cmd);
     close_fds(data, fd, file);
 	if (token->builtin)
-		return (start_builtin(data));
+	{
+		fd_builtin = make_builtin_dup(data->tokens);
+		start_builtin(data);
+		builtin_dup_error_check(fd_builtin);
+	}
     if (execve(cmd_ex, token->cmd, env))
     {
         printf("minishell: %s: command not found\n", token->cmd[0]);
         data->errnum = 127;
     }
+	return (0);
+}
+
+int	open_file(t_redir *redirect)
+{
+	int	fd;
+
+//	fd = -2;
+	if (redirect->out_in == 0 && redirect->dbl == 1) //output && >>
+	{
+		fd = open(redirect->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		if (fd == -1)
+		{
+			perror("Error");
+			exit(EXIT_FAILURE);
+		}
+	}
+	else if (redirect->out_in == 0 && redirect->dbl == 0) //output && >
+	{
+		fd = open(redirect->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		printf("file name - %s\n", redirect->file_name);
+		if (fd == -1)
+		{
+			perror("Error");
+			exit(EXIT_FAILURE);
+		}
+	}
+	else //if (redirect->out_in == 1 && redirect->dbl == 0) //input <
+	{
+		fd = open(redirect->file_name, O_RDONLY);
+		if (fd == -1)
+		{
+			perror("Error");
+			exit(EXIT_FAILURE);
+		}
+	}
+	close(fd);
+	return (0);
+}
+
+void heredoc(t_arg *data, char *limiter)//, char *file_name)
+{
+	int fd;
+	int n = 0;
+	char *line;
+//	(void)data;
+
+	fd = open(data->redir->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	printf ("%d\n", fd);
+//	get_next_line()
+	while (1)
+	{
+		printf("heredoc> ");
+		n = get_next_line(1, &line);
+		printf ("2\n");
+		if (ft_strcmp(line, limiter) == 1)
+		{
+			printf ("2\n");
+			write(fd, line, ft_strlen(line));
+			write(fd, "\n", 1);
+			free(line);
+		}
+		else if (ft_strcmp(line, limiter) == 0)
+			break;
+	}
+	close (fd);
+}
+
+int precreate_or_preopen(t_arg *data)
+{
+	t_redir *redirect;
+
+	redirect = data->redir;
+	while (redirect)
+	{
+		if (redirect->out_in == 0 || redirect->dbl == 0)
+		{
+			if (open_file(redirect))
+				return (1);
+		}
+		else
+			heredoc(data, data->redir->lim);//, data->redir->file_name);
+		redirect = redirect->next;
+	}
 	return (0);
 }
 

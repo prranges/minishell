@@ -33,13 +33,14 @@
 # define ECHO		5
 # define CD			6
 # define EXIT		7
+# define BUFFER_SIZE 1
 
 typedef struct s_redir
 {
 	char			*file_name;
-	char			*lim;
+	char			*lim; //limiter
 	int				cmd_list_num;
-	int				out_in;
+	int				out_in;//out = 0 in = 1
 	int				dbl;
 	struct s_redir	*next;
 }	t_redir;
@@ -124,5 +125,14 @@ int		exit_ms(void);
 int		start_builtin(t_arg *args);
 int		make_builtin_dup(t_token *token);
 void	builtin_dup_error_check(int fd);
+int		precreate_or_preopen(t_arg *data);
+void	heredoc(t_arg *data, char *limiter);//, char *file_name);
+
+/*gnl*/
+char	*get_line(char *saved_buf);
+char	*clear_saved_buf(char *saved_buf);
+int		get_next_line(int fd, char **line);
+size_t	strlen_gnl(char *s);
+char	*strjoin_gnl(char *saved_buf, char *buf);
 
 #endif

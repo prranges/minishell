@@ -79,7 +79,7 @@ int	main(int argc, char **argv, char **arge)
 	char	*str;
 	int		num;
 	t_arg	*args;
-	int 	fd;
+	int res;
 
 	(void)argc;
 	(void)argv;
@@ -100,18 +100,10 @@ int	main(int argc, char **argv, char **arge)
 			printf("minishell: syntax error near unclosed quotes\n");
 		else if (!preparcer(str))
 			parcer(str, &num, args);
+		res = precreate_or_preopen(args);
 //		print_all_lists(args);
 		if (num)
-		{
-			if (args->tokens->builtin)
-			{
-				fd = make_builtin_dup(args->tokens);
-				start_builtin(args);
-				builtin_dup_error_check(fd);
-			}
-			else
 				pipex(argc, argv, arge, args);
-		}
 //		if ((ft_strcmp(args->tokens->cmd[0], "")) == 0)
 //			printf("HELLO\n");
 		free(str);
