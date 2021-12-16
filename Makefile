@@ -46,7 +46,8 @@ OBJS	= $(addprefix $(OBJS_DIR)/,$(SRCS:.c=.o))
 
 HDR	= -I./
 LFT_HDR = -I$(LFT_DIR)
-LFT_BIN = -L$(LFT_DIR) -lft -lreadline
+LFT_BIN = -L$(LFT_DIR) -lft
+RDLN	= -lreadline
 
 all: $(LIBFT) $(NAME)
 
@@ -63,16 +64,16 @@ $(OBJS_DIR)/%.o: %.c Makefile $(OBJS_DIR)
 	gcc -g $(CFLAGS) $(HDR) $(LFT_HDR) -c $< -o $@
 
 $(NAME): $(OBJS) ./minishell.h
-	gcc -g $(OBJS) $(LFT_BIN) -o $@
+	gcc -g $(OBJS) $(LFT_BIN) -o $@ $(RDLN)
 
 clean:
 	$(RM) $(OBJS_DIR)
 	make -C ./libft clean
-
-bonus:	re
 	
 fclean: clean
 	$(RM) $(NAME)
 	make -C ./libft fclean
 
 re: fclean all
+
+.PHONY:		all clean fclean re

@@ -81,11 +81,11 @@ char *get_cmd_arg(int i, t_arg *data, char **env, char **cmd)
 //	for (int j = 0; j != 10; j++)
 //		printf("%s\n", all_paths[j]);
 	path_executive = create_cmd_path(data, all_paths, cmd[0]);
-	if (!path_executive)
-	{
-		perror("Error");
-		exit(EXIT_FAILURE);
-	}
+//	if (!path_executive)
+//	{
+//		perror("Path");
+//		exit(EXIT_FAILURE);
+//	}
 	//printf("cmd - %s\n", path_executive);
 //	printf("PATH -- %s\n", path_executive);
 	return (path_executive);
@@ -100,6 +100,7 @@ void child_process(int i, t_arg *data, int **fd, char **env, t_token *token) {
 
 	dup2_fd = 0;
 	file[0] = -2;
+    data->errnum = 0;
 	if (token->in)
 		file[0] = open(token->in->file_name, O_RDONLY);
 //	write(file[0], "qwerty\n", 7);
@@ -154,7 +155,11 @@ void child_process(int i, t_arg *data, int **fd, char **env, t_token *token) {
 //		}
     cmd_ex = get_cmd_arg(i, data, env, token->cmd);
     close_fds(data, fd, file);
-    execve(cmd_ex, token->cmd, env);
+    if (execve(cmd_ex, token->cmd, env))
+    {
+        printf("minishell: %s: command not found\n", token->cmd[0]);
+        data->errnum = 127;
+    }
 }
 
 //char *make_cmd() {
