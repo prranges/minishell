@@ -42,8 +42,7 @@ void	parcer(char *str, int *num, t_arg *args)
 		s = -1;
 		while (number_of_parts > ++s)
 		{
-			cmd[s] = ft_substr(sub_strs[0], start_end_i[0][s], \
-							   start_end_i[1][s] - start_end_i[0][s]);
+			cmd[s] = ft_substr(sub_strs[0], start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
 			cmd[s] = lexe(cmd[s], args);
 		}
 		cmd[s] = NULL;
@@ -100,9 +99,7 @@ int	main(int argc, char **argv, char **arge)
 			printf("minishell: syntax error near unclosed quotes\n");
 		else if (!preparcer(str))
 			parcer(str, &num, args);
-		
 //		print_all_lists(args);
-		
 		if (num)
 		{
 			if (args->tokens->builtin)
@@ -110,7 +107,8 @@ int	main(int argc, char **argv, char **arge)
 			else
 				pipex(argc, argv, arge, args);
 		}
-		
+//		if ((ft_strcmp(args->tokens->cmd[0], "")) == 0)
+//			printf("HELLO\n");
 		free(str);
 		delete_all_redirs(args);
 		delete_all_tokens(args);

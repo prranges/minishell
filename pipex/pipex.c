@@ -118,7 +118,7 @@ void child_process(int i, t_arg *data, int **fd, char **env, t_token *token) {
 		perror("Error");
 		exit(EXIT_FAILURE);
 	}
-	if (token->in)
+	if (token->in && ft_strcmp(data->tokens->cmd[0], ""))
 	{
 //		printf("fd - %d\n", file[0]);
 		dup2(file[0], STDIN_FILENO);
@@ -128,30 +128,33 @@ void child_process(int i, t_arg *data, int **fd, char **env, t_token *token) {
 	}
 	else if (i > 0)// && data->fd)
 		{
-			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
+//			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
 //			dup2(data->fd[i - 1][0], STDIN_FILENO);//input
 			dup2(fd[i - 1][0], STDIN_FILENO);
 //			close_fds(data, data->fd);
-			close_fds(data, fd, file);
-			execve(cmd_ex, token->cmd, env);
+//			close_fds(data, fd, file);
+//			execve(cmd_ex, token->cmd, env);
 		}
-	if (token->out)
+	if (token->out && ft_strcmp(data->tokens->cmd[0], ""))
 		dup2(file[1], STDOUT_FILENO);
 	else if (i < data->num - 1)// && data->fd)
 		{
-			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
+//			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
 //			dup2(data->fd[i][1], STDOUT_FILENO);//output
 			dup2(fd[i][1], STDOUT_FILENO);//output
-			close_fds(data, fd, file);
+//			close_fds(data, fd, file);
 //			close_fds(data, data->fd);
-			execve(cmd_ex, token->cmd, env);
+//			execve(cmd_ex, token->cmd, env);
 		}
-		else if (data->num == 1)// && !data->fd)
-		{
-			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
-			execve(cmd_ex, token->cmd, env);
-		}
-		//else if (output)
+//		else if (data->num == 1)// && !data->fd)
+//		{
+//
+//			cmd_ex = get_cmd_arg(i, data, env, token->cmd);
+//			execve(cmd_ex, token->cmd, env);
+//		}
+    cmd_ex = get_cmd_arg(i, data, env, token->cmd);
+    close_fds(data, fd, file);
+    execve(cmd_ex, token->cmd, env);
 }
 
 //char *make_cmd() {
