@@ -106,6 +106,7 @@ int	main(int argc, char **argv, char **arge)
 		else if (!preparcer(str))
 			parcer(str, &num, args);
 //		print_all_lists(args);
+		precreate_or_preopen(args);
 		if (num)
 			pipex(argc, argv, arge, args);
 		//		if ((ft_strcmp(args->tokens->cmd[0], "")) == 0)

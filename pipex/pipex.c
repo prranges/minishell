@@ -144,7 +144,7 @@ int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 		file[0] = open(token->in->file_name, O_RDONLY);
 	if (file[0] == -1)
 	{
-		perror("Error tut");
+		perror("Error");
 		exit(EXIT_FAILURE);
 	}
 	file[1] = -2;
@@ -218,32 +218,51 @@ int	open_file(t_redir *redirect)
 	return (0);
 }
 
-void heredoc(t_arg *data, char *limiter)//, char *file_name)
+void heredoc(t_arg *data, char *limiter)//, char *file_name) //создает файл с названием лимитера!
 {
 	int fd;
-	int n = 0;
+	int i;
 	char *line;
-//	(void)data;
+	char *temp;
+	(void)limiter; // delete
 
-	fd = open(data->redir->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
-	printf ("%d\n", fd);
-//	get_next_line()
-	while (1)
+	i = 0;
+	temp = "";
+//	if (!data->redir->file_name)
+//		fd = STDIN_FILENO;
+//	else
+		fd = open(data->redir->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	while (++i)
 	{
-		printf("heredoc> ");
-		n = get_next_line(1, &line);
-		printf ("2\n");
-		if (ft_strcmp(line, limiter) == 1)
+		write (1, "heredoc> ", 9);
+		get_next_line(STDIN_FILENO, &line);
+		if (ft_strcmp(line, data->redir->file_name) == 0)//поменять на limiter
+			break ;
+		if (i == 1)
 		{
-			printf ("2\n");
-			write(fd, line, ft_strlen(line));
-			write(fd, "\n", 1);
-			free(line);
+			temp = ft_strjoin("", line);
+			temp = ft_strjoin(temp, "\n");
 		}
-		else if (ft_strcmp(line, limiter) == 0)
-			break;
+		else
+		{
+			temp = ft_strjoin(temp, line);
+			temp = ft_strjoin(temp, "\n");
+		}
+		if (write(fd, line, ft_strlen(line)) == -1)
+		{
+			perror("Error");
+			exit(EXIT_FAILURE);
+		}
+		if (write(fd, "\n", 1) == -1)
+		{
+			perror("Error");
+			exit(EXIT_FAILURE);
+		}
 	}
-	close (fd);
+	printf("%s", temp);
+	close(fd);
+	free(line);
+	free(temp);
 }
 
 int precreate_or_preopen(t_arg *data)
