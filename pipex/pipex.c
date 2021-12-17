@@ -77,6 +77,8 @@ char *get_cmd_arg(int i, t_arg *data, char **env, char **cmd)
 	char *path_executive;
 
 	all_paths = find_path(data->env);//все пути
+    if (access(cmd[0], X_OK) != -1)
+        return (cmd[0]);
 	path_executive = create_cmd_path(data, all_paths, cmd[0]);
 //	if (!path_executive)
 //	{

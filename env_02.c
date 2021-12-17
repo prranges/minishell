@@ -42,10 +42,21 @@ void	create_env_array(t_arg *args, t_env *envp, int len)
     while (i < len)
 	{
 		str = ft_strdup(envp->key);
-		tmp = ft_strjoin(str, "=");
-		free(str);
-		str = ft_strjoin(tmp, envp->value);
-		free(tmp);
+		if (envp->separator == '=')
+		{
+			tmp = ft_strjoin(str, "=");
+			free(str);
+			if (envp->value)
+			{
+				str = ft_strjoin(tmp, envp->value);
+				free(tmp);
+			}
+			else
+			{
+				str = ft_strdup(tmp);
+				free(tmp);
+			}
+		}
 		env_str[i] = ft_strdup(str);
 		free(str);
 		i++;
@@ -66,5 +77,5 @@ void    env_lists_to_str(t_arg *args)
     create_env_array(args, args->env, len);
 //	print_double_array(args->env_str);
     
-    printf("len - %d\n", len);
+//    printf("len - %d\n", len);
 }

@@ -41,11 +41,16 @@ void	env_read(t_arg *args, char **arge)
 			args->home = ft_strdup(p->value);
 		if (ft_strcmp(p->key, "SHLVL") == 0)
 		{
+			p->separator= '=';
 			shlvl += ft_atoi(p->value);
+			free(p->value);
 			p->value = ft_itoa(shlvl);
+			shlvl = 0;
 		}
 		p = p->next;
 	}
+	if (shlvl)
+		add_env(&args->env, "SHLVL=1");
 }
 
 t_env	*last_env(t_env *env)
