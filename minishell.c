@@ -93,7 +93,8 @@ int	main(int argc, char **argv, char **arge)
 	{
 		num = 0;
 		args->num = 0;
-		if (!(str = readline("\033[0;36m\033[1mminishell-0.50$ \033[0m")))
+//		if (!(str = readline("\033[0;36m\033[1mminishell-0.50$ \033[0m")))
+		if (!(str = readline("minishell-0.50$ ")))
 			exit (1);
 		add_history(str);
 		if (preparcer(str) == 1)

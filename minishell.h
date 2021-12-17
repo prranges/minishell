@@ -38,7 +38,7 @@
 typedef struct s_redir
 {
 	char			*file_name;
-	char			*lim; //limiter
+//	char			*lim; //limiter
 	int				cmd_list_num;
 	int				out_in; //out = 0 in = 1
 	int				dbl;
@@ -127,7 +127,7 @@ int		start_builtin(t_arg *args);
 int		make_builtin_dup(t_token *token);
 void	builtin_dup_error_check(int fd);
 int		precreate_or_preopen(t_arg *data);
-void	heredoc(t_arg *data, char *limiter);//, char *file_name);
+void	heredoc(t_arg *data);//, char *file_name);
 void    env_lists_to_str(t_arg *args);
 
 /*gnl*/

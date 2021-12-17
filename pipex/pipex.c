@@ -142,7 +142,7 @@ int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 
 	file[0] = -2;
     data->errnum = 0;
-	if (token->in)
+	if (token->in && !token->in->dbl)
 		file[0] = open(token->in->file_name, O_RDONLY);
 	if (file[0] == -1)
 	{
@@ -165,7 +165,7 @@ int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 			dup2(fd[i - 1][0], STDIN_FILENO);
 	if (token->out && ft_strcmp(data->tokens->cmd[0], ""))
 		dup2(file[1], STDOUT_FILENO);
-	else if (i < data->num - 1)// && data->fd)
+	else if (i < data->num - 1)
 			dup2(fd[i][1], STDOUT_FILENO);//output
     cmd_ex = get_cmd_arg(i, data, env, token->cmd);
     close_fds(data, fd, file);
@@ -175,7 +175,7 @@ int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 		start_builtin(data);
 		builtin_dup_error_check(fd_builtin);
 	}
-    else if (execve(cmd_ex, token->cmd, env))
+    else if (execve(cmd_ex, token->cmd, env) && ft_strcmp(data->tokens->cmd[0], ""))
     {
         printf("minishell: %s: command not found\n", token->cmd[0]);
         data->errnum = 127;
@@ -220,20 +220,17 @@ int	open_file(t_redir *redirect)
 	return (0);
 }
 
-void heredoc(t_arg *data, char *limiter)//, char *file_name) //создает файл с названием лимитера!
+void heredoc(t_arg *data)//, char *file_name) //создает файл с названием лимитера!
 {
 	int fd;
 	int i;
 	char *line;
 	char *temp;
-	(void)limiter; // delete
+//	(void)limiter; // delete
 
 	i = 0;
 	temp = "";
-//	if (!data->redir->file_name)
-//		fd = STDIN_FILENO;
-//	else
-		fd = open(data->redir->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
+	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_APPEND, 0644);
 	while (++i)
 	{
 		write (1, "heredoc> ", 9);
@@ -261,6 +258,7 @@ void heredoc(t_arg *data, char *limiter)//, char *file_name) //создает ф
 			exit(EXIT_FAILURE);
 		}
 	}
+//	if (!data->redir->file_name)
 	printf("%s", temp);
 	close(fd);
 	free(line);
@@ -280,7 +278,7 @@ int precreate_or_preopen(t_arg *data)
 				return (1);
 		}
 		else
-			heredoc(data, data->redir->lim);//, data->redir->file_name);
+			heredoc(data);//, data->redir->file_name);
 		redirect = redirect->next;
 	}
 	return (0);
@@ -344,7 +342,8 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 				node = node->next;
 		}
 		close_fds(data, fd, NULL);
-
+	if (!access("heredoc_file", F_OK))
+		unlink("heredoc_file");
 		i = 0;
 		while (i < data->num)
 		{
