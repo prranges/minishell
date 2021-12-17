@@ -140,6 +140,7 @@ int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 	int file[2];
 	int fd_builtin;
 
+//    signals_ms(CHILD);
 	file[0] = -2;
     data->errnum = 0;
 	if (token->in && !token->in->dbl)
@@ -220,13 +221,12 @@ int	open_file(t_redir *redirect)
 	return (0);
 }
 
-void heredoc(t_arg *data)//, char *file_name) //создает файл с названием лимитера!
+void heredoc(t_arg *data)
 {
 	int fd;
 	int i;
 	char *line;
 	char *temp;
-//	(void)limiter; // delete
 
 	i = 0;
 	temp = "";
@@ -235,7 +235,7 @@ void heredoc(t_arg *data)//, char *file_name) //создает файл с на�
 	{
 		write (1, "heredoc> ", 9);
 		get_next_line(STDIN_FILENO, &line);
-		if (ft_strcmp(line, data->redir->file_name) == 0)//поменять на limiter
+		if (ft_strcmp(line, data->redir->file_name) == 0)
 			break ;
 		if (i == 1)
 		{
@@ -326,6 +326,8 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 	i = 0;
 	while (i < data->num)
 	{
+//        if (!minishell)   ///??? додумать мысль
+//            signals_ms(3);
 		pid[i] = fork();
 		if (pid[i] < 0)
 		{

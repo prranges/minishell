@@ -18,7 +18,6 @@ t_redir	*init_redir(void)
 
 	redir = (t_redir *)malloc(sizeof(t_redir));
 	redir->file_name = NULL;
-//	redir->lim = NULL;
 	redir->cmd_list_num = 0;
 	redir->out_in = 0;
 	redir->dbl = 0;

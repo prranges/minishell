@@ -88,13 +88,12 @@ int	main(int argc, char **argv, char **arge)
 	args = (t_arg *)malloc(sizeof(t_arg));
 	init_args(args);
 	env_read(args, arge);
-	signals_ms();
 	while (1)
 	{
 		num = 0;
 		args->num = 0;
-//		if (!(str = readline("\033[0;36m\033[1mminishell-0.50$ \033[0m")))
-		if (!(str = readline("minishell-0.50$ ")))
+		signals_ms(MAIN);
+		if (!(str = readline("🔷 minishell-0.50$ ")))
 			exit (1);
 		add_history(str);
 		if (preparcer(str) == 1)
@@ -108,8 +107,6 @@ int	main(int argc, char **argv, char **arge)
 		precreate_or_preopen(args);
 		if (num)
 			pipex(argc, argv, args->env_str, args);
-		//		if ((ft_strcmp(args->tokens->cmd[0], "")) == 0)
-		//			printf("HELLO\n");
 		free(str);
 		delete_all_redirs(args);
 		delete_all_tokens(args);

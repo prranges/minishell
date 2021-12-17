@@ -50,7 +50,8 @@ OBJS	= $(addprefix $(OBJS_DIR)/,$(SRCS:.c=.o))
 HDR	= -I./
 LFT_HDR = -I$(LFT_DIR)
 LFT_BIN = -L$(LFT_DIR) -lft
-RDLN	= -lreadline
+RDLN	= -lreadline -L ~/.brew/Cellar/readline/8.1.1/lib \
+		  -I~/.brew/Cellar/readline/8.1.1/include
 
 all: $(LIBFT) $(NAME)
 

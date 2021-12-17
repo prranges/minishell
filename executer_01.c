@@ -15,6 +15,6 @@
 int	execute(t_token *lst)
 {
 	if (!lst)
-		return (ERROR);
-	return (SUCCESS);
+		return (1);
+	return (0);
 }

@@ -23,8 +23,9 @@
 # include <fcntl.h>
 # include <errno.h>
 
-# define ERROR		1
-# define SUCCESS	0
+# define MAIN		0
+# define CHILD		1
+# define PIPEX		2
 
 # define EXPORT		1
 # define UNSET		2
@@ -38,7 +39,6 @@
 typedef struct s_redir
 {
 	char			*file_name;
-//	char			*lim; //limiter
 	int				cmd_list_num;
 	int				out_in; //out = 0 in = 1
 	int				dbl;
@@ -86,13 +86,16 @@ typedef struct s_arg
 	char	*home;
 }	t_arg;
 
+//int 	minishell;
+
+void	rl_replace_line(const char *buffer, int val);
 int		preparcer(char *str);
 t_token	*init_tokens(void);
 void	add_env(t_env **env, char *str);
 t_env	*init_env(void);
 void	env_read(t_arg *arg, char **arge);
 int		add_token(t_token **lst, char **str);
-void	signals_ms(void);
+void	signals_ms(int i);
 void	init_lexer(t_lexer *lex);
 void	free_lexer(t_lexer *lex);
 char	*lexe(char *str, t_arg *args);
