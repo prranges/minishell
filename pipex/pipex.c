@@ -68,23 +68,15 @@ void	close_fds(t_arg *data, int **fd, int *file)
 		close(file[1]);
 }
 
-char *get_cmd_arg(int i, t_arg *data, char **env, char **cmd)
+char *get_cmd_arg(t_arg *data, char **cmd)
 {
-	(void)data;
-	(void)i;
-	(void)env;
 	char **all_paths;
 	char *path_executive;
 
-	all_paths = find_path(data->env);//все пути
+	all_paths = find_path(data->env);
     if (access(cmd[0], X_OK) != -1)
         return (cmd[0]);
 	path_executive = create_cmd_path(data, all_paths, cmd[0]);
-//	if (!path_executive)
-//	{
-//		perror("Path");
-//		exit(EXIT_FAILURE);
-//	}
 	return (path_executive);
 }
 
@@ -134,15 +126,18 @@ void	builtin_dup_error_check(int fd)
 	close(fd);
 }
 
-int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
+int child_process(int i, t_arg *data, int **fd, t_token *token)
 {
 	char *cmd_ex;
 	int file[2];
 	int fd_builtin;
+	(void)fd;
 
 //    signals_ms(CHILD);
 	file[0] = -2;
     data->errnum = 0;
+	if (token->in && token->in->dbl)
+		file[0] = open("heredoc_file", O_RDONLY);
 	if (token->in && !token->in->dbl)
 		file[0] = open(token->in->file_name, O_RDONLY);
 	if (file[0] == -1)
@@ -162,13 +157,13 @@ int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 	}
 	if (token->in && ft_strcmp(data->tokens->cmd[0], ""))
 		dup2(file[0], STDIN_FILENO);
-	else if (i > 0)// && data->fd)
+	else if (i != 0 && data->fd)
 			dup2(fd[i - 1][0], STDIN_FILENO);
 	if (token->out && ft_strcmp(data->tokens->cmd[0], ""))
 		dup2(file[1], STDOUT_FILENO);
-	else if (i < data->num - 1)
+	else if (i < data->num - 1 && data->fd)
 			dup2(fd[i][1], STDOUT_FILENO);//output
-    cmd_ex = get_cmd_arg(i, data, env, token->cmd);
+    cmd_ex = get_cmd_arg(data, token->cmd);
     close_fds(data, fd, file);
 	if (token->builtin)
 	{
@@ -176,7 +171,7 @@ int child_process(int i, t_arg *data, int **fd, char **env, t_token *token)
 		start_builtin(data);
 		builtin_dup_error_check(fd_builtin);
 	}
-    else if (execve(cmd_ex, token->cmd, env) && ft_strcmp(data->tokens->cmd[0], ""))
+    else if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
     {
         printf("minishell: %s: command not found\n", token->cmd[0]);
         data->errnum = 127;
@@ -188,7 +183,6 @@ int	open_file(t_redir *redirect)
 {
 	int	fd;
 
-//	fd = -2;
 	if (redirect->out_in == 0 && redirect->dbl == 1) //output && >>
 	{
 		fd = open(redirect->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -201,7 +195,6 @@ int	open_file(t_redir *redirect)
 	else if (redirect->out_in == 0 && redirect->dbl == 0) //output && >
 	{
 		fd = open(redirect->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		printf("file name - %s\n", redirect->file_name);
 		if (fd == -1)
 		{
 			perror("Error");
@@ -210,7 +203,7 @@ int	open_file(t_redir *redirect)
 	}
 	else //if (redirect->out_in == 1 && redirect->dbl == 0) //input <
 	{
-		fd = open(redirect->file_name, O_RDONLY);
+		fd = open("heredoc_file", O_RDONLY);
 		if (fd == -1)
 		{
 			perror("Error");
@@ -218,35 +211,21 @@ int	open_file(t_redir *redirect)
 		}
 	}
 	close(fd);
-	return (0);
+	return (9);
 }
 
 void heredoc(t_arg *data)
 {
 	int fd;
-	int i;
 	char *line;
-	char *temp;
 
-	i = 0;
-	temp = "";
 	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_APPEND, 0644);
-	while (++i)
+	while (1)
 	{
-		write (1, "heredoc> ", 9);
+		write (1, "> ", 2);
 		get_next_line(STDIN_FILENO, &line);
 		if (ft_strcmp(line, data->redir->file_name) == 0)
 			break ;
-		if (i == 1)
-		{
-			temp = ft_strjoin("", line);
-			temp = ft_strjoin(temp, "\n");
-		}
-		else
-		{
-			temp = ft_strjoin(temp, line);
-			temp = ft_strjoin(temp, "\n");
-		}
 		if (write(fd, line, ft_strlen(line)) == -1)
 		{
 			perror("Error");
@@ -257,12 +236,9 @@ void heredoc(t_arg *data)
 			perror("Error");
 			exit(EXIT_FAILURE);
 		}
+		free(line);
 	}
-//	if (!data->redir->file_name)
-	printf("%s", temp);
 	close(fd);
-	free(line);
-	free(temp);
 }
 
 int precreate_or_preopen(t_arg *data)
@@ -278,24 +254,16 @@ int precreate_or_preopen(t_arg *data)
 				return (1);
 		}
 		else
-			heredoc(data);//, data->redir->file_name);
+			heredoc(data);
 		redirect = redirect->next;
 	}
 	return (0);
 }
 
-int pipex(int argc, char **argv, char **env, t_arg *data)
+int pipex(t_arg *data)
 {
-	(void)argv;
-	(void)argc;
-
 	int		**fd;
-	//char	*cmd_ex;
 	t_token	*node;
-//	char	**cmd;
-//	int fd2 = 0;
-//	char	**path;
-//	char	*path_executive;
 	pid_t	*pid;
 	int		i;
 
@@ -316,12 +284,14 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 	while (i < data->num)
 	{
 		pipe(fd[i]);
-		if (pipe(fd[i]) == -1) {
+		if (pipe(fd[i]) == -1)
+		{
 			perror("Error");
 			exit(EXIT_FAILURE);
 		}
 		i++;
 	}
+	data->fd = fd;
 	pid = malloc(sizeof(pid_t *) * data->num);
 	i = 0;
 	while (i < data->num)
@@ -334,22 +304,16 @@ int pipex(int argc, char **argv, char **env, t_arg *data)
 			perror("Error");
 			exit(1);
 		}
-		if (pid[i] == 0) //child process
-			 {
-				child_process(i, data, fd, env, node);
-//				child_process(i, data, env, node);
-			}
+		if (pid[i] == 0)
+				child_process(i, data, fd, node);
 			i++;
 			if (node->next)
 				node = node->next;
 		}
 		close_fds(data, fd, NULL);
-	if (!access("heredoc_file", F_OK))
-		unlink("heredoc_file");
 		i = 0;
 		while (i < data->num)
 		{
-//			waitpid(pid[i], NULL, 0);
 			waitpid(-1, NULL, 0);
 			i++;
 		}

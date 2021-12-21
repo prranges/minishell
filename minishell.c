@@ -106,10 +106,12 @@ int	main(int argc, char **argv, char **arge)
 		env_lists_to_str(args);
 		precreate_or_preopen(args);
 		if (num)
-			pipex(argc, argv, args->env_str, args);
+			pipex(args);
 		free(str);
 		delete_all_redirs(args);
 		delete_all_tokens(args);
+		if (!access("heredoc_file", F_OK))
+			unlink("heredoc_file");
 	}
 	return (0);
 }

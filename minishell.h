@@ -42,6 +42,8 @@ typedef struct s_redir
 	int				cmd_list_num;
 	int				out_in; //out = 0 in = 1
 	int				dbl;
+	int				heredoc_fd;
+	int				file_fd;
 	struct s_redir	*next;
 }	t_redir;
 
@@ -115,7 +117,7 @@ t_redir	*last_redir(t_redir *redir);
 void	add_redirs_to_cmd(t_redir *redir, t_token *tokens);
 int		find_number_of_parts(char *str);
 void	find_parts_of_str(char *str, int **start_end_i, t_arg *args, int num);
-int		pipex(int argc, char **argv, char **env, t_arg *data);
+int		pipex(t_arg *data);
 int		env_ms(t_env *env);
 int		export_ms(t_arg *args);
 void	edit_env(t_env **env, char *str);
@@ -132,7 +134,6 @@ void	builtin_dup_error_check(int fd);
 int		precreate_or_preopen(t_arg *data);
 void	heredoc(t_arg *data);//, char *file_name);
 void    env_lists_to_str(t_arg *args);
-
 /*gnl*/
 char	*get_line(char *saved_buf);
 char	*clear_saved_buf(char *saved_buf);
