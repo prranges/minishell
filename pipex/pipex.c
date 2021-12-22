@@ -134,6 +134,7 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	(void)fd;
 
 //    signals_ms(CHILD);
+    
 	file[0] = -2;
     data->errnum = 0;
 	if (token->in && token->in->dbl)
@@ -168,13 +169,14 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	if (token->builtin)
 	{
 		fd_builtin = make_builtin_dup(data->tokens);
-		start_builtin(data);
 		builtin_dup_error_check(fd_builtin);
+        exit (start_builtin(data));
 	}
     else if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
     {
         printf("minishell: %s: command not found\n", token->cmd[0]);
         data->errnum = 127;
+        exit (data->errnum);
     }
 	return (0);
 }
@@ -297,7 +299,8 @@ int pipex(t_arg *data)
 	while (i < data->num)
 	{
 //        if (!minishell)   ///??? додумать мысль
-//            signals_ms(3);
+//        signals_ms(PIPEX);
+        
 		pid[i] = fork();
 		if (pid[i] < 0)
 		{

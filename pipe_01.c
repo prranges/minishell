@@ -43,8 +43,6 @@ int	find_pipe(char *str)
 	flag_sq = 2;
 	flag_dq = 2;
 	i = 0;
-	if (str[i] == '|')
-		i++;
 	while (str[i])
 	{
 		if ((str[i] == '|') && (!(flag_sq % 2)) && (!(flag_dq % 2)))
@@ -71,12 +69,11 @@ char	**make_substrs_pipe_devided(char *str)
 	sub_strs = malloc(sizeof(char **) \
 					  + (sizeof(char *) * number_of_pipes(p) + 2));
 	start = 0;
-	while (p[start])
+	while (i < number_of_pipes(p) + 1)
 	{
 		len = find_pipe(p + start);
 		sub_strs[i] = ft_substr(p, start, len);
-//		start += len + 1;
-		start += len;
+		start += len + 1;
 		i++;
 	}
 	sub_strs[i] = NULL;

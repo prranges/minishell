@@ -79,18 +79,15 @@ void	delete_all_tokens(t_arg *args)
 	while (args->tokens)
 	{
 		i = 0;
-		//printf("DELETE\n");
 		p = args->tokens;
 		args->tokens->list_num = 0;
 		args->tokens = args->tokens->next;
-//		printf("%")
 		while (p->cmd[i])
 		{
 			free(p->cmd[i]);
 			i++;
 		}
 		free(p->cmd);
-		free(args->tokens);
 		free(p);
 	}
 }

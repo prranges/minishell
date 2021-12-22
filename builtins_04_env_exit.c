@@ -36,7 +36,7 @@ int    env_ms(t_env *env)
 
 int    exit_ms(t_arg *args)
 {
-	(void)args;
-    printf("exit\n");
-    exit (0);
+	free_all(args);
+	printf("exit\n");
+	return (0);
 }

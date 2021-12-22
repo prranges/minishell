@@ -22,6 +22,7 @@ void	init_args(t_arg *args)
 	args->fd = NULL;
 	args->errnum = 99;
 	args->home = NULL;
+	args->exit = 0;
 }
 
 void	parcer(char *str, int *num, t_arg *args)
@@ -61,20 +62,28 @@ void	parcer(char *str, int *num, t_arg *args)
 int	start_builtin(t_arg *args)
 {
 	if (args->tokens->builtin == EXPORT)
-		export_ms(args);
+		return (export_ms(args));
 	else if (args->tokens->builtin == UNSET)
-		unset_ms(args);
+		return (unset_ms(args));
 	else if (args->tokens->builtin == ENV)
-		env_ms(args->env);
+		return (env_ms(args->env));
 	else if (args->tokens->builtin == PWD)
-		pwd_ms(args);
+		return (pwd_ms(args));
 	else if (args->tokens->builtin == ECHO)
-		echo_ms(args);
+		return (echo_ms(args));
 	else if (args->tokens->builtin == CD)
 		return (cd_ms(args));
 	else if (args->tokens->builtin == EXIT)
-		exit_ms(args);
+		return (exit_ms(args));
 	return (0);
+}
+
+void free_all(t_arg *args)
+{
+	delete_all_redirs(args);
+	delete_all_tokens(args);
+	if (!access("heredoc_file", F_OK))
+		unlink("heredoc_file");
 }
 
 int	main(int argc, char **argv, char **arge)
@@ -93,25 +102,27 @@ int	main(int argc, char **argv, char **arge)
 		num = 0;
 		args->num = 0;
 		signals_ms(MAIN);
-		if (!(str = readline("🔷 minishell-0.50$ ")))
+		if (!(str = readline("🔷 minishell-0.60$ ")))
+		{
+			write(1, "\033[A🔷 minishell-0.60$ exit\n", 29);
+			rl_redisplay();
 			exit (1);
-		add_history(str);
+		}
+		else if (str && str[0])
+			add_history(str);
 		if (preparcer(str) == 1)
 			printf("minishell: syntax error near unexpected token\n");
 		else if (preparcer(str) == 2)
 			printf("minishell: syntax error near unclosed quotes\n");
 		else if (!preparcer(str))
 			parcer(str, &num, args);
+		free(str);
 //		print_all_lists(args);
 		env_lists_to_str(args);
 		precreate_or_preopen(args);
 		if (num)
 			pipex(args);
-		free(str);
-		delete_all_redirs(args);
-		delete_all_tokens(args);
-		if (!access("heredoc_file", F_OK))
-			unlink("heredoc_file");
+		free_all(args);
 	}
 	return (0);
 }

@@ -36,6 +36,14 @@
 # define EXIT		7
 # define BUFFER_SIZE 1
 
+//typedef struct	s_sig
+//{
+//	int				sigint;
+//	int				sigquit;
+//	int				exit_status;
+//	pid_t			pid;
+//}				t_sig;
+
 typedef struct s_redir
 {
 	char			*file_name;
@@ -45,7 +53,7 @@ typedef struct s_redir
 	int				heredoc_fd;
 	int				file_fd;
 	struct s_redir	*next;
-}	t_redir;
+}				t_redir;
 
 typedef struct s_token
 {
@@ -55,7 +63,7 @@ typedef struct s_token
 	t_redir			*out;
 	int				builtin;
 	struct s_token	*next;
-}	t_token;
+}				t_token;
 
 typedef struct s_env
 {
@@ -74,7 +82,7 @@ typedef struct s_lexer
 	char	*before;
 	char	*in;
 	char	*after;
-}	t_lexer;
+}				t_lexer;
 
 typedef struct s_arg
 {
@@ -86,9 +94,8 @@ typedef struct s_arg
 	int		**fd;
 	int		errnum;
 	char	*home;
-}	t_arg;
-
-//int 	minishell;
+	int		exit;
+}				t_arg;
 
 void	rl_replace_line(const char *buffer, int val);
 int		preparcer(char *str);
@@ -140,5 +147,6 @@ char	*clear_saved_buf(char *saved_buf);
 int		get_next_line(int fd, char **line);
 size_t	strlen_gnl(char *s);
 char	*strjoin_gnl(char *saved_buf, char *buf);
+void	free_all(t_arg *args);
 
 #endif
