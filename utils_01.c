@@ -25,33 +25,33 @@
 void	print_all_lists(t_arg *args)
 {
 	int	i;
-	t_arg *p;
+	t_token *p;
 
-	p = args;
-	printf("Number of arguments - %d\n\n", p->num);
-	while (p->tokens)
+	p = args->tokens;
+	printf("Number of arguments - %d\n\n", args->num);
+	while (p)
 	{
 		i = 0;
-		printf("Token number - %d\n", p->tokens->list_num);
-		while (p->tokens->cmd[i])
+		printf("Token number - %d\n", p->list_num);
+		while (p->cmd[i])
 		{
-			printf("str[%d] - %s\n", i, p->tokens->cmd[i]);
+			printf("str[%d] - %s\n", i, p->cmd[i]);
 			i++;
 		}
-		if (p->tokens->in)
+		if (p->in)
 		{
-			if (p->tokens->in->dbl)
+			if (p->in->dbl)
 				printf("double ");
-			printf("redirect IN - %s\n", p->tokens->in->file_name);
+			printf("redirect IN - %s\n", p->in->file_name);
 		}
-		if (p->tokens->out)
+		if (p->out)
 		{
-			if (p->tokens->out->dbl)
+			if (p->out->dbl)
 				printf("double ");
-			printf("redirect OUT - %s\n", p->tokens->out->file_name);
+			printf("redirect OUT - %s\n", p->out->file_name);
 		}
-		if (p->tokens->next)
-			p->tokens = p->tokens->next;
+		if (p->next)
+			p = p->next;
 		else
 			break ;
 		printf("\n");

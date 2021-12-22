@@ -80,6 +80,15 @@ char *get_cmd_arg(t_arg *data, char **cmd)
 	return (path_executive);
 }
 
+void check_fd_exist(int fd, char *str)
+{
+    if (fd == -1)
+    {
+        printf("minishell: %s: %s\n", str, strerror(errno));
+        exit(EXIT_FAILURE);
+    }
+}
+
 int	make_builtin_dup(t_token *token)
 {
 	int	fd;
@@ -91,11 +100,7 @@ int	make_builtin_dup(t_token *token)
 		file = open(token->out->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
 		file = open(token->out->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (file == -1)
-	{
-		perror("Error");
-		exit(EXIT_FAILURE);
-	}
+	check_fd_exist(file, token->out->file_name);
 	fd = dup(STDOUT_FILENO);
 	if (fd == -1)
 	{
@@ -126,11 +131,32 @@ void	builtin_dup_error_check(int fd)
 	close(fd);
 }
 
+int exec_start(t_arg *data, t_token *token)
+{
+    int     fd_builtin;
+    char    *cmd_ex;
+    
+    cmd_ex = get_cmd_arg(data, token->cmd);
+    if (token->builtin)
+    {
+        fd_builtin = make_builtin_dup(data->tokens);
+        builtin_dup_error_check(fd_builtin);
+        exit (start_builtin(data));
+    }
+    else if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
+    {
+        printf("minishell: %s: command not found\n", token->cmd[0]);
+        data->errnum = 127;
+        exit (data->errnum);
+    }
+    return (0);
+}
+
 int child_process(int i, t_arg *data, int **fd, t_token *token)
 {
-	char *cmd_ex;
+//	char *cmd_ex;
 	int file[2];
-	int fd_builtin;
+//	int fd_builtin;
 	(void)fd;
 
 //    signals_ms(CHILD);
@@ -164,20 +190,21 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 		dup2(file[1], STDOUT_FILENO);
 	else if (i < data->num - 1 && data->fd)
 			dup2(fd[i][1], STDOUT_FILENO);//output
-    cmd_ex = get_cmd_arg(data, token->cmd);
+//    cmd_ex = get_cmd_arg(data, token->cmd);
     close_fds(data, fd, file);
-	if (token->builtin)
-	{
-		fd_builtin = make_builtin_dup(data->tokens);
-		builtin_dup_error_check(fd_builtin);
-        exit (start_builtin(data));
-	}
-    else if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
-    {
-        printf("minishell: %s: command not found\n", token->cmd[0]);
-        data->errnum = 127;
-        exit (data->errnum);
-    }
+    exec_start(data, token);
+//	if (token->builtin)
+//	{
+//		fd_builtin = make_builtin_dup(data->tokens);
+//		builtin_dup_error_check(fd_builtin);
+//        exit (start_builtin(data));
+//	}
+//    else if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
+//    {
+//        printf("minishell: %s: command not found\n", token->cmd[0]);
+//        data->errnum = 127;
+//        exit (data->errnum);
+//    }
 	return (0);
 }
 
@@ -186,34 +213,21 @@ int	open_file(t_redir *redirect)
 	int	fd;
 
 	if (redirect->out_in == 0 && redirect->dbl == 1) //output && >>
-	{
 		fd = open(redirect->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		if (fd == -1)
-		{
-			perror("Error");
-			exit(EXIT_FAILURE);
-		}
-	}
 	else if (redirect->out_in == 0 && redirect->dbl == 0) //output && >
-	{
 		fd = open(redirect->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd == -1)
-		{
-			perror("Error");
-			exit(EXIT_FAILURE);
-		}
-	}
 	else //if (redirect->out_in == 1 && redirect->dbl == 0) //input <
 	{
-		fd = open("heredoc_file", O_RDONLY);
-		if (fd == -1)
+		if (redirect->dbl == 0)
 		{
-			perror("Error");
-			exit(EXIT_FAILURE);
+			free(redirect->file_name);
+			redirect->file_name = ft_strdup("heredoc_file");
 		}
+		fd = open(redirect->file_name, O_RDONLY);
 	}
+	check_fd_exist(fd, redirect->file_name);
 	close(fd);
-	return (9);
+	return (0);
 }
 
 void heredoc(t_arg *data)
@@ -222,6 +236,7 @@ void heredoc(t_arg *data)
 	char *line;
 
 	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_APPEND, 0644);
+    check_fd_exist(fd, "heredoc_file");
 	while (1)
 	{
 		write (1, "> ", 2);
@@ -250,6 +265,8 @@ int precreate_or_preopen(t_arg *data)
 	redirect = data->redir;
 	while (redirect)
 	{
+		printf("HERE\n");
+		printf("REDIR - %s\n", redirect->file_name);
 		if (redirect->out_in == 0 || redirect->dbl == 0)
 		{
 			if (open_file(redirect))
@@ -264,17 +281,16 @@ int precreate_or_preopen(t_arg *data)
 
 int pipex(t_arg *data)
 {
-	int		**fd;
 	t_token	*node;
 	pid_t	*pid;
 	int		i;
 
 	i = 0;
-	fd = malloc(sizeof(int *) * data->num);
+	data->fd = malloc(sizeof(int *) * data->num);
 	while (i < data->num)
 	{
-		fd[i] = malloc(sizeof(int) * 2);
-		if (!(fd[i]))
+		data->fd[i] = malloc(sizeof(int) * 2);
+		if (!(data->fd[i]))
 		{
 			perror("Error");
 			exit(EXIT_FAILURE);
@@ -285,15 +301,14 @@ int pipex(t_arg *data)
 	node = data->tokens;
 	while (i < data->num)
 	{
-		pipe(fd[i]);
-		if (pipe(fd[i]) == -1)
+		pipe(data->fd[i]);
+		if (pipe(data->fd[i]) == -1)
 		{
 			perror("Error");
 			exit(EXIT_FAILURE);
 		}
 		i++;
 	}
-	data->fd = fd;
 	pid = malloc(sizeof(pid_t *) * data->num);
 	i = 0;
 	while (i < data->num)
@@ -308,12 +323,12 @@ int pipex(t_arg *data)
 			exit(1);
 		}
 		if (pid[i] == 0)
-				child_process(i, data, fd, node);
+				child_process(i, data, data->fd, node);
 			i++;
 			if (node->next)
 				node = node->next;
 		}
-		close_fds(data, fd, NULL);
+		close_fds(data, data->fd, NULL);
 		i = 0;
 		while (i < data->num)
 		{

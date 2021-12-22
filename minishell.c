@@ -97,8 +97,9 @@ int	main(int argc, char **argv, char **arge)
 	args = (t_arg *)malloc(sizeof(t_arg));
 	init_args(args);
 	env_read(args, arge);
-	while (1)
+	while (!args->exit)
 	{
+//		printf("exit - %d\n", args->exit);
 		num = 0;
 		args->num = 0;
 		signals_ms(MAIN);
