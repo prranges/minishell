@@ -31,9 +31,9 @@ int    unset_ms(t_arg *args)
         if (!ft_isalpha(*cmd[0]) && *cmd[0] != '_')
         {
             args->errnum = 1;
-            write(2, "export: `", 9);
-            write(2, *cmd, ft_strlen(*cmd));
-            write(2, "': not a valid identifier\n", 26);
+            ft_putstr_fd("export: `", 2);
+            ft_putstr_fd(*cmd, 2);
+            ft_putstr_fd("': not a valid identifier\n", 2);
         }
         else
         {

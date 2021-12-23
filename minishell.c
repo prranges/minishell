@@ -12,6 +12,8 @@
 
 #include "minishell.h"
 
+t_sig	g_signals;
+
 void	init_args(t_arg *args)
 {
 	args->tokens = NULL;
@@ -22,7 +24,7 @@ void	init_args(t_arg *args)
 	args->fd = NULL;
 	args->errnum = 99;
 	args->home = NULL;
-	args->exit = 0;
+//	args->exit = 0;
 }
 
 void	parcer(char *str, int *num, t_arg *args)
@@ -97,15 +99,17 @@ int	main(int argc, char **argv, char **arge)
 	args = (t_arg *)malloc(sizeof(t_arg));
 	init_args(args);
 	env_read(args, arge);
-	while (!args->exit)
+	while (1)
 	{
-//		printf("exit - %d\n", args->exit);
 		num = 0;
 		args->num = 0;
-		signals_ms(MAIN);
+		sig_init();
+		signal(SIGINT, &sig_int);
+		signal(SIGQUIT, &sig_quit);
+//		signal(SIGQUIT, SIG_IGN);
 		if (!(str = readline("🔷 minishell-0.60$ ")))
 		{
-			write(1, "\033[A🔷 minishell-0.60$ exit\n", 29);
+			ft_putstr_fd("\033[A🔷 minishell-0.60$ exit\n", 1);
 			rl_redisplay();
 			exit (1);
 		}
@@ -121,7 +125,9 @@ int	main(int argc, char **argv, char **arge)
 //		print_all_lists(args);
 		env_lists_to_str(args);
 		precreate_or_preopen(args);
-		if (num)
+		if (num == 1 && args->tokens->builtin && !args->redir)
+			start_builtin(args);
+		else
 			pipex(args);
 		free_all(args);
 	}

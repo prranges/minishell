@@ -36,13 +36,13 @@
 # define EXIT		7
 # define BUFFER_SIZE 1
 
-//typedef struct	s_sig
-//{
-//	int				sigint;
-//	int				sigquit;
-//	int				exit_status;
-//	pid_t			pid;
-//}				t_sig;
+typedef struct	s_sig
+{
+	int				sigint;
+	int				sigquit;
+	int				exit_status;
+	pid_t			*pid;
+}				t_sig;
 
 typedef struct s_redir
 {
@@ -94,8 +94,9 @@ typedef struct s_arg
 	int		**fd;
 	int		errnum;
 	char	*home;
-	int		exit;
 }				t_arg;
+
+extern t_sig g_signals;
 
 void	rl_replace_line(const char *buffer, int val);
 int		preparcer(char *str);
@@ -141,6 +142,7 @@ void	builtin_dup_error_check(int fd);
 int		precreate_or_preopen(t_arg *data);
 void	heredoc(t_arg *data);//, char *file_name);
 void    env_lists_to_str(t_arg *args);
+int		exec_start(t_arg *data, t_token *token);
 /*gnl*/
 char	*get_line(char *saved_buf);
 char	*clear_saved_buf(char *saved_buf);
@@ -148,5 +150,9 @@ int		get_next_line(int fd, char **line);
 size_t	strlen_gnl(char *s);
 char	*strjoin_gnl(char *saved_buf, char *buf);
 void	free_all(t_arg *args);
+
+void	sig_init(void);
+void	sig_int(int signal);
+void	sig_quit(int signal);
 
 #endif

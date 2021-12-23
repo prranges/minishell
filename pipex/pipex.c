@@ -17,15 +17,18 @@ char	**find_path(t_env *env)
 	t_env	*p;
 	char 	**path;
 
+	path = NULL;
 	p = env;
 	while (p != NULL)
 	{
 		if (ft_strncmp(p->key, "PATH", 4) == 0)
-			break ;
+		{
+			path = ft_split(p->value, ':');
+			return (path);
+		}
 		p = p->next;
 	}
-	path = ft_split(p->value, ':');
-	return (path);
+	return (NULL);
 }
 
 char *create_cmd_path(t_arg *data, char **all_paths, char *cmd)
@@ -35,6 +38,8 @@ char *create_cmd_path(t_arg *data, char **all_paths, char *cmd)
 	(void)data;
 	char **str;
 
+	if (!all_paths)
+		return (NULL);
 	str = all_paths;
 	while (*str)
 	{
@@ -73,9 +78,15 @@ char *get_cmd_arg(t_arg *data, char **cmd)
 	char **all_paths;
 	char *path_executive;
 
+	if (access(cmd[0], X_OK) != -1)
+		return (cmd[0]);
 	all_paths = find_path(data->env);
-    if (access(cmd[0], X_OK) != -1)
-        return (cmd[0]);
+	if (!all_paths)
+	{
+		printf("minishell: %s: %s\n", cmd[0], strerror(errno));
+		data->errnum = 127;
+		exit (data->errnum);
+	}
 	path_executive = create_cmd_path(data, all_paths, cmd[0]);
 	return (path_executive);
 }
@@ -136,30 +147,29 @@ int exec_start(t_arg *data, t_token *token)
     int     fd_builtin;
     char    *cmd_ex;
     
-    cmd_ex = get_cmd_arg(data, token->cmd);
     if (token->builtin)
     {
-        fd_builtin = make_builtin_dup(data->tokens);
-        builtin_dup_error_check(fd_builtin);
+		fd_builtin = make_builtin_dup(data->tokens);
+		builtin_dup_error_check(fd_builtin);
         exit (start_builtin(data));
     }
-    else if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
-    {
-        printf("minishell: %s: command not found\n", token->cmd[0]);
-        data->errnum = 127;
-        exit (data->errnum);
-    }
+	else
+	{
+		cmd_ex = get_cmd_arg(data, token->cmd);
+		if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
+		{
+			printf("minishell: %s: command not found\n", token->cmd[0]);
+			data->errnum = 127;
+			exit (data->errnum);
+		}
+	}
     return (0);
 }
 
 int child_process(int i, t_arg *data, int **fd, t_token *token)
 {
-//	char *cmd_ex;
 	int file[2];
-//	int fd_builtin;
 	(void)fd;
-
-//    signals_ms(CHILD);
     
 	file[0] = -2;
     data->errnum = 0;
@@ -167,21 +177,17 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 		file[0] = open("heredoc_file", O_RDONLY);
 	if (token->in && !token->in->dbl)
 		file[0] = open(token->in->file_name, O_RDONLY);
-	if (file[0] == -1)
-	{
-		perror("Error");
-		exit(EXIT_FAILURE);
-	}
+	if (token->in)
+		check_fd_exist(file[0], token->in->file_name);
 	file[1] = -2;
 	if (token->out && token->out->dbl)
 		file[1] = open(token->out->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else if (token->out && !token->out->dbl)
 		file[1] = open(token->out->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (file[1] == -1)
-	{
-		perror("Error");
-		exit(EXIT_FAILURE);
-	}
+	if (token->out)
+		check_fd_exist(file[1], token->out->file_name);
+    
 	if (token->in && ft_strcmp(data->tokens->cmd[0], ""))
 		dup2(file[0], STDIN_FILENO);
 	else if (i != 0 && data->fd)
@@ -190,21 +196,9 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 		dup2(file[1], STDOUT_FILENO);
 	else if (i < data->num - 1 && data->fd)
 			dup2(fd[i][1], STDOUT_FILENO);//output
-//    cmd_ex = get_cmd_arg(data, token->cmd);
     close_fds(data, fd, file);
     exec_start(data, token);
-//	if (token->builtin)
-//	{
-//		fd_builtin = make_builtin_dup(data->tokens);
-//		builtin_dup_error_check(fd_builtin);
-//        exit (start_builtin(data));
-//	}
-//    else if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
-//    {
-//        printf("minishell: %s: command not found\n", token->cmd[0]);
-//        data->errnum = 127;
-//        exit (data->errnum);
-//    }
+
 	return (0);
 }
 
@@ -265,8 +259,6 @@ int precreate_or_preopen(t_arg *data)
 	redirect = data->redir;
 	while (redirect)
 	{
-		printf("HERE\n");
-		printf("REDIR - %s\n", redirect->file_name);
 		if (redirect->out_in == 0 || redirect->dbl == 0)
 		{
 			if (open_file(redirect))
@@ -282,7 +274,6 @@ int precreate_or_preopen(t_arg *data)
 int pipex(t_arg *data)
 {
 	t_token	*node;
-	pid_t	*pid;
 	int		i;
 
 	i = 0;
@@ -309,20 +300,17 @@ int pipex(t_arg *data)
 		}
 		i++;
 	}
-	pid = malloc(sizeof(pid_t *) * data->num);
+	g_signals.pid = malloc(sizeof(pid_t *) * data->num);
 	i = 0;
 	while (i < data->num)
 	{
-//        if (!minishell)   ///??? додумать мысль
-//        signals_ms(PIPEX);
-        
-		pid[i] = fork();
-		if (pid[i] < 0)
+		g_signals.pid[i] = fork();
+		if (g_signals.pid[i] < 0)
 		{
 			perror("Error");
 			exit(1);
 		}
-		if (pid[i] == 0)
+		if (g_signals.pid[i] == 0)
 				child_process(i, data, data->fd, node);
 			i++;
 			if (node->next)
@@ -332,7 +320,7 @@ int pipex(t_arg *data)
 		i = 0;
 		while (i < data->num)
 		{
-			waitpid(-1, NULL, 0);
+			waitpid(g_signals.pid[i], NULL, 0);
 			i++;
 		}
 	return (0);

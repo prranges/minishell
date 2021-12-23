@@ -73,7 +73,7 @@ int    cd_ms(t_arg *args)
 		}
 		if (!path)
 		{
-			write(2, "cd: HOME not set\n", 17);
+			ft_putstr_fd("cd: HOME not set\n", 2);
 			return (1);
 		}
 	}

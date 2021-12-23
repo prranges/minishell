@@ -12,48 +12,54 @@
 
 #include "minishell.h"
 
-void	signal_child(int signal)
-{
-	if (signal == SIGINT)
-		exit(2);
-	if (signal == SIGQUIT)
-		exit(3);
-}
-
-void	signal_pipex(int signal)
-{
-	if (signal == SIGINT)
-		write(2, "\n", 1);
-	if (signal == SIGQUIT)
-		write(2, "Quit: 3\n", 8);
-}
-
-void	signal_main(int signal)
+void	sig_int(int signal)
 {
 	(void)signal;
-	rl_on_new_line();
-	rl_redisplay();
-	write(1, "  \b\b\n", 5);
-	rl_on_new_line();
-	rl_replace_line("", 1);
-	rl_redisplay();
+	if (g_signals.pid == 0)
+	{
+		rl_on_new_line();
+		rl_redisplay();
+		ft_putstr_fd("  \b\b\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 1);
+		rl_redisplay();
+		g_signals.exit_status = 1;
+	}
+	else
+	{
+		ft_putstr_fd("\n", 2);
+		g_signals.exit_status = 130;
+	}
+	g_signals.sigint = 1;
 }
 
-void	signals_ms(int i)
+void	sig_quit(int signal)
 {
-	if (i == MAIN)
+	char	*nbr;
+
+	nbr = ft_itoa(signal);
+	if (g_signals.pid != 0)
 	{
-		signal(SIGINT, signal_main);
-		signal(SIGQUIT, SIG_IGN);
+		ft_putstr_fd("Quit: ", 2);
+		ft_putendl_fd(nbr, 2);
+		g_signals.exit_status = 131;
+		g_signals.sigquit = 1;
 	}
-	if (i == CHILD)
+	else
 	{
-		signal(SIGINT, signal_child);
-		signal(SIGQUIT, signal_child);
+		rl_on_new_line();
+		rl_redisplay();
+		ft_putstr_fd("  \b\b", 1);
+		rl_replace_line("", 1);
+		rl_redisplay();
 	}
-	if (i == PIPEX)
-	{
-		signal(SIGINT, signal_pipex);
-		signal(SIGQUIT, signal_pipex);
-	}
+	free(nbr);
+}
+
+void	sig_init(void)
+{
+	g_signals.sigint = 0;
+	g_signals.sigquit = 0;
+	g_signals.pid = 0;
+	g_signals.exit_status = 0;
 }
