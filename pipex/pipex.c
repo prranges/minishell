@@ -151,7 +151,7 @@ int exec_start(t_arg *data, t_token *token)
     {
 		fd_builtin = make_builtin_dup(data->tokens);
 		builtin_dup_error_check(fd_builtin);
-        exit (start_builtin(data));
+        exit(start_builtin(data));
     }
 	else
 	{
@@ -174,7 +174,10 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	file[0] = -2;
     data->errnum = 0;
 	if (token->in && token->in->dbl)
+	{
 		file[0] = open("heredoc_file", O_RDONLY);
+		heredoc(data);
+	}
 	if (token->in && !token->in->dbl)
 		file[0] = open(token->in->file_name, O_RDONLY);
 	if (token->in)
@@ -197,8 +200,10 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	else if (i < data->num - 1 && data->fd)
 			dup2(fd[i][1], STDOUT_FILENO);//output
     close_fds(data, fd, file);
-    exec_start(data, token);
-
+//	if (token->builtin)
+//		exit_ms(start_builtin(data), data);
+//	else
+    	exec_start(data, token);
 	return (0);
 }
 
@@ -229,7 +234,10 @@ void heredoc(t_arg *data)
 	int fd;
 	char *line;
 
+//	if (access("heredoc_file", F_OK))
+//		unlink("heredoc_file");
 	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_APPEND, 0644);
+//	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
     check_fd_exist(fd, "heredoc_file");
 	while (1)
 	{
@@ -275,6 +283,8 @@ int pipex(t_arg *data)
 {
 	t_token	*node;
 	int		i;
+	int		status;
+	int		exit_status;
 
 	i = 0;
 	data->fd = malloc(sizeof(int *) * data->num);
@@ -321,6 +331,12 @@ int pipex(t_arg *data)
 		while (i < data->num)
 		{
 			waitpid(g_signals.pid[i], NULL, 0);
+			if (WIFEXITED(status))
+			{
+				exit_status = WEXITSTATUS(status);
+				if (exit_status == 3)
+					exit_ms(data);
+			}
 			i++;
 		}
 	return (0);

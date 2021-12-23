@@ -46,7 +46,9 @@ int    pwd_ms(t_arg *args)
     pwd = getcwd(NULL, 0);
     if (!pwd)
         exit(1); // exit_ms
-    printf("%s\n", pwd);
+//    printf("%s\n", pwd);
+	ft_putstr_fd(pwd, 1);
+	ft_putstr_fd("\n", 1);
     free(pwd);
-    return (0);
+    return (-1);
 }

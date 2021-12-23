@@ -84,8 +84,8 @@ void free_all(t_arg *args)
 {
 	delete_all_redirs(args);
 	delete_all_tokens(args);
-	if (!access("heredoc_file", F_OK))
-		unlink("heredoc_file");
+//	if (!access("heredoc_file", F_OK))
+//		unlink("heredoc_file");
 }
 
 int	main(int argc, char **argv, char **arge)
