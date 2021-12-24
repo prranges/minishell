@@ -22,9 +22,7 @@ void	init_args(t_arg *args)
 	args->env = NULL;
 	args->env_str = NULL;
 	args->fd = NULL;
-	args->errnum = 99;
 	args->home = NULL;
-//	args->exit = 0;
 }
 
 void	parcer(char *str, int *num, t_arg *args)
@@ -84,8 +82,8 @@ void free_all(t_arg *args)
 {
 	delete_all_redirs(args);
 	delete_all_tokens(args);
-//	if (!access("heredoc_file", F_OK))
-//		unlink("heredoc_file");
+	if (!access("heredoc_file", F_OK))
+		unlink("heredoc_file");
 }
 
 char	*find_name_ms(char *argv)

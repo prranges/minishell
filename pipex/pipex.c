@@ -84,8 +84,8 @@ char *get_cmd_arg(t_arg *data, char **cmd)
 	if (!all_paths)
 	{
 		printf("minishell: %s: %s\n", cmd[0], strerror(errno));
-		data->errnum = 127;
-		exit (data->errnum);
+		g_signals.exit_status = 127;
+		exit (g_signals.exit_status);
 	}
 	path_executive = create_cmd_path(data, all_paths, cmd[0]);
 	return (path_executive);
@@ -159,8 +159,8 @@ int exec_start(t_arg *data, t_token *token)
 		if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
 		{
 			printf("minishell: %s: command not found\n", token->cmd[0]);
-			data->errnum = 127;
-			exit (data->errnum);
+			g_signals.exit_status = 127;
+			exit (g_signals.exit_status);
 		}
 	}
     return (0);
@@ -172,12 +172,9 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	(void)fd;
     
 	file[0] = -2;
-    data->errnum = 0;
+    g_signals.exit_status = 0;
 	if (token->in && token->in->dbl)
-	{
 		file[0] = open("heredoc_file", O_RDONLY);
-		heredoc(data);
-	}
 	if (token->in && !token->in->dbl)
 		file[0] = open(token->in->file_name, O_RDONLY);
 	if (token->in)
@@ -200,10 +197,7 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	else if (i < data->num - 1 && data->fd)
 			dup2(fd[i][1], STDOUT_FILENO);//output
     close_fds(data, fd, file);
-//	if (token->builtin)
-//		exit_ms(start_builtin(data), data);
-//	else
-    	exec_start(data, token);
+    exec_start(data, token);
 	return (0);
 }
 
@@ -229,22 +223,19 @@ int	open_file(t_redir *redirect)
 	return (0);
 }
 
-void heredoc(t_arg *data)
+void heredoc(char *name)
 {
 	int fd;
 	char *line;
 
-//	if (access("heredoc_file", F_OK))
-//		unlink("heredoc_file");
-	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_APPEND, 0644);
-//	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
     check_fd_exist(fd, "heredoc_file");
 	while (1)
 	{
 		write (1, "> ", 2);
 		get_next_line(STDIN_FILENO, &line);
-		if (ft_strcmp(line, data->redir->file_name) == 0)
-			break ;
+        if (ft_strcmp(line, name) == 0)
+            break ;
 		if (write(fd, line, ft_strlen(line)) == -1)
 		{
 			perror("Error");
@@ -273,7 +264,7 @@ int precreate_or_preopen(t_arg *data)
 				return (1);
 		}
 		else
-			heredoc(data);
+			heredoc(redirect->file_name);
 		redirect = redirect->next;
 	}
 	return (0);

@@ -93,7 +93,6 @@ typedef struct s_arg
 	t_env	*env;
 	char	**env_str;
 	int		**fd;
-	int		errnum;
 	char	*home;
 }				t_arg;
 
@@ -141,7 +140,7 @@ int		start_builtin(t_arg *args);
 int		make_builtin_dup(t_token *token);
 void	builtin_dup_error_check(int fd);
 int		precreate_or_preopen(t_arg *data);
-void	heredoc(t_arg *data);//, char *file_name);
+void	heredoc(char *file_name);
 void    env_lists_to_str(t_arg *args);
 int		exec_start(t_arg *data, t_token *token);
 char	*find_name_ms(char *argv);

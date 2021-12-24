@@ -51,9 +51,10 @@ char	*find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p)
 char	*if_question(char *str, int *i, t_lexer *lex, t_arg *args)
 {
 	char	*ret;
+	(void)args;
 
 	lex->before = ft_substr(str, 0, lex->j);
-	lex->in = ft_itoa(args->errnum);
+	lex->in = ft_itoa(g_signals.exit_status);
 	lex->after = ft_strdup(str + *i + 2);
 	free(str);
 	ret = ft_strjoin(lex->before, lex->in);
