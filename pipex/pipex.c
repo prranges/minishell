@@ -44,11 +44,11 @@ char *create_cmd_path(t_arg *data, char **all_paths, char *cmd)
 	while (*str)
 	{
 		temp = ft_strjoin(*str, "/");
-		//if (!temp)
-			//my_exit(data, "malloc", 12);
+		if (!temp)
+			my_exit(data, "malloc", 12);
 		path = ft_strjoin(temp, cmd);
-		//if (!path)
-			//my_exit(data, "malloc", 12);
+		if (!path)
+			my_exit(data, "malloc", 12);
 		if (access(path, X_OK) != -1)
 			return (path);
 		free(temp);
@@ -183,8 +183,8 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 		file[0] = open("heredoc_file", O_RDONLY);
 	if (token->in && !token->in->dbl)
 		file[0] = open(token->in->file_name, O_RDONLY);
-	//if (file[0] == -1)
-	//	my_exit(data, token->in->file_name, errno);
+	if (file[0] == -1)
+		my_exit(data, token->in->file_name, errno);
 	if (token->in)
 		check_fd_exist(file[0], token->in->file_name);
 	file[1] = -2;
@@ -192,26 +192,26 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 		file[1] = open(token->out->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else if (token->out && !token->out->dbl)
 		file[1] = open(token->out->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	//if (file[1] == -1)
-		//my_exit(data, token->out->file_name, errno);
+	if (file[1] == -1)
+		my_exit(data, token->out->file_name, errno);
 	if (token->out)
 		check_fd_exist(file[1], token->out->file_name);
 	if (token->in && ft_strcmp(data->tokens->cmd[0], ""))
 		dup_result = dup2(file[0], STDIN_FILENO);
-	//if (dup_result == -1)
-		//my_exit(data, "dup2", errno);
+	if (dup_result == -1)
+		my_exit(data, "dup2", errno);
 	else if (i != 0 && data->fd)
 		dup_result = dup2(fd[i - 1][0], STDIN_FILENO);
-	//if (dup_result == -1)
-		//my_exit(data, "dup2", errno);
+	if (dup_result == -1)
+		my_exit(data, "dup2", errno);
 	if (token->out && ft_strcmp(data->tokens->cmd[0], ""))
 		dup_result = dup2(file[1], STDOUT_FILENO);
-	//if (dup_result == -1)
-		//my_exit(data, "dup2", errno);
+	if (dup_result == -1)
+		my_exit(data, "dup2", errno);
 	else if (i < data->num - 1 && data->fd)
 		dup_result = dup2(fd[i][1], STDOUT_FILENO);//output
-	//if (dup_result == -1)
-		//my_exit(data, "dup2", errno);
+	if (dup_result == -1)
+		my_exit(data, "dup2", errno);
     close_fds(data, fd, file);
     exec_start(data, token);
 	return (0);
@@ -307,13 +307,13 @@ int pipex(t_arg *data)
 
 	i = 0;
 	data->fd = malloc(sizeof(int *) * data->num);
-	//if (!data->fd)
-		//my_exit(data, "malloc", 12);
+	if (!data->fd)
+		my_exit(data, "malloc", 12);
 	while (i < data->num)
 	{
 		data->fd[i] = malloc(sizeof(int) * 2);
-		//if (!(data->fd[i]))
-			//my_exit(data, "malloc", 12);
+		if (!(data->fd[i]))
+			my_exit(data, "malloc", 12);
 		i++;
 	}
 	i = 0;
@@ -322,13 +322,13 @@ int pipex(t_arg *data)
 	{
 		pipe(data->fd[i]);
 		g_signals.exit_status = errno;
-		//if (pipe(data->fd[i]) == -1)
-			//my_exit(data, "pipe", g_signals.exit_status);
+		if (pipe(data->fd[i]) == -1)
+			my_exit(data, "pipe", g_signals.exit_status);
 		i++;
 	}
 	g_signals.pid = malloc(sizeof(pid_t *) * data->num);
-	//if (!(g_signals.pid))
-		//my_exit(data, "malloc", 12);
+	if (!(g_signals.pid))
+		my_exit(data, "malloc", 12);
 	i = 0;
 	while (i < data->num)
 	{
@@ -341,7 +341,7 @@ int pipex(t_arg *data)
 		if (g_signals.pid[i] < 0)
 		{
 			g_signals.exit_status = errno;
-			//my_exit(data, "fork", g_signals.exit_status);
+			my_exit(data, "fork", g_signals.exit_status);
 		}
 		if (g_signals.pid[i] == 0)
 				child_process(i, data, data->fd, node);
