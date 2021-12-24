@@ -39,14 +39,24 @@ void	parcer(char *str, int *num, t_arg *args)
 		(*num)++;
 		number_of_parts = find_number_of_parts(*sub_strs);
 		start_end_i = malloc(sizeof(int **));
+		if (!(start_end_i))
+			my_exit(args, "malloc", 12);
 		start_end_i[0] = malloc(sizeof(int *) * number_of_parts);
+		if (!(start_end_i[0]))
+			my_exit(args, "malloc", 12);
 		start_end_i[1] = malloc(sizeof(int *) * number_of_parts);
+		if (!(start_end_i[1]))
+			my_exit(args, "malloc", 12);
 		cmd = malloc(sizeof(char **) * number_of_parts + 1);
+		if (!(cmd))
+			my_exit(args, "malloc", 12);
 		find_parts_of_str(*sub_strs, start_end_i, args, *num);
 		s = -1;
 		while (number_of_parts > ++s)
 		{
 			cmd[s] = ft_substr(sub_strs[0], start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
+			if (!(cmd[s]))
+				my_exit(args, "malloc", 12);
 			cmd[s] = lexe(cmd[s], args);
 		}
 		cmd[s] = NULL;
@@ -107,7 +117,11 @@ int	main(int argc, char **argv, char **arge)
 	(void)argv;
 	rl_outstream = stderr;
 	g_signals.name = find_name_ms(argv[0]);
+	if (!(g_signals.name))
+		exit(12);
 	args = (t_arg *)malloc(sizeof(t_arg));
+	if (!args)
+		my_exit(args, "malloc", 12);
 	init_args(args);
 	env_read(args, arge);
 	while (1)

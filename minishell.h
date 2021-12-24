@@ -156,4 +156,6 @@ void	sig_init(void);
 void	sig_int(int signal);
 void	sig_quit(int signal);
 
+int my_exit(t_arg *data, char *text, int errnum);
+
 #endif

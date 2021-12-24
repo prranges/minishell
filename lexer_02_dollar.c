@@ -32,6 +32,8 @@ char	*find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p)
 	char	*ret;
 
 	lex->before = ft_substr(str, 0, lex->j);
+	if (!lex->before)
+
 	while (p->next != NULL)
 	{
 		if ((ft_strcmp(p->key, lex->key)) == 0)

@@ -12,11 +12,13 @@
 
 #include "minishell.h"
 
-t_redir	*init_redir(void)
+t_redir	*init_redir(void) //доделать
 {
 	t_redir	*redir;
 
 	redir = (t_redir *)malloc(sizeof(t_redir));
+	if (!redir)
+		exit(12); //оставить так или добавить my_exit и структуру
 	redir->file_name = NULL;
 	redir->cmd_list_num = 0;
 	redir->out_in = 0;
@@ -70,6 +72,8 @@ int	redirect(char *str, int i, t_arg *args, int num)
 		   && str[i] != '>' && str[i] != '<')
 		i++;
 	new->file_name = lexe(ft_substr(str, j, i - j), args);
+	if (!new->file_name)
+		my_exit(args, "malloc", 12);
 	new->cmd_list_num = num;
 	add_redir(&args->redir, new);
 	while (str[i] == ' ' || str[i] == '\t')

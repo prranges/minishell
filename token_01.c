@@ -12,11 +12,13 @@
 
 #include "minishell.h"
 
-t_token	*init_tokens(void)
+t_token	*init_tokens(void) //добавить структуру
 {
 	t_token	*lst;
 
 	lst = (t_token *)malloc(sizeof(t_token));
+	//if (!lst)
+	//	my_exit(args, "malloc", 12); //добавить структуру
 	lst->list_num = 1;
 	lst->cmd = NULL;
 	lst->in = NULL;

@@ -56,7 +56,7 @@ int	find_pipe(char *str)
 	return (i);
 }
 
-char	**make_substrs_pipe_devided(char *str)
+char	**make_substrs_pipe_devided(char *str) //дописать
 {
 	int		i;
 	int		start;
@@ -68,11 +68,15 @@ char	**make_substrs_pipe_devided(char *str)
 	p = str;
 	sub_strs = malloc(sizeof(char **) \
 					  + (sizeof(char *) * number_of_pipes(p) + 2));
+							//  if (!sub_strs)
+								//  my_exit(data, "malloc", 12);//добавить структуру
 	start = 0;
 	while (i < number_of_pipes(p) + 1)
 	{
 		len = find_pipe(p + start);
 		sub_strs[i] = ft_substr(p, start, len);
+		//if (!(sub_strs[i]))
+			//my_exit(data, "malloc", 12);//добавить структуру
 		start += len + 1;
 		i++;
 	}

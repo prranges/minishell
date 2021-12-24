@@ -42,3 +42,18 @@ int	exit_ms(t_arg *args)
 	exit (0);
 	return (0);
 }
+
+int my_exit(t_arg *data, char *text, int errnum)
+{
+	char *error;
+	if (text)
+	{
+		error = strerror(errnum);
+		write(2, text, ft_strlen(text));
+		write(2, ": ", 2);
+		write(2, error, ft_strlen(error));
+		write(2, "\n", 1);
+	}
+	free_all(data);
+	exit(errnum);
+}
