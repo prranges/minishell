@@ -14,10 +14,10 @@
 
 t_env	*find_key_str_in_env(t_env *env, char *str)
 {
-	int	i;
-	char *key;
+	int		i;
+	char	*key;
 	t_env	*p;
-	
+
 	p = env;
 	i = 0;
 	while (str[i] && str[i] != '=')
@@ -36,10 +36,10 @@ t_env	*find_key_str_in_env(t_env *env, char *str)
 	return (NULL);
 }
 
-int print_export(t_env *env)
+int	print_export(t_env *env)
 {
 	t_env	*p;
-	
+
 	p = env;
 	while (p)
 	{
@@ -56,12 +56,21 @@ int print_export(t_env *env)
 	return (0);
 }
 
-int    export_ms(t_arg *args)
+int	print_export_error(char *cmd)
+{
+	g_signals.exit_status = 1;
+	ft_putstr_fd("export: `", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
+	return (1);
+}
+
+int	export_ms(t_arg *args)
 {
 	t_env	*env_list;
 	char	**cmd;
-	
-	args->errnum = 0;
+
+	g_signals.exit_status = 0;
 	cmd = args->tokens->cmd;
 	if (!args->env)
 		return (1);
@@ -76,12 +85,7 @@ int    export_ms(t_arg *args)
 		else if (ft_isalpha(*cmd[0]) || *cmd[0] == '_')
 			add_env(&args->env, *cmd);
 		else
-		{
-			args->errnum = 1;
-			ft_putstr_fd("export: `", 2);
-			ft_putstr_fd(*cmd, 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
-		}
+			return (print_export_error(*cmd));
 		cmd++;
 	}
 	return (0);

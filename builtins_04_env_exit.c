@@ -12,33 +12,33 @@
 
 #include "minishell.h"
 
-int    env_ms(t_env *env)
+int	env_ms(t_env *env)
 {
-    t_env    *p;
-    
-    if (!env)
-        return (1);
-    p = env;
-    while (p)
-    {
-        if (p->separator == '=')
-        {
-            printf("%s", p->key);
-            printf("%c", p->separator);
-            if (p->value)
-                printf("%s", p->value);
-            printf("\n");
-        }
-        p = p->next;
-    }
-    return (0);
+	t_env	*p;
+
+	if (!env)
+		return (1);
+	p = env;
+	while (p)
+	{
+		if (p->separator == '=')
+		{
+			ft_putstr_fd(p->key, 1);
+			ft_putchar_fd(p->separator, 1);
+			if (p->value)
+				ft_putstr_fd(p->value, 1);
+			ft_putchar_fd('\n', 1);
+		}
+		p = p->next;
+	}
+	return (0);
 }
 
-int    exit_ms(t_arg *args)
+int	exit_ms(t_arg *args)
 {
 	free_all(args);
 	if (g_signals.pid == 0)
 		ft_putstr_fd("exit\n", 2);
-	exit (3);
+	exit (0);
 	return (0);
 }

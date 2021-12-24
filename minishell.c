@@ -96,8 +96,6 @@ char	*find_name_ms(char *argv)
 		i--;
 	if (argv[i] == '/')
 		i++;
-//	g_signals.name = ft_strdup(argv + i);
-//	printf("name - %s\n", g_signals.name);
 	return (ft_strdup(argv + i));
 }
 
@@ -109,6 +107,7 @@ int	main(int argc, char **argv, char **arge)
 
 	(void)argc;
 	(void)argv;
+	rl_outstream = stderr;
 	g_signals.name = find_name_ms(argv[0]);
 	args = (t_arg *)malloc(sizeof(t_arg));
 	init_args(args);
@@ -120,7 +119,6 @@ int	main(int argc, char **argv, char **arge)
 		sig_init();
 		signal(SIGINT, &sig_int);
 		signal(SIGQUIT, &sig_quit);
-//		signal(SIGQUIT, SIG_IGN);
 		if (!(str = readline("🔷 minishell-0.60$ ")))
 		{
 			ft_putstr_fd("\033[A🔷 minishell-0.60$ exit\n", 1);
@@ -130,9 +128,9 @@ int	main(int argc, char **argv, char **arge)
 		else if (str && str[0])
 			add_history(str);
 		if (preparcer(str) == 1)
-			printf("minishell: syntax error near unexpected token\n");
+			ft_putstr_fd("minishell: syntax error near unexpected token\n", 2);
 		else if (preparcer(str) == 2)
-			printf("minishell: syntax error near unclosed quotes\n");
+			ft_putstr_fd("minishell: syntax error near unclosed quotes\n", 2);
 		else if (!preparcer(str))
 			parcer(str, &num, args);
 		free(str);
@@ -143,7 +141,6 @@ int	main(int argc, char **argv, char **arge)
 			start_builtin(args);
 		else
 			pipex(args);
-//		printf("MS2 - %d\n", g_signals.ms);
 		free_all(args);
 	}
 	return (0);

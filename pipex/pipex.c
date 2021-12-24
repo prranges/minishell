@@ -339,7 +339,7 @@ int pipex(t_arg *data)
 		if (WIFEXITED(status))
 		{
 			exit_status = WEXITSTATUS(status);
-			if (exit_status == 3)
+			if (exit_status == 0)
 				exit_ms(data);
 		}
 		i++;

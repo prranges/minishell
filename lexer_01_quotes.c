@@ -59,23 +59,6 @@ char	*single_quotes(char *str, int *i, t_lexer *lex)
 	return (ret);
 }
 
-//char	*backslash(char *str, int *i, t_lexer *lex)
-//{
-//	char	*ret;
-//
-//	init_lexer(lex);
-//	lex->before = ft_substr(str, 0, *i);
-//	lex->after = ft_strdup(str + *i + 1);
-//	ret = ft_strjoin(lex->before, lex->after);
-//	*i = (int)ft_strlen(lex->before);
-//	free_lexer(lex);
-//	++*i;
-//	if (ret[*i] == '\\' || ret[*i] == '\'')
-//		--*i;
-//	free(str);
-//	return (ret);
-//}
-
 char	*double_quotes(char *str, int *i, t_arg *args, t_lexer *lex)
 {
 	char	*ret;
@@ -88,12 +71,6 @@ char	*double_quotes(char *str, int *i, t_arg *args, t_lexer *lex)
 	before = ft_substr(str, 0, lex->j);
 	while (str[++(*i)] != '\"')
 	{
-//		if (str[*i] == '\\' && (str[*i + 1] == '\"' || str[*i + 1] == '$' || str[*i + 1] == '\\'))
-//		{
-//			str = backslash(str, i, lex);
-//			if (str[*i] == '\"')
-//				--*i;
-//		}
 		if (str[*i] == '$')
 			str = dollar(str, i, args, lex);
 	}
@@ -118,13 +95,10 @@ char	*lexe(char *str, t_arg *args)
 	{
 		if (str[i] == '\'')
 			str = single_quotes(str, &i, lex);
-//        if (str[i] == '\\')
-//            str = backslash(str, &i, lex);
 		if (str[i] == '\"')
 			str = double_quotes(str, &i, args, lex);
 		if (str[i] == '$')
 			str = dollar(str, &i, args, lex);
 	}
-//    printf("str lexer - %s\n", str);
 	return (str);
 }

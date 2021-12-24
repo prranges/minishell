@@ -50,8 +50,8 @@ char	*find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p)
 
 char	*if_question(char *str, int *i, t_lexer *lex, t_arg *args)
 {
-	char    *ret;
-	
+	char	*ret;
+
 	lex->before = ft_substr(str, 0, lex->j);
 	lex->in = ft_itoa(args->errnum);
 	lex->after = ft_strdup(str + *i + 2);
@@ -62,15 +62,15 @@ char	*if_question(char *str, int *i, t_lexer *lex, t_arg *args)
 	return (ret);
 }
 
-char    *dollar(char *str, int *i, t_arg *args, t_lexer *lex)
+char	*dollar(char *str, int *i, t_arg *args, t_lexer *lex)
 {
-    t_env    *p;
-    char    *ret;
+	t_env	*p;
+	char	*ret;
 
-    p = args->env;
-    init_lexer(lex);
-    lex->j = *i;
-    lex->e = -1;
+	p = args->env;
+	init_lexer(lex);
+	lex->j = *i;
+	lex->e = -1;
 	if (str[*i + 1] == '?')
 		ret = if_question(str, i, lex, args);
 	else
@@ -87,6 +87,6 @@ char    *dollar(char *str, int *i, t_arg *args, t_lexer *lex)
 			return (str);
 		}
 	}
-    free_lexer(lex);
-    return (ret);
+	free_lexer(lex);
+	return (ret);
 }

@@ -14,8 +14,8 @@
 
 int	check_n(char *cmd)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
 	if (!cmd)
 		return (0);
@@ -40,11 +40,11 @@ int	check_n(char *cmd)
 
 int	echo_ms(t_arg *args)
 {
-    char    **cmd;
-    int		n;
+	char	**cmd;
+	int		n;
 
-    n = 0;
-    cmd = args->tokens->cmd;
+	n = 0;
+	cmd = args->tokens->cmd;
 	if (*(cmd + 1))
 	{
 		cmd++;
@@ -65,21 +65,21 @@ int	echo_ms(t_arg *args)
 			cmd++;
 		}
 	}
-    if (!n)
-        ft_putstr_fd("\n", 1);
-    return (0);
+	if	(!n)
+		ft_putstr_fd("\n", 1);
+	return (0);
 }
 
-int    pwd_ms(t_arg *args)
+int	pwd_ms(t_arg *args)
 {
-    (void)args;
-    char    *pwd;
-    
-    pwd = getcwd(NULL, 0);
-    if (!pwd)
-        exit(1); // exit_ms
-    ft_putstr_fd(pwd, 1);
-    ft_putstr_fd("\n", 1);
-    free(pwd);
-    return (-1);
+	(void)args;
+	char    *pwd;
+
+	pwd = getcwd(NULL, 0);
+	if (!pwd)
+		exit(1); // exit_ms
+	ft_putstr_fd(pwd, 1);
+	ft_putstr_fd("\n", 1);
+	free(pwd);
+	return (-1);
 }
