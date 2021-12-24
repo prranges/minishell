@@ -25,9 +25,9 @@ void	sig_int(int signal)
 		rl_redisplay();
 		g_signals.exit_status = 1;
 	}
-	else
+	else if (g_signals.pid != 0)
 	{
-		ft_putstr_fd("\n", 2);
+		ft_putstr_fd("\n", 1);
 		g_signals.exit_status = 130;
 	}
 	g_signals.sigint = 1;
@@ -38,20 +38,19 @@ void	sig_quit(int signal)
 	char	*nbr;
 
 	nbr = ft_itoa(signal);
-	if (g_signals.pid != 0)
+	if (g_signals.pid == 0)
+	{
+		rl_on_new_line();
+		rl_redisplay();
+		ft_putstr_fd("  \b\b", 1);
+		rl_redisplay();
+	}
+	else if (g_signals.pid != 0)
 	{
 		ft_putstr_fd("Quit: ", 2);
 		ft_putendl_fd(nbr, 2);
 		g_signals.exit_status = 131;
 		g_signals.sigquit = 1;
-	}
-	else
-	{
-		rl_on_new_line();
-		rl_redisplay();
-		ft_putstr_fd("  \b\b", 1);
-		rl_replace_line("", 1);
-		rl_redisplay();
 	}
 	free(nbr);
 }

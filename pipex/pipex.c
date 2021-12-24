@@ -314,6 +314,11 @@ int pipex(t_arg *data)
 	i = 0;
 	while (i < data->num)
 	{
+        if (ft_strcmp(find_name_ms(node->cmd[0]), g_signals.name) == 0)
+		{
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);
+		}
 		g_signals.pid[i] = fork();
 		if (g_signals.pid[i] < 0)
 		{
@@ -322,22 +327,22 @@ int pipex(t_arg *data)
 		}
 		if (g_signals.pid[i] == 0)
 				child_process(i, data, data->fd, node);
-			i++;
-			if (node->next)
-				node = node->next;
-		}
-		close_fds(data, data->fd, NULL);
-		i = 0;
-		while (i < data->num)
+		i++;
+		if (node->next)
+			node = node->next;
+	}
+	close_fds(data, data->fd, NULL);
+	i = 0;
+	while (i < data->num)
+	{
+		waitpid(g_signals.pid[i], NULL, 0);
+		if (WIFEXITED(status))
 		{
-			waitpid(g_signals.pid[i], NULL, 0);
-			if (WIFEXITED(status))
-			{
-				exit_status = WEXITSTATUS(status);
-				if (exit_status == 3)
-					exit_ms(data);
-			}
-			i++;
+			exit_status = WEXITSTATUS(status);
+			if (exit_status == 3)
+				exit_ms(data);
 		}
+		i++;
+	}
 	return (0);
 }

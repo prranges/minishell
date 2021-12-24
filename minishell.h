@@ -42,6 +42,7 @@ typedef struct	s_sig
 	int				sigquit;
 	int				exit_status;
 	pid_t			*pid;
+	char			*name;
 }				t_sig;
 
 typedef struct s_redir
@@ -143,6 +144,7 @@ int		precreate_or_preopen(t_arg *data);
 void	heredoc(t_arg *data);//, char *file_name);
 void    env_lists_to_str(t_arg *args);
 int		exec_start(t_arg *data, t_token *token);
+char	*find_name_ms(char *argv);
 /*gnl*/
 char	*get_line(char *saved_buf);
 char	*clear_saved_buf(char *saved_buf);

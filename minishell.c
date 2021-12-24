@@ -88,6 +88,19 @@ void free_all(t_arg *args)
 //		unlink("heredoc_file");
 }
 
+char	*find_name_ms(char *argv)
+{
+	int	i;
+	i = (int)ft_strlen(argv) - 1;
+	while (argv[i] != '/' && i)
+		i--;
+	if (argv[i] == '/')
+		i++;
+//	g_signals.name = ft_strdup(argv + i);
+//	printf("name - %s\n", g_signals.name);
+	return (ft_strdup(argv + i));
+}
+
 int	main(int argc, char **argv, char **arge)
 {
 	char	*str;
@@ -96,6 +109,7 @@ int	main(int argc, char **argv, char **arge)
 
 	(void)argc;
 	(void)argv;
+	g_signals.name = find_name_ms(argv[0]);
 	args = (t_arg *)malloc(sizeof(t_arg));
 	init_args(args);
 	env_read(args, arge);
@@ -129,6 +143,7 @@ int	main(int argc, char **argv, char **arge)
 			start_builtin(args);
 		else
 			pipex(args);
+//		printf("MS2 - %d\n", g_signals.ms);
 		free_all(args);
 	}
 	return (0);

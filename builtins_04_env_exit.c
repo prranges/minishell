@@ -39,6 +39,6 @@ int    exit_ms(t_arg *args)
 	free_all(args);
 	if (g_signals.pid == 0)
 		ft_putstr_fd("exit\n", 2);
-	exit(3);
+	exit (3);
 	return (0);
 }

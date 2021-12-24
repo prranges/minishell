@@ -12,29 +12,61 @@
 
 #include "minishell.h"
 
-int    echo_ms(t_arg *args)
+int	check_n(char *cmd)
+{
+	int i;
+	
+	i = 0;
+	if (!cmd)
+		return (0);
+	if (ft_strcmp(cmd, "-n") == 0)
+		return (1);
+	while (cmd[i])
+	{
+		while (cmd[i] == ' ' || cmd[i] == '\t')
+			i++;
+		if (cmd[i] == '-')
+		{
+			while (cmd[++i] == 'n')
+				;
+			if (!cmd[i])
+				return (1);
+			return (0);
+		}
+		i++;
+	}
+	return (0);
+}
+
+int	echo_ms(t_arg *args)
 {
     char    **cmd;
-    int        n;
-    
+    int		n;
+
     n = 0;
     cmd = args->tokens->cmd;
-    cmd++;
-    while (ft_strcmp(*cmd, "-n") == 0)
-    {
-        n = 1;
-        cmd++;
-    }
-    while (*cmd)
-    {
-        if (*(cmd + 1))
-            printf("%s ", *cmd);
-        else
-            printf("%s", *cmd);
-        cmd++;
-    }
+	if (*(cmd + 1))
+	{
+		cmd++;
+		while (check_n(*cmd))
+		{
+			n = 1;
+			cmd++;
+		}
+		while (*cmd)
+		{
+			if (*(cmd + 1))
+			{
+				ft_putstr_fd(*cmd, 1);
+				ft_putstr_fd(" ", 1);
+			}
+			else if (*cmd)
+				ft_putstr_fd(*cmd, 1);
+			cmd++;
+		}
+	}
     if (!n)
-        printf("\n");
+        ft_putstr_fd("\n", 1);
     return (0);
 }
 
@@ -46,9 +78,8 @@ int    pwd_ms(t_arg *args)
     pwd = getcwd(NULL, 0);
     if (!pwd)
         exit(1); // exit_ms
-//    printf("%s\n", pwd);
-	ft_putstr_fd(pwd, 1);
-	ft_putstr_fd("\n", 1);
+    ft_putstr_fd(pwd, 1);
+    ft_putstr_fd("\n", 1);
     free(pwd);
     return (-1);
 }

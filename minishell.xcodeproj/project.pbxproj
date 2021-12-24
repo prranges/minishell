@@ -65,7 +65,7 @@
 		24E771B62742B7AF009C80C1 /* libft */ = {isa = PBXFileReference; lastKnownFileType = folder; path = libft; sourceTree = "<group>"; };
 		24F00586276A343700623E9D /* builtins_03_unset.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_03_unset.c; sourceTree = "<group>"; };
 		24F00588276A35E500623E9D /* builtins_04_env_exit.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_04_env_exit.c; sourceTree = "<group>"; usesTabs = 1; };
-		24F0058A276A5CC000623E9D /* builtins_05_pwd_echo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_05_pwd_echo.c; sourceTree = "<group>"; };
+		24F0058A276A5CC000623E9D /* builtins_05_pwd_echo.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = builtins_05_pwd_echo.c; sourceTree = "<group>"; usesTabs = 1; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
