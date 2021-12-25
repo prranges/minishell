@@ -39,16 +39,16 @@ void	parcer(char *str, int *num, t_arg *args)
 		(*num)++;
 		number_of_parts = find_number_of_parts(*sub_strs);
 		start_end_i = malloc(sizeof(int **));
-		if (!(start_end_i))
-			my_exit(args, "malloc", 12);
+//		if (!(start_end_i))
+//			my_exit(args, "malloc", 12);
 		start_end_i[0] = malloc(sizeof(int *) * number_of_parts);
-		if (!(start_end_i[0]))
-			my_exit(args, "malloc", 12);
+//		if (!(start_end_i[0]))
+//			my_exit(args, "malloc", 12);
 		start_end_i[1] = malloc(sizeof(int *) * number_of_parts);
-		if (!(start_end_i[1]))
-			my_exit(args, "malloc", 12);
+//		if (!(start_end_i[1]))
+//			my_exit(args, "malloc", 12);
 		cmd = malloc(sizeof(char **) * number_of_parts + 1);
-		if (!(cmd))
+		if (!cmd || !start_end_i || !start_end_i[0] || !start_end_i[1])
 			my_exit(args, "malloc", 12);
 		find_parts_of_str(*sub_strs, start_end_i, args, *num);
 		s = -1;
@@ -135,7 +135,7 @@ int	main(int argc, char **argv, char **arge)
 		{
 			ft_putstr_fd("\033[A🔷 minishell-0.60$ exit\n", 1);
 			rl_redisplay();
-			exit (1);
+			exit (0);
 		}
 		else if (str && str[0])
 			add_history(str);
@@ -148,6 +148,7 @@ int	main(int argc, char **argv, char **arge)
 		free(str);
 //		print_all_lists(args);
 		env_lists_to_str(args);
+//		print_double_array(args->env_str);
 		precreate_or_preopen(args);
 		if (num == 1 && args->tokens->builtin && !args->redir)
 			start_builtin(args);
