@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
-t_env	*init_env(void) //доделать
+t_env	*init_env(t_arg *args)
 {
 	t_env	*lst;
 
 	lst = (t_env *)malloc(sizeof(t_env));
 	if (!lst)
-		exit(12); //оставить так или добавить my_exit и структуру
+		my_exit(args, "malloc", 12);
 	lst->key = NULL;
 	lst->value = NULL;
 	lst->separator = 0;
@@ -41,26 +41,26 @@ int	env_lists_len(t_env *env)
 	return (len);
 }
 
-char	*join_value(char *str, t_env *envp) //доделать
+char	*join_value(char *str, t_env *envp, t_arg *args)
 {
 	char	*tmp;
 
 	tmp = ft_strjoin(str, "=");
-//	if (!tmp)
-//		my_exit(args, "malloc", 12); //добавить структуру
+	if (!tmp)
+		my_exit(args, "malloc", 12);
 	free(str);
 	if (envp->value)
 	{
 		str = ft_strjoin(tmp, envp->value);
-		//if (!str)
-			//my_exit(args, "malloc", 12); //добавить структуру
+		if (!str)
+			my_exit(args, "malloc", 12);
 		free(tmp);
 	}
 	else
 	{
 		str = ft_strdup(tmp);
-		//if (!str)
-			//my_exit(args, "malloc", 12); //добавить структуру
+		if (!str)
+			my_exit(args, "malloc", 12);
 		free(tmp);
 	}
 	return (str);
@@ -81,14 +81,14 @@ void	create_env_array(t_arg *args, t_env *envp, int len)
 	{
 		str = ft_strdup(envp->key);
 		if  (!str)
-			my_exit(args, "malloc", 12); //добавить структуру
+			my_exit(args, "malloc", 12);
 		if (envp->separator == '=')
-			str = join_value(str, envp);
+			str = join_value(str, envp, args);
 		if (!str)
-			my_exit(args, "malloc", 12); //добавить структуру
+			my_exit(args, "malloc", 12);
 		env_str[i] = ft_strdup(str);
 		if (!env_str[i])
-			my_exit(args, "malloc", 12); //добавить структуру
+			my_exit(args, "malloc", 12);
 		free(str);
 		i++;
 		envp = envp->next;

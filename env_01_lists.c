@@ -21,12 +21,16 @@ void	env_read(t_arg *args, char **arge)
 	shlvl = 1;
 	i = -1;
 	while (arge[++i])
-		add_env(&args->env, arge[i]);
+		add_env(&args->env, arge[i], args);
 	p = args->env;
 	while (p)
 	{
 		if (ft_strcmp(p->key, "HOME") == 0)
+		{
 			args->home = ft_strdup(p->value);
+			if (!args->home)
+				my_exit(args, "malloc", 12);
+		}
 		if (ft_strcmp(p->key, "SHLVL") == 0)
 		{
 			p->separator = '=';
@@ -38,7 +42,7 @@ void	env_read(t_arg *args, char **arge)
 		p = p->next;
 	}
 	if (shlvl)
-		add_env(&args->env, "SHLVL=1");
+		add_env(&args->env, "SHLVL=1", args);
 }
 
 t_env	*last_env(t_env *env)
@@ -48,7 +52,7 @@ t_env	*last_env(t_env *env)
 	return (env);
 }
 
-void	add_env(t_env **env, char *str) //добавить структуру
+void	add_env(t_env **env, char *str, t_arg *data)
 {
 	t_env	*new;
 	t_env	*temp;
@@ -56,18 +60,18 @@ void	add_env(t_env **env, char *str) //добавить структуру
 
 	temp = *env;
 	i = 0;
-	new = init_env();
+	new = init_env(data);
 	while (str[i] && str[i] != '=')
 		i++;
 	new->key = ft_substr(str, 0, i);
-	//if (!new->key)
-//		my_exit(args, "malloc", 12); //добавить структуру
+	if (!new->key)
+		my_exit(data, "malloc", 12);
 	if (str[i] == '=')
 	{
 		new->separator = '=';
 		new->value = ft_strdup(str + i + 1);
-		//if (!new->value)
-			//my_exit(args, "malloc", 12); //добавить структуру
+		if (!new->value)
+			my_exit(data, "malloc", 12);
 	}
 	if (!temp)
 		*env = new;
@@ -75,7 +79,7 @@ void	add_env(t_env **env, char *str) //добавить структуру
 		last_env(*env)->next = new;
 }
 
-void	edit_env(t_env **env, char *str) //добавить структуру
+void	edit_env(t_env **env, char *str, t_arg *data)
 {
 	t_env	*p;
 	int		i;
@@ -89,8 +93,8 @@ void	edit_env(t_env **env, char *str) //добавить структуру
 		p->separator = '=';
 		free(p->value);
 		p->value = ft_strdup(str + i + 1);
-		//if (!(p->value))
-		//		my_exit(args, "malloc", 12); //добавить структуру
+		if (!(p->value))
+			my_exit(data, "malloc", 12);
 	}
 }
 

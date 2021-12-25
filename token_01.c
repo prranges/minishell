@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
-t_token	*init_tokens(void) //добавить структуру
+t_token	*init_tokens(t_arg *args)
 {
 	t_token	*lst;
 
 	lst = (t_token *)malloc(sizeof(t_token));
-	//if (!lst)
-	//	my_exit(args, "malloc", 12); //добавить структуру
+	if (!lst)
+		my_exit(args, "malloc", 12);
 	lst->list_num = 1;
 	lst->cmd = NULL;
 	lst->in = NULL;
@@ -54,13 +54,13 @@ int	check_builtin(char *cmd)
 	return (0);
 }
 
-int	add_token(t_token **token, char **cmd)
+int	add_token(t_token **token, char **cmd, t_arg *args)
 {
 	t_token	*new;
 	t_token	*temp;
 
 	temp = *token;
-	new = init_tokens();
+	new = init_tokens(args);
 	new->cmd = cmd;
 	new->builtin = check_builtin(cmd[0]);
 	if (!temp)

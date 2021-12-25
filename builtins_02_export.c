@@ -81,9 +81,9 @@ int	export_ms(t_arg *args)
 	{
 		env_list = find_key_str_in_env(args->env, *cmd);
 		if (env_list)
-			edit_env(&env_list, *cmd);
+			edit_env(&env_list, *cmd, args);
 		else if (ft_isalpha(*cmd[0]) || *cmd[0] == '_')
-			add_env(&args->env, *cmd);
+			add_env(&args->env, *cmd, args);
 		else
 			return (print_export_error(*cmd));
 		cmd++;

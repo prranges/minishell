@@ -155,19 +155,14 @@ int exec_start(t_arg *data, t_token *token)
     {
 		fd_builtin = make_builtin_dup(data->tokens);
 		builtin_dup_error_check(fd_builtin);
-       // exit(start_builtin(data));
-			my_exit(data, NULL, start_builtin(data));
+		my_exit(data, NULL, start_builtin(data));
     }
 	else
 	{
 		cmd_ex = get_cmd_arg(data, token->cmd);
 		if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
 		{
-			//ft_putstr_fd("minishell: ", 2);
-			//ft_putstr_fd(token->cmd[0], 2);
-			//ft_putstr_fd(":", 2);
 			g_signals.exit_status = 127;
-			//exit (g_signals.exit_status);
 			my_exit(data, token->cmd[0], g_signals.exit_status);
 		}
 	}
@@ -183,8 +178,8 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	dup_result = 0;
 	file[0] = -2;
     g_signals.exit_status = 0;
-//	if (token->in && token->in->dbl)
-//		file[0] = open("heredoc_file", O_RDONLY);
+	if (token->in && token->in->dbl)
+		file[0] = open("heredoc_file", O_RDONLY);
 	if (token->in && !token->in->dbl)
 		file[0] = open(token->in->file_name, O_RDONLY);
 	if (file[0] == -1)
@@ -221,19 +216,20 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	return (0);
 }
 
-int	open_file(t_redir *redirect) //доделать
+int	open_file(t_redir *redirect, t_arg *data)
 {
 	int	fd;
 
+	fd = 0;
 	if (redirect->out_in == 0 && redirect->dbl == 1)
 		fd = open(redirect->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
-//	if (fd == -1)
-//		my_exit(data, redirect->file_name, errno);//добавить структуру
+	if (fd == -1)
+		my_exit(data, redirect->file_name, errno);
 	else if (redirect->out_in == 0 && redirect->dbl == 0)
 	{
 		fd = open(redirect->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	//	if (fd == -1)
-		//		my_exit(data, redirect->file_name, errno);//добавить структуру
+		if (fd == -1)
+			my_exit(data, redirect->file_name, errno);
 	}
 	else
 	{
@@ -241,12 +237,12 @@ int	open_file(t_redir *redirect) //доделать
 		{
 			free(redirect->file_name);
 			redirect->file_name = ft_strdup("heredoc_file");
-			//if (!redirect->file_name)
-			//	my_exit(data, "malloc", 12);//добавить структуру
+			if (!redirect->file_name)
+				my_exit(data, "malloc", 12);
 		}
 		fd = open(redirect->file_name, O_RDONLY);
-		//if (fd == -1)
-//			my_exit(data, redirect->file_name, errno);//добавить структуру
+		if (fd == -1)
+			my_exit(data, redirect->file_name, errno);
 	}
 	check_fd_exist(fd, redirect->file_name);
 	close(fd);
@@ -273,7 +269,7 @@ static void    ft_here_sig(int signal)
     }
 }
 
-void heredoc(char *name)
+void heredoc(char *name, t_arg *data)
 {
     int fd;
     char *line;
@@ -285,8 +281,8 @@ void heredoc(char *name)
         signal(SIGINT, &ft_here_sig);
         signal(SIGQUIT, &ft_here_sig);
         fd = open("heredoc_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-//        if (fd == -1)
-//            my_exit(data, name, errno);//добавить структуру
+        if (fd == -1)
+            my_exit(data, name, errno);
         check_fd_exist(fd, "heredoc_file");
         while (1)
         {
@@ -328,14 +324,14 @@ int precreate_or_preopen(t_arg *data)
 	{
 		if (redirect->out_in == 0 || redirect->dbl == 0)
 		{
-			if (open_file(redirect))
+			if (open_file(redirect, data))
 				return (1);
 		}
 		else
         {
             signal(SIGINT, SIG_IGN);
             signal(SIGQUIT, SIG_IGN);
-			heredoc(redirect->file_name);
+			heredoc(redirect->file_name, data);
             signal(SIGINT, &sig_int);
             signal(SIGQUIT, &sig_int);
         }

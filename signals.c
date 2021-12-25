@@ -33,13 +33,13 @@ void	sig_int(int signal)
 	g_signals.sigint = 1;
 }
 
-void	sig_quit(int signal) //доделать
+void	sig_quit(int signal, t_arg *args)
 {
 	char	*nbr;
 
 	nbr = ft_itoa(signal);
-	//if (!nbr)
-		//my_exit(data, "malloc", 12);//добавить структуру
+	if (!nbr)
+		my_exit(args, "malloc", 12);
 	if (g_signals.pid == 0)
 	{
 		rl_on_new_line();

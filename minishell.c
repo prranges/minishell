@@ -33,7 +33,7 @@ void	parcer(char *str, int *num, t_arg *args)
 	int		**start_end_i;
 	char	**cmd;
 
-	sub_strs = make_substrs_pipe_devided(str);
+	sub_strs = make_substrs_pipe_devided(str, args);
 	while (*sub_strs)
 	{
 		(*num)++;
@@ -57,10 +57,10 @@ void	parcer(char *str, int *num, t_arg *args)
 			cmd[s] = ft_substr(sub_strs[0], start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
 			if (!(cmd[s]))
 				my_exit(args, "malloc", 12);
-			cmd[s] = lexe(cmd[s], args);
+			cmd[s] = lexe(cmd[s], args,0);
 		}
 		cmd[s] = NULL;
-		args->num = add_token(&args->tokens, cmd);
+		args->num = add_token(&args->tokens, cmd, args);
 		free(start_end_i[0]);
 		free(start_end_i[1]);
 		free(start_end_i);
@@ -96,15 +96,20 @@ void free_all(t_arg *args)
 		unlink("heredoc_file");
 }
 
-char	*find_name_ms(char *argv)
+char	*find_name_ms(char *argv) //exit 12 тк выполняется до создания структуры
 {
-	int	i;
+	int		i;
+	char 	*res;
+
 	i = (int)ft_strlen(argv) - 1;
 	while (argv[i] != '/' && i)
 		i--;
 	if (argv[i] == '/')
 		i++;
-	return (ft_strdup(argv + i));
+	res = ft_strdup(argv + i);
+	if (!res)
+		exit(12);
+	return (res);
 }
 
 int	main(int argc, char **argv, char **arge)
@@ -152,10 +157,7 @@ int	main(int argc, char **argv, char **arge)
 //		print_double_array(args->env_str);
 		precreate_or_preopen(args);
 		if (num == 1 && args->tokens->builtin && !args->redir)
-		{
 			g_signals.exit_status = start_builtin(args);
-			printf("sig - %d\n", g_signals.exit_status);
-		}
 		else
 			pipex(args);
 		free_all(args);
