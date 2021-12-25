@@ -140,17 +140,11 @@ int		start_builtin(t_arg *args);
 int		make_builtin_dup(t_token *token);
 void	builtin_dup_error_check(int fd);
 int		precreate_or_preopen(t_arg *data);
-void	heredoc(char *file_name);
+void	    heredoc(char *file_name);
 void    env_lists_to_str(t_arg *args);
 int		exec_start(t_arg *data, t_token *token);
 char	*find_name_ms(char *argv);
-/*gnl*/
-char	*get_line(char *saved_buf);
-char	*clear_saved_buf(char *saved_buf);
-int		get_next_line(int fd, char **line);
-size_t	strlen_gnl(char *s);
-char	*strjoin_gnl(char *saved_buf, char *buf);
-void	free_all(t_arg *args);
+void    free_all(t_arg *args);
 
 void	sig_init(void);
 void	sig_int(int signal);

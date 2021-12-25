@@ -249,34 +249,70 @@ int	open_file(t_redir *redirect) //доделать
 	return (0);
 }
 
+static void    ft_here_sig(int signal)
+{
+    if (signal == SIGINT)
+    {
+        rl_on_new_line();
+        rl_redisplay();
+        ft_putstr_fd("  \b\b\n", 1);
+        rl_replace_line("", 1);
+        g_signals.exit_status = 1;
+        exit(1);
+    }
+    if (signal == SIGQUIT)
+    {
+        rl_on_new_line();
+        rl_redisplay();
+        ft_putstr_fd("  \b\b", 1);
+        rl_redisplay();
+    }
+}
+
 void heredoc(char *name)
 {
-	int fd;
-	char *line;
+    int fd;
+    char *line;
+    pid_t    pid;
 
-	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-//	if (fd == -1)
-//		my_exit(data, name, errno);//добавить структуру
-    check_fd_exist(fd, "heredoc_file");
-	while (1)
-	{
-		write (1, "> ", 2);
-		get_next_line(STDIN_FILENO, &line);
-        if (ft_strcmp(line, name) == 0)
-            break ;
-		if (write(fd, line, ft_strlen(line)) == -1)
-		{
-			perror("Error");
-			exit(EXIT_FAILURE);
-		}
-		if (write(fd, "\n", 1) == -1)
-		{
-			perror("Error");
-			exit(EXIT_FAILURE);
-		}
-		free(line);
-	}
-	close(fd);
+    pid = fork();
+    if (pid == 0)
+    {
+        signal(SIGINT, &ft_here_sig);
+        signal(SIGQUIT, &ft_here_sig);
+        fd = open("heredoc_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+//        if (fd == -1)
+//            my_exit(data, name, errno);//добавить структуру
+        check_fd_exist(fd, "heredoc_file");
+        while (1)
+        {
+            if (!(line = readline("> ")))
+            {
+                ft_putstr_fd("  \033[A", 1);
+                break ;
+            }
+            if (ft_strcmp(line, name) == 0)
+                break ;
+            if (write(fd, line, ft_strlen(line)) == -1)
+            {
+                perror("Error");
+                exit(EXIT_FAILURE);
+            }
+            if (write(fd, "\n", 1) == -1)
+            {
+                perror("Error");
+                exit(EXIT_FAILURE);
+            }
+            free(line);
+        }
+        close(fd);
+        exit (0);
+    }
+    waitpid(pid, &g_signals.exit_status, 0);
+    if (WIFEXITED(g_signals.exit_status))
+        g_signals.exit_status = WEXITSTATUS(g_signals.exit_status);
+   
+//    return (g_signals.exit_status);
 }
 
 int precreate_or_preopen(t_arg *data)
@@ -292,7 +328,13 @@ int precreate_or_preopen(t_arg *data)
 				return (1);
 		}
 		else
+        {
+            signal(SIGINT, SIG_IGN);
+            signal(SIGQUIT, SIG_IGN);
 			heredoc(redirect->file_name);
+            signal(SIGINT, &sig_int);
+            signal(SIGQUIT, &sig_int);
+        }
 		redirect = redirect->next;
 	}
 	return (0);
@@ -330,7 +372,7 @@ int pipex(t_arg *data)
 	if (!(g_signals.pid))
 		my_exit(data, "malloc", 12);
 	i = 0;
-	while (i < data->num)
+	while (i < data->num && ft_strcmp(data->tokens->cmd[0], ""))
 	{
         if (ft_strcmp(find_name_ms(node->cmd[0]), g_signals.name) == 0)
 		{
@@ -357,8 +399,8 @@ int pipex(t_arg *data)
 		if (WIFEXITED(status))
 		{
 			exit_status = WEXITSTATUS(status);
-			if (exit_status == 0)
-				exit_ms(data);
+//			if (exit_status == 0)
+//				exit_ms(data);
 		}
 		i++;
 	}
