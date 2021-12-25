@@ -33,13 +33,14 @@ void	sig_int(int signal)
 	g_signals.sigint = 1;
 }
 
-void	sig_quit(int signal, t_arg *args)
+void	sig_quit(int signal) // exit 12 потому что хуй его знает почему не работает
 {
 	char	*nbr;
 
 	nbr = ft_itoa(signal);
 	if (!nbr)
-		my_exit(args, "malloc", 12);
+		exit(12);
+		//my_exit(args, "malloc", 12);
 	if (g_signals.pid == 0)
 	{
 		rl_on_new_line();

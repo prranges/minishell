@@ -89,7 +89,7 @@ char *get_cmd_arg(t_arg *data, char **cmd)
 	{
 		printf("minishell: %s: %s\n", cmd[0], strerror(errno));
 		g_signals.exit_status = 127;
-		exit (g_signals.exit_status);
+		exit(g_signals.exit_status);
 	}
 	path_executive = create_cmd_path(data, all_paths, cmd[0]);
 	return (path_executive);
@@ -104,7 +104,7 @@ void check_fd_exist(int fd, char *str)
     }
 }
 
-int	make_builtin_dup(t_token *token)
+int	make_builtin_dup(t_token *token, t_arg *data)
 {
 	int	fd;
 	int	file;
@@ -120,28 +120,26 @@ int	make_builtin_dup(t_token *token)
 	if (fd == -1)
 	{
 		close(file);
-		perror("Error");
-		exit(EXIT_FAILURE);
+		my_exit(data, "dup2", errno);
 	}
 	if (dup2(file, STDOUT_FILENO) == -1)
 	{
 		close(file);
 		close(fd);
-		perror("Error");
-		exit(EXIT_FAILURE);
+		my_exit(data, "dup2", errno);
 	}
 	close(file);
 	return (fd);
 }
 
-void	builtin_dup_error_check(int fd)
+void	builtin_dup_error_check(int fd, t_arg *data)
 {
 	if (fd == -1)
 		return ;
 	if (dup2(fd, STDOUT_FILENO) == -1)
 	{
 		close(fd);
-		perror("Error");
+		my_exit(data, "dup2", errno);
 	}
 	close(fd);
 }
@@ -153,8 +151,8 @@ int exec_start(t_arg *data, t_token *token)
     
     if (token->builtin)
     {
-		fd_builtin = make_builtin_dup(data->tokens);
-		builtin_dup_error_check(fd_builtin);
+		fd_builtin = make_builtin_dup(data->tokens, data);
+		builtin_dup_error_check(fd_builtin, data);
 		my_exit(data, NULL, start_builtin(data));
     }
 	else
