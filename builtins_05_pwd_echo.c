@@ -81,5 +81,5 @@ int	pwd_ms(t_arg *args)
 	ft_putstr_fd(pwd, 1);
 	ft_putstr_fd("\n", 1);
 	free(pwd);
-	return (-1);
+	return (0);
 }

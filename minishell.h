@@ -51,8 +51,8 @@ typedef struct s_redir
 	int				cmd_list_num;
 	int				out_in; //out = 0 in = 1
 	int				dbl;
-	int				heredoc_fd;
-	int				file_fd;
+//	int				heredoc_fd;
+//	int				file_fd;
 	struct s_redir	*next;
 }				t_redir;
 

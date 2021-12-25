@@ -155,16 +155,20 @@ int exec_start(t_arg *data, t_token *token)
     {
 		fd_builtin = make_builtin_dup(data->tokens);
 		builtin_dup_error_check(fd_builtin);
-        exit(start_builtin(data));
+       // exit(start_builtin(data));
+			my_exit(data, NULL, start_builtin(data));
     }
 	else
 	{
 		cmd_ex = get_cmd_arg(data, token->cmd);
 		if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
 		{
-			printf("minishell: %s: command not found\n", token->cmd[0]);
+			//ft_putstr_fd("minishell: ", 2);
+			//ft_putstr_fd(token->cmd[0], 2);
+			//ft_putstr_fd(":", 2);
 			g_signals.exit_status = 127;
-			exit (g_signals.exit_status);
+			//exit (g_signals.exit_status);
+			my_exit(data, token->cmd[0], g_signals.exit_status);
 		}
 	}
     return (0);
@@ -179,8 +183,8 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	dup_result = 0;
 	file[0] = -2;
     g_signals.exit_status = 0;
-	if (token->in && token->in->dbl)
-		file[0] = open("heredoc_file", O_RDONLY);
+//	if (token->in && token->in->dbl)
+//		file[0] = open("heredoc_file", O_RDONLY);
 	if (token->in && !token->in->dbl)
 		file[0] = open(token->in->file_name, O_RDONLY);
 	if (file[0] == -1)
@@ -345,7 +349,7 @@ int pipex(t_arg *data)
 	t_token	*node;
 	int		i;
 	int		status;
-	int		exit_status;
+//	int		exit_status;
 
 	i = 0;
 	data->fd = malloc(sizeof(int *) * data->num);
@@ -395,10 +399,10 @@ int pipex(t_arg *data)
 	i = 0;
 	while (i < data->num)
 	{
-		waitpid(g_signals.pid[i], NULL, 0);
+		waitpid(g_signals.pid[i], &g_signals.exit_status, 0);
 		if (WIFEXITED(status))
 		{
-			exit_status = WEXITSTATUS(status);
+			g_signals.exit_status = WEXITSTATUS(status);
 //			if (exit_status == 0)
 //				exit_ms(data);
 		}

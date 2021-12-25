@@ -62,5 +62,4 @@ void	sig_init(void)
 	g_signals.sigint = 0;
 	g_signals.sigquit = 0;
 	g_signals.pid = 0;
-	g_signals.exit_status = 0;
 }

@@ -49,10 +49,16 @@ int my_exit(t_arg *data, char *text, int errnum)
 	if (text)
 	{
 		error = strerror(errnum);
+		write(2, "minishell: ", 11);
 		write(2, text, ft_strlen(text));
 		write(2, ": ", 2);
-		write(2, error, ft_strlen(error));
-		write(2, "\n", 1);
+		if (errnum == 127)
+			ft_putstr_fd("command not found\n", 2);
+		else
+		{
+			write(2, error, ft_strlen(error));
+			write(2, "\n", 1);
+		}
 	}
 	free_all(data);
 	exit(errnum);
