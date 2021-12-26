@@ -36,6 +36,13 @@ SRCS	= minishell.c \
 		  builtins_05_pwd_echo.c \
 		  preparcer_01.c \
 		  pipex/pipex.c \
+		  pipex/pipex_builtin.c \
+		  pipex/pipex_child.c \
+		  pipex/pipex_heredoc.c \
+		  pipex/pipex_path_cmd.c \
+		  pipex/pipex_checks.c \
+		  pipex/pipex_utils.c \
+		  pipex/pipex_precreate_and_preopen.c \
 
 CC	= gcc
 CFLAGS 	= -Wall -Wextra -Werror

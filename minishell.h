@@ -125,7 +125,6 @@ t_redir	*last_redir(t_redir *redir);
 void	add_redirs_to_cmd(t_redir *redir, t_token *tokens);
 int		find_number_of_parts(char *str);
 void	find_parts_of_str(char *str, int **start_end_i, t_arg *args, int num);
-int		pipex(t_arg *data);
 int		env_ms(t_env *env);
 int		export_ms(t_arg *args, t_token *token);
 void	edit_env(t_env **env, char *str, t_arg *data);
@@ -151,5 +150,29 @@ void	sig_int(int signal);
 void	sig_quit(int signal);
 
 void	my_exit(t_arg *data, char *text, int errnum);
+
+int		pipex(t_arg *data);
+void	exec_start(t_arg *data, t_token *token);
+void	dup2_builtin_close_error(int file, int fd,t_arg *data);
+int		make_builtin_dup(t_token *token, t_arg *data);
+void	builtin_dup_error_check(int fd, t_arg *data);
+int		create_file_0(t_token *token, t_arg *data);
+int		create_file_1(t_token *token, t_arg *data);
+int		child_process(int i, t_arg *data, int **fd, t_token *token);
+void 	heredoc(char *name, t_arg *data);
+void	heredoc_cycle(char *name, char *line, int fd, t_arg *data);
+char	**find_path(t_env *env);
+char	*create_cmd_path(t_arg *data, char **all_paths, char *cmd);
+char	*get_cmd_arg(t_arg *data, char **cmd);
+void	check_fd_exist(int fd, char *str, t_arg *data);
+void 	check_minishell_in_minishell(char *cmd);
+void	close_fds(t_arg *data, int **fd, int *file);
+void	check_fd_exist(int fd, char *str, t_arg *data);
+void	create_fd(t_arg *data);
+void	create_pipe_fd(t_arg *data);
+void	waitpid_pipex(t_arg *data);
+int 	precreate_or_preopen(t_arg *data);
+void 	redirect_dbl(t_redir *redirect, t_arg *data);
+int		open_file(t_redir *redirect, t_arg *data);
 
 #endif
