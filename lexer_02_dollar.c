@@ -19,7 +19,7 @@ int	if_key(char c)
 	return (1);
 }
 
-void	if_no_key_in_env(char *str, int *i, t_lexer *lex) //маллок не проверяем
+void	if_no_key_in_env(char *str, int *i, t_lexer *lex)
 {
 	if (ft_isalpha(lex->key[0]) || !lex->key[1])
 		lex->in = ft_strdup("");
@@ -27,7 +27,7 @@ void	if_no_key_in_env(char *str, int *i, t_lexer *lex) //маллок не пр�
 		lex->in = ft_substr(str, lex->j + 2, *i - lex->j - 1);
 }
 
-char	*find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p) //маллок не провеяем
+char	*find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p)
 {
 	char	*ret;
 
@@ -48,10 +48,9 @@ char	*find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p) //мал�
 	return (ret);
 }
 
-char	*if_question(char *str, int *i, t_lexer *lex, t_arg *args) // маллок не проверяем
+char	*if_question(char *str, int *i, t_lexer *lex)
 {
 	char	*ret;
-	(void)args;
 
 	lex->before = ft_substr(str, 0, lex->j);
 	lex->in = ft_itoa(g_signals.exit_status);
@@ -63,7 +62,7 @@ char	*if_question(char *str, int *i, t_lexer *lex, t_arg *args) // маллок 
 	return (ret);
 }
 
-char	*dollar(char *str, int *i, t_arg *args, t_lexer *lex) // malloc не проверяем!
+char	*dollar(char *str, int *i, t_arg *args, t_lexer *lex)
 {
 	t_env	*p;
 	char	*ret;
@@ -73,7 +72,7 @@ char	*dollar(char *str, int *i, t_arg *args, t_lexer *lex) // malloc не про
 	lex->j = *i;
 	lex->e = -1;
 	if (str[*i + 1] == '?')
-		ret = if_question(str, i, lex, args);
+		ret = if_question(str, i, lex);
 	else
 	{
 		while (if_key(str[++(*i)]))

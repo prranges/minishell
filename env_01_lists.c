@@ -26,11 +26,7 @@ void	env_read(t_arg *args, char **arge)
 	while (p)
 	{
 		if (ft_strcmp(p->key, "HOME") == 0)
-		{
 			args->home = ft_strdup(p->value);
-			if (!args->home)
-				my_exit(args, "malloc", 12);
-		}
 		if (ft_strcmp(p->key, "SHLVL") == 0)
 		{
 			p->separator = '=';

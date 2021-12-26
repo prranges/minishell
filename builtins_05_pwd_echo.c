@@ -38,6 +38,21 @@ int	check_n(char *cmd)
 	return (0);
 }
 
+void	echo_print_args(char **cmd)
+{
+	while (*cmd)
+	{
+		if (*(cmd + 1))
+		{
+			ft_putstr_fd(*cmd, 1);
+			ft_putstr_fd(" ", 1);
+		}
+		else if (*cmd)
+			ft_putstr_fd(*cmd, 1);
+		cmd++;
+	}
+}
+
 int	echo_ms(t_arg *args, t_token *token)
 {
 	char	**cmd;
@@ -54,31 +69,20 @@ int	echo_ms(t_arg *args, t_token *token)
 			n = 1;
 			cmd++;
 		}
-		while (*cmd)
-		{
-			if (*(cmd + 1))
-			{
-				ft_putstr_fd(*cmd, 1);
-				ft_putstr_fd(" ", 1);
-			}
-			else if (*cmd)
-				ft_putstr_fd(*cmd, 1);
-			cmd++;
-		}
+		echo_print_args(cmd);
 	}
-	if	(!n)
+	if (!n)
 		ft_putstr_fd("\n", 1);
 	return (0);
 }
 
 int	pwd_ms(t_arg *args)
 {
-	(void)args;
-	char    *pwd;
+	char	*pwd;
 
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
-		return (1);
+		my_exit(args, "getwcd", errno);
 	ft_putstr_fd(pwd, 1);
 	ft_putstr_fd("\n", 1);
 	free(pwd);

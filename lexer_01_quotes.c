@@ -38,7 +38,7 @@ void	free_lexer(t_lexer *lex)
 	init_lexer(lex);
 }
 
-char	*single_quotes(char *str, int *i, t_lexer *lex, t_arg *args) // маллок не проверяем
+char	*single_quotes(char *str, int *i, t_lexer *lex, t_arg *args)
 {
 	char	*ret;
 
@@ -59,7 +59,7 @@ char	*single_quotes(char *str, int *i, t_lexer *lex, t_arg *args) // малло�
 	return (ret);
 }
 
-char	*double_quotes(char *str, int *i, t_arg *args, t_lexer *lex) // маллок не проверяем
+char	*double_quotes(char *str, int *i, t_arg *args, t_lexer *lex)
 {
 	char	*ret;
 	char	*before;
@@ -84,7 +84,7 @@ char	*double_quotes(char *str, int *i, t_arg *args, t_lexer *lex) // малло�
 	return (ret);
 }
 
-char	*lexe(char *str, t_arg *args, int heredoc)
+char	*lexe(char *str, t_arg *args, int hdoc)
 {
 	t_lexer	*lex;
 	int		i;
@@ -100,14 +100,14 @@ char	*lexe(char *str, t_arg *args, int heredoc)
 			str = single_quotes(str, &i, lex, args);
 		if (str[i] == '\"')
 			str = double_quotes(str, &i, args, lex);
-		if (str[i] == '$' && heredoc && (str[i + 1] == '\'' || str[i + 1] == '\"'))
+		if (str[i] == '$' && hdoc && (str[i + 1] == '\'' || str[i + 1] == '\"'))
 		{
 			tmp = str;
 			str = ft_strdup(str + 1);
 			free(tmp);
 			i--;
 		}
-		if (str[i] == '$' && !heredoc)
+		if (str[i] == '$' && !hdoc)
 			str = dollar(str, &i, args, lex);
 	}
 	return (str);

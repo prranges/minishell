@@ -346,7 +346,6 @@ int pipex(t_arg *data)
 {
 	t_token	*node;
 	int		i;
-	int		status;
 
 	i = 0;
 	data->fd = malloc(sizeof(int *) * data->num);
@@ -397,8 +396,8 @@ int pipex(t_arg *data)
 	while (i < data->num)
 	{
 		waitpid(g_signals.pid[i], &g_signals.exit_status, 0);
-		if (WIFEXITED(status))
-			g_signals.exit_status = WEXITSTATUS(status);
+		if (WIFEXITED(g_signals.exit_status))
+			g_signals.exit_status = WEXITSTATUS(g_signals.exit_status);
 		i++;
 	}
 	return (0);

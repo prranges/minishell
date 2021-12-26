@@ -47,9 +47,10 @@ int	exit_ms(t_arg *args, t_token *token)
 	return (0);
 }
 
-void my_exit(t_arg *data, char *text, int errnum)
+void	my_exit(t_arg *data, char *text, int errnum)
 {
-	char *error;
+	char	*error;
+
 	if (text)
 	{
 		error = strerror(errnum);
@@ -65,7 +66,6 @@ void my_exit(t_arg *data, char *text, int errnum)
 		}
 	}
 	free_all(data);
-//	printf("errnum - %d\n", errnum);
-//	printf("text- %s\n", text);
+	g_signals.exit_status = errnum;
 	exit(errnum);
 }

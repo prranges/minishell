@@ -27,6 +27,7 @@ SRCS	= minishell.c \
 		  lexer_02_dollar.c \
 		  token_01.c \
 		  parcer_01.c \
+		  parcer_02.c \
 		  executer_01.c \
 		  builtins_01_cd.c \
 		  builtins_02_export.c \

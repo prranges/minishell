@@ -80,12 +80,10 @@ void	create_env_array(t_arg *args, t_env *envp, int len)
 	while (i < len)
 	{
 		str = ft_strdup(envp->key);
-		if  (!str)
+		if (!str)
 			my_exit(args, "malloc", 12);
 		if (envp->separator == '=')
 			str = join_value(str, envp, args);
-		if (!str)
-			my_exit(args, "malloc", 12);
 		env_str[i] = ft_strdup(str);
 		if (!env_str[i])
 			my_exit(args, "malloc", 12);
