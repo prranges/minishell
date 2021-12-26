@@ -38,7 +38,7 @@ void	free_lexer(t_lexer *lex)
 	init_lexer(lex);
 }
 
-char	*single_quotes(char *str, int *i, t_lexer *lex, t_arg *args)
+char	*single_quotes(char *str, int *i, t_lexer *lex, t_arg *args) // маллок не проверяем
 {
 	char	*ret;
 
@@ -48,18 +48,10 @@ char	*single_quotes(char *str, int *i, t_lexer *lex, t_arg *args)
 	while (str[++*i] != '\'')
 		;
 	lex->in = ft_substr(str, lex->j + 1, *i - lex->j - 1);
-	if (!lex->in)
-		my_exit(args, "malloc", 12);
 	lex->after = ft_strdup(str + *i + 1);
-	if (!lex->after)
-		my_exit(args, "malloc", 12);
 	ret = ft_strjoin(lex->before, lex->in);
-	if (!ret)
-		my_exit(args, "malloc", 12);
 	*i = (int)ft_strlen(ret);
 	ret = ft_strjoin(ret, lex->after);
-	if (!ret)
-		my_exit(args, "malloc", 12);
 	free_lexer(lex);
 	free(str);
 	if (ret[*i] == '\'')
@@ -67,7 +59,7 @@ char	*single_quotes(char *str, int *i, t_lexer *lex, t_arg *args)
 	return (ret);
 }
 
-char	*double_quotes(char *str, int *i, t_arg *args, t_lexer *lex)
+char	*double_quotes(char *str, int *i, t_arg *args, t_lexer *lex) // маллок не проверяем
 {
 	char	*ret;
 	char	*before;
@@ -77,26 +69,16 @@ char	*double_quotes(char *str, int *i, t_arg *args, t_lexer *lex)
 	lex->j = *i;
 	j = *i;
 	before = ft_substr(str, 0, lex->j);
-	if (!before)
-		my_exit(args, "malloc", 12);
 	while (str[++(*i)] != '\"')
 	{
 		if (str[*i] == '$')
 			str = dollar(str, i, args, lex);
 	}
 	lex->in = ft_substr(str, j + 1, *i - j - 1);
-	if (!lex->in)
-		my_exit(args, "malloc", 12);
 	lex->after = ft_strdup(str + *i + 1);
-	if (!lex->after)
-		my_exit(args, "malloc", 12);
 	ret = ft_strjoin(before, lex->in);
-	if (!ret)
-		my_exit(args, "malloc", 12);
 	*i = (int)ft_strlen(ret) - 1;
 	ret = ft_strjoin(ret, lex->after);
-	if (!ret)
-		my_exit(args, "malloc", 12);
 	free(str);
 	free_lexer(lex);
 	return (ret);
@@ -122,8 +104,6 @@ char	*lexe(char *str, t_arg *args, int heredoc)
 		{
 			tmp = str;
 			str = ft_strdup(str + 1);
-			if (!str)
-				my_exit(args, "malloc", errno);
 			free(tmp);
 			i--;
 		}

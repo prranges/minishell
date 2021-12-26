@@ -34,16 +34,20 @@ int	env_ms(t_env *env)
 	return (0);
 }
 
-int	exit_ms(t_arg *args)
+int	exit_ms(t_arg *args, t_token *token)
 {
-	free_all(args);
 	if (g_signals.pid == 0)
 		ft_putstr_fd("exit\n", 2);
-	exit (0);
+	if (token->cmd[2])
+		my_exit(args, NULL, 1);
+	if (token->cmd[1])
+		my_exit(args, NULL, (unsigned char)ft_atoi(token->cmd[1]));
+	else
+		my_exit(args, NULL, 0);
 	return (0);
 }
 
-int my_exit(t_arg *data, char *text, int errnum)
+void my_exit(t_arg *data, char *text, int errnum)
 {
 	char *error;
 	if (text)
@@ -61,5 +65,7 @@ int my_exit(t_arg *data, char *text, int errnum)
 		}
 	}
 	free_all(data);
+//	printf("errnum - %d\n", errnum);
+//	printf("text- %s\n", text);
 	exit(errnum);
 }

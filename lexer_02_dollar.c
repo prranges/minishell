@@ -19,24 +19,15 @@ int	if_key(char c)
 	return (1);
 }
 
-void	if_no_key_in_env(char *str, int *i, t_lexer *lex) //добавить exit(12) под malloc
+void	if_no_key_in_env(char *str, int *i, t_lexer *lex) //маллок не проверяем
 {
 	if (ft_isalpha(lex->key[0]) || !lex->key[1])
-	{
 		lex->in = ft_strdup("");
-//		if (!lex->in)
-//			my_exit(args, "malloc", errno);
-	}
-
 	else
-	{
-			lex->in = ft_substr(str, lex->j + 2, *i - lex->j - 1);
-//			if (!lex->in)
-//				my_exit(args, "malloc", errno);
-		}
+		lex->in = ft_substr(str, lex->j + 2, *i - lex->j - 1);
 }
 
-char	*find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p) //добавить exit(12) под malloc
+char	*find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p) //маллок не провеяем
 {
 	char	*ret;
 
@@ -57,32 +48,22 @@ char	*find_key_in_env_lists(char *str, int *i, t_lexer *lex, t_env *p) //доб�
 	return (ret);
 }
 
-char	*if_question(char *str, int *i, t_lexer *lex, t_arg *args)
+char	*if_question(char *str, int *i, t_lexer *lex, t_arg *args) // маллок не проверяем
 {
 	char	*ret;
 	(void)args;
 
 	lex->before = ft_substr(str, 0, lex->j);
-	if (!lex->before)
-		my_exit(args, "malloc", errno);
 	lex->in = ft_itoa(g_signals.exit_status);
-	if (!lex->in)
-		my_exit(args, "malloc", errno);
 	lex->after = ft_strdup(str + *i + 2);
-	if (lex->after)
-		my_exit(args, "malloc", errno);
 	free(str);
 	ret = ft_strjoin(lex->before, lex->in);
-	if (!ret)
-		my_exit(args, "malloc", errno);
 	*i = (int)ft_strlen(ret) + 1;
 	ret = ft_strjoin(ret, lex->after);
-	if (!ret)
-		my_exit(args, "malloc", errno);
 	return (ret);
 }
 
-char	*dollar(char *str, int *i, t_arg *args, t_lexer *lex) //добавить exit(12) под malloc
+char	*dollar(char *str, int *i, t_arg *args, t_lexer *lex) // malloc не проверяем!
 {
 	t_env	*p;
 	char	*ret;
@@ -99,8 +80,6 @@ char	*dollar(char *str, int *i, t_arg *args, t_lexer *lex) //добавить ex
 			;
 		if (*i != lex->j + 1)
 			lex->key = ft_substr(str, lex->j + 1, *i - lex->j - 1);
-		if (!lex->key)
-			my_exit(args, "malloc", errno);
 		if (lex->key)
 			ret = find_key_in_env_lists(str, i, lex, p);
 		else

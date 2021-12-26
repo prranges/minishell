@@ -127,22 +127,22 @@ int		find_number_of_parts(char *str);
 void	find_parts_of_str(char *str, int **start_end_i, t_arg *args, int num);
 int		pipex(t_arg *data);
 int		env_ms(t_env *env);
-int		export_ms(t_arg *args);
+int		export_ms(t_arg *args, t_token *token);
 void	edit_env(t_env **env, char *str, t_arg *data);
 int		if_key(char c);
 void	remove_env(t_arg *args, t_env *remove_list, t_env *prev_p);
-int		unset_ms(t_arg *args);
+int		unset_ms(t_arg *args, t_token *token);
 int		pwd_ms(t_arg *args);
-int		echo_ms(t_arg *args);
-int    	cd_ms(t_arg *args);
-int		exit_ms(t_arg *args);
-int		start_builtin(t_arg *args);
+int		echo_ms(t_arg *args, t_token *token);
+int    	cd_ms(t_arg *args, t_token *token);
+int		exit_ms(t_arg *args, t_token *token);
+int		start_builtin(t_arg *args, t_token *token);
 int		make_builtin_dup(t_token *token, t_arg *data);
 void	builtin_dup_error_check(int fd, t_arg *data);
 int		precreate_or_preopen(t_arg *data);
 void	heredoc(char *file_name, t_arg *data);
 void    env_lists_to_str(t_arg *args);
-int		exec_start(t_arg *data, t_token *token);
+void	exec_start(t_arg *data, t_token *token);
 char	*find_name_ms(char *argv);
 void    free_all(t_arg *args);
 
@@ -150,6 +150,6 @@ void	sig_init(void);
 void	sig_int(int signal);
 void	sig_quit(int signal);
 
-int my_exit(t_arg *data, char *text, int errnum);
+void	my_exit(t_arg *data, char *text, int errnum);
 
 #endif

@@ -87,20 +87,24 @@ char *get_cmd_arg(t_arg *data, char **cmd)
 	all_paths = find_path(data->env);
 	if (!all_paths)
 	{
-		printf("minishell: %s: %s\n", cmd[0], strerror(errno));
-		g_signals.exit_status = 127;
-		exit(g_signals.exit_status);
+        ft_putstr_fd("minishell: ", 2);
+        ft_putstr_fd(cmd[0], 2);
+        ft_putstr_fd(": ", 2);
+        ft_putstr_fd(strerror(errno), 2);
+        ft_putstr_fd("\n", 2);
+//		g_signals.exit_status = 127;
+        my_exit(data, NULL, 127);
 	}
 	path_executive = create_cmd_path(data, all_paths, cmd[0]);
 	return (path_executive);
 }
 
-void check_fd_exist(int fd, char *str)
+void check_fd_exist(int fd, char *str, t_arg *data)
 {
     if (fd == -1)
     {
         printf("minishell: %s: %s\n", str, strerror(errno));
-        exit(EXIT_FAILURE);
+        my_exit(data, str, errno); // доделать
     }
 }
 
@@ -115,7 +119,7 @@ int	make_builtin_dup(t_token *token, t_arg *data)
 		file = open(token->out->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	else
 		file = open(token->out->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	check_fd_exist(file, token->out->file_name);
+	check_fd_exist(file, token->out->file_name, data);
 	fd = dup(STDOUT_FILENO);
 	if (fd == -1)
 	{
@@ -144,7 +148,7 @@ void	builtin_dup_error_check(int fd, t_arg *data)
 	close(fd);
 }
 
-int exec_start(t_arg *data, t_token *token)
+void exec_start(t_arg *data, t_token *token)
 {
     int     fd_builtin;
     char    *cmd_ex;
@@ -153,18 +157,18 @@ int exec_start(t_arg *data, t_token *token)
     {
 		fd_builtin = make_builtin_dup(data->tokens, data);
 		builtin_dup_error_check(fd_builtin, data);
-		my_exit(data, NULL, start_builtin(data));
+        g_signals.exit_status = start_builtin(data, token);
+		my_exit(data, NULL, g_signals.exit_status);
     }
 	else
 	{
 		cmd_ex = get_cmd_arg(data, token->cmd);
 		if (execve(cmd_ex, token->cmd, data->env_str) && ft_strcmp(data->tokens->cmd[0], ""))
 		{
-			g_signals.exit_status = 127;
-			my_exit(data, token->cmd[0], g_signals.exit_status);
+			my_exit(data, token->cmd[0], 127);
+            g_signals.exit_status = 127;
 		}
 	}
-    return (0);
 }
 
 int child_process(int i, t_arg *data, int **fd, t_token *token)
@@ -175,7 +179,7 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 
 	dup_result = 0;
 	file[0] = -2;
-    g_signals.exit_status = 0;
+//    g_signals.exit_status = 0;
 	if (token->in && token->in->dbl)
 		file[0] = open("heredoc_file", O_RDONLY);
 	if (token->in && !token->in->dbl)
@@ -183,7 +187,7 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	if (file[0] == -1)
 		my_exit(data, token->in->file_name, errno);
 	if (token->in)
-		check_fd_exist(file[0], token->in->file_name);
+		check_fd_exist(file[0], token->in->file_name, data);
 	file[1] = -2;
 	if (token->out && token->out->dbl)
 		file[1] = open(token->out->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
@@ -192,7 +196,7 @@ int child_process(int i, t_arg *data, int **fd, t_token *token)
 	if (file[1] == -1)
 		my_exit(data, token->out->file_name, errno);
 	if (token->out)
-		check_fd_exist(file[1], token->out->file_name);
+		check_fd_exist(file[1], token->out->file_name, data);
 	if (token->in && ft_strcmp(data->tokens->cmd[0], ""))
 		dup_result = dup2(file[0], STDIN_FILENO);
 	if (dup_result == -1)
@@ -242,7 +246,7 @@ int	open_file(t_redir *redirect, t_arg *data)
 		if (fd == -1)
 			my_exit(data, redirect->file_name, errno);
 	}
-	check_fd_exist(fd, redirect->file_name);
+	check_fd_exist(fd, redirect->file_name, data);
 	close(fd);
 	return (0);
 }
@@ -281,7 +285,7 @@ void heredoc(char *name, t_arg *data)
         fd = open("heredoc_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
         if (fd == -1)
             my_exit(data, name, errno);
-        check_fd_exist(fd, "heredoc_file");
+        check_fd_exist(fd, "heredoc_file", data);
         while (1)
         {
             if (!(line = readline("> ")))
@@ -343,7 +347,6 @@ int pipex(t_arg *data)
 	t_token	*node;
 	int		i;
 	int		status;
-//	int		exit_status;
 
 	i = 0;
 	data->fd = malloc(sizeof(int *) * data->num);
@@ -361,7 +364,7 @@ int pipex(t_arg *data)
 	while (i < data->num)
 	{
 		pipe(data->fd[i]);
-		g_signals.exit_status = errno;
+//		g_signals.exit_status = errno;
 		if (pipe(data->fd[i]) == -1)
 			my_exit(data, "pipe", g_signals.exit_status);
 		i++;
@@ -380,7 +383,7 @@ int pipex(t_arg *data)
 		g_signals.pid[i] = fork();
 		if (g_signals.pid[i] < 0)
 		{
-			g_signals.exit_status = errno;
+//			g_signals.exit_status = errno;
 			my_exit(data, "fork", g_signals.exit_status);
 		}
 		if (g_signals.pid[i] == 0)
@@ -395,11 +398,7 @@ int pipex(t_arg *data)
 	{
 		waitpid(g_signals.pid[i], &g_signals.exit_status, 0);
 		if (WIFEXITED(status))
-		{
 			g_signals.exit_status = WEXITSTATUS(status);
-//			if (exit_status == 0)
-//				exit_ms(data);
-		}
 		i++;
 	}
 	return (0);

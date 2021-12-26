@@ -65,13 +65,13 @@ int	print_export_error(char *cmd)
 	return (1);
 }
 
-int	export_ms(t_arg *args)
+int	export_ms(t_arg *args, t_token *token)
 {
 	t_env	*env_list;
 	char	**cmd;
 
 	g_signals.exit_status = 0;
-	cmd = args->tokens->cmd;
+	cmd = token->cmd;
 	if (!args->env)
 		return (1);
 	cmd++;

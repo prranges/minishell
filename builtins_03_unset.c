@@ -37,14 +37,14 @@ void	find_env_und_remove(t_arg *args, char	**cmd)
 	}
 }
 
-int	unset_ms(t_arg *args)
+int	unset_ms(t_arg *args, t_token *token)
 {
 	t_env	*remove_list;
 	char	**cmd;
 
 	remove_list = NULL;
 	g_signals.exit_status = 0;
-	cmd = args->tokens->cmd;
+	cmd = token->cmd;
 	if (!args->env)
 		return (1);
 	cmd++;

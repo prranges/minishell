@@ -38,13 +38,14 @@ int	check_n(char *cmd)
 	return (0);
 }
 
-int	echo_ms(t_arg *args)
+int	echo_ms(t_arg *args, t_token *token)
 {
 	char	**cmd;
 	int		n;
 
+	(void)args;
 	n = 0;
-	cmd = args->tokens->cmd;
+	cmd = token->cmd;
 	if (*(cmd + 1))
 	{
 		cmd++;
@@ -77,7 +78,7 @@ int	pwd_ms(t_arg *args)
 
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
-		exit(1); // exit_ms
+		return (1);
 	ft_putstr_fd(pwd, 1);
 	ft_putstr_fd("\n", 1);
 	free(pwd);

@@ -71,7 +71,7 @@ int	print_find_path_error(void)
 	return (1);
 }
 
-int	cd_ms(t_arg *args)
+int	cd_ms(t_arg *args, t_token *token)
 {
 	char	*path;
 	char	**cmd;
@@ -79,7 +79,7 @@ int	cd_ms(t_arg *args)
 
 	env = args->env;
 	path = NULL;
-	cmd = args->tokens->cmd;
+	cmd = token->cmd;
 	cmd++;
 	if (!*(cmd))
 	{
