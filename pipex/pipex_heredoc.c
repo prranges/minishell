@@ -60,6 +60,8 @@ void	heredoc(char *name, t_arg *data)
 
 	line = NULL;
 	pid = fork();
+	if (pid < 0)
+		my_exit(data, "fork", errno);
 	if (pid == 0)
 	{
 		signal(SIGINT, &ft_here_sig);
