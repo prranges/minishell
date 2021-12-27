@@ -109,6 +109,7 @@ void	env_lists_to_str(t_arg *args)
 	{
 		while (envp[i])
 			free(envp[i++]);
+		free(envp[i]);
 	}
 	args->env_str = malloc(sizeof(char *) * (len + 1));
 	if (!args->env_str)

@@ -66,7 +66,7 @@ char	**make_substrs_pipe_devided(char *str, t_arg *args)
 
 	i = 0;
 	p = str;
-	sub_strs = malloc(sizeof(char **) * number_of_pipes(p));
+	sub_strs = malloc(sizeof(char **) * (number_of_pipes(p) + 2));
 	if (!sub_strs)
 		my_exit(args, "malloc", 12, 0);
 	start = 0;

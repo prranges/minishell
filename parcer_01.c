@@ -20,7 +20,7 @@ void	create_cmd_lists(t_arg *args, char **sub_strs, \
 
 	s = -1;
 	cmd = malloc(sizeof(char **) * num_of_parts + 1);
-	if (!cmd || !start_end_i || !start_end_i[0] || !start_end_i[1])
+	if (!cmd)
 		my_exit(args, "malloc", 12, 0);
 	while (num_of_parts > ++s)
 	{
@@ -55,8 +55,10 @@ void	parcer(char *str, t_arg *args)
 		free(start_end_i[0]);
 		free(start_end_i[1]);
 		free(start_end_i);
+		free(*sub_strs);
 		sub_strs++;
 	}
+	free (*sub_strs);
 	add_redirs_to_cmd(args->redir, args->tokens);
 }
 

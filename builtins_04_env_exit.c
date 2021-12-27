@@ -37,7 +37,6 @@ int	env_ms(t_env *env)
 int	exit_ms(t_arg *args, t_token *token)
 {
 	delete_all_env(args);
-	free_double_array(args->env_str);
 	if (g_signals.pid == 0)
 		ft_putstr_fd("exit\n", 2);
 	if (token->cmd[1] && token->cmd[2])
