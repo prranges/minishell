@@ -61,13 +61,13 @@ void	add_env(t_env **env, char *str, t_arg *data)
 		i++;
 	new->key = ft_substr(str, 0, i);
 	if (!new->key)
-		my_exit(data, "malloc", 12);
+		my_exit(data, "malloc", 12, 0);
 	if (str[i] == '=')
 	{
 		new->separator = '=';
 		new->value = ft_strdup(str + i + 1);
 		if (!new->value)
-			my_exit(data, "malloc", 12);
+			my_exit(data, "malloc", 12, 0);
 	}
 	if (!temp)
 		*env = new;
@@ -90,7 +90,7 @@ void	edit_env(t_env **env, char *str, t_arg *data)
 		free(p->value);
 		p->value = ft_strdup(str + i + 1);
 		if (!(p->value))
-			my_exit(data, "malloc", 12);
+			my_exit(data, "malloc", 12, 0);
 	}
 }
 

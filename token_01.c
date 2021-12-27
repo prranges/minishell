@@ -18,7 +18,7 @@ t_token	*init_tokens(t_arg *args)
 
 	lst = (t_token *)malloc(sizeof(t_token));
 	if (!lst)
-		my_exit(args, "malloc", 12);
+		my_exit(args, "malloc", 12, 0);
 	lst->list_num = 1;
 	lst->cmd = NULL;
 	lst->in = NULL;

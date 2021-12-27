@@ -92,7 +92,7 @@ char	*lexe(char *str, t_arg *args, int hdoc)
 
 	lex = (t_lexer *)malloc(sizeof(t_lexer));
 	if (!lex)
-		my_exit(args, "malloc", 12);
+		my_exit(args, "malloc", 12, 0);
 	i = -1;
 	while (str[++i])
 	{

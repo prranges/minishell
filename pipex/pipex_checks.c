@@ -17,7 +17,7 @@ void	check_fd_exist(int fd, char *str, t_arg *data)
 	if (fd == -1)
 	{
 		printf("minishell: %s: %s\n", str, strerror(errno));
-		my_exit(data, str, errno);
+		my_exit(data, str, errno, 0);
 	}
 }
 

@@ -19,10 +19,14 @@ void	close_fds(t_arg *data, int **fd, int *file)
 	i = 0;
 	while (i < data->num)
 	{
+		if (!fd || !fd[i])
+			continue ;
 		close(fd[i][0]);
 		close(fd[i][1]);
+		free(fd[i]);
 		i++;
 	}
+	free(fd);
 	if (!file)
 		return ;
 	if (file[0])
@@ -38,12 +42,12 @@ void	create_fd(t_arg *data)
 	i = 0;
 	data->fd = malloc(sizeof(int *) * data->num);
 	if (!data->fd)
-		my_exit(data, "malloc", 12);
+		my_exit(data, "malloc", 12, 0);
 	while (i < data->num)
 	{
 		data->fd[i] = malloc(sizeof(int) * 2);
 		if (!(data->fd[i]))
-			my_exit(data, "malloc", 12);
+			my_exit(data, "malloc", 12, 0);
 		i++;
 	}
 }
@@ -57,7 +61,7 @@ void	create_pipe_fd(t_arg *data)
 	{
 		pipe(data->fd[i]);
 		if (pipe(data->fd[i]) == -1)
-			my_exit(data, "pipe", g_signals.exit_status);
+			my_exit(data, "pipe", g_signals.exit_status, 0);
 		i++;
 	}
 }

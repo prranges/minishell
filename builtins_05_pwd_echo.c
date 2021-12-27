@@ -82,7 +82,7 @@ int	pwd_ms(t_arg *args)
 
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
-		my_exit(args, "getwcd", errno);
+		my_exit(args, "getwcd", errno, 0);
 	ft_putstr_fd(pwd, 1);
 	ft_putstr_fd("\n", 1);
 	free(pwd);

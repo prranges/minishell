@@ -77,7 +77,7 @@ int	main(int argc, char **argv, char **arge)
 	g_signals.name = find_name_ms(argv[0]);
 	args = (t_arg *)malloc(sizeof(t_arg));
 	if (!args)
-		my_exit(args, "malloc", 12);
+		my_exit(args, "malloc", 12, 0);
 	init_args(args);
 	env_read(args, arge);
 	g_signals.exit_status = 0;

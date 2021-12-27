@@ -34,20 +34,40 @@ int	env_ms(t_env *env)
 	return (0);
 }
 
+int	ft_strisnum(const char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str == NULL)
+		return (0);
+	if (str[0] == '-')
+		i++;
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	exit_ms(t_arg *args, t_token *token)
 {
 	if (g_signals.pid == 0)
 		ft_putstr_fd("exit\n", 2);
-	if (token->cmd[2])
-		my_exit(args, NULL, 1);
-	if (token->cmd[1])
-		my_exit(args, NULL, (unsigned char)ft_atoi(token->cmd[1]));
+	if (token->cmd[1] && token->cmd[2])
+		my_exit(args, NULL, 1, 1);
+	else if (token->cmd[1] && ft_strisnum(token->cmd[1]) == 0)
+		my_exit(args, token->cmd[1], 255, 2);
+	else if (token->cmd[1])
+		my_exit(args, NULL, (unsigned char)ft_atoi(token->cmd[1]), 0);
 	else
-		my_exit(args, NULL, 0);
+		my_exit(args, NULL, g_signals.exit_status, 0);
 	return (0);
 }
 
-void	my_exit(t_arg *data, char *text, int errnum)
+void	my_exit(t_arg *data, char *text, int errnum, int flag)
 {
 	char	*error;
 
@@ -55,16 +75,22 @@ void	my_exit(t_arg *data, char *text, int errnum)
 	{
 		error = strerror(errnum);
 		write(2, "minishell: ", 11);
+		if (flag == 2)
+			ft_putstr_fd("exit: ", 2);
 		write(2, text, ft_strlen(text));
 		write(2, ": ", 2);
 		if (errnum == 127)
 			ft_putstr_fd("command not found\n", 2);
-		else
+		else if (flag == 0)
 		{
 			write(2, error, ft_strlen(error));
 			write(2, "\n", 1);
 		}
 	}
+	if (flag == 1)
+		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+	if (flag == 2)
+		ft_putstr_fd("numeric argument required\n", 2);
 	free_all(data);
 	g_signals.exit_status = errnum;
 	exit(errnum);

@@ -44,10 +44,10 @@ char	*create_cmd_path(t_arg *data, char **all_paths, char *cmd)
 	{
 		temp = ft_strjoin(*str, "/");
 		if (!temp)
-			my_exit(data, "malloc", 12);
+			my_exit(data, "malloc", 12, 0);
 		path = ft_strjoin(temp, cmd);
 		if (!path)
-			my_exit(data, "malloc", 12);
+			my_exit(data, "malloc", 12, 0);
 		if (access(path, X_OK) != -1)
 			return (path);
 		free(temp);
@@ -62,9 +62,11 @@ char	*get_cmd_arg(t_arg *data, char **cmd)
 	char	**all_paths;
 	char	*path_executive;
 
+	all_paths = NULL;
 	if (access(cmd[0], X_OK) != -1)
 		return (cmd[0]);
-	all_paths = find_path(data->env);
+	if (cmd[0][0] != '/')
+		all_paths = find_path(data->env);
 	if (!all_paths)
 	{
 		ft_putstr_fd("minishell: ", 2);
@@ -72,7 +74,7 @@ char	*get_cmd_arg(t_arg *data, char **cmd)
 		ft_putstr_fd(": ", 2);
 		ft_putstr_fd(strerror(errno), 2);
 		ft_putstr_fd("\n", 2);
-		my_exit(data, NULL, 127);
+		my_exit(data, NULL, 127, 0);
 	}
 	path_executive = create_cmd_path(data, all_paths, cmd[0]);
 	return (path_executive);

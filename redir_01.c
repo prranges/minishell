@@ -18,7 +18,7 @@ t_redir	*init_redir(t_arg *args)
 
 	redir = (t_redir *)malloc(sizeof(t_redir));
 	if (!redir)
-		my_exit(args, "malloc", 12);
+		my_exit(args, "malloc", 12, 0);
 	redir->file_name = NULL;
 	redir->cmd_list_num = 0;
 	redir->out_in = 0;
@@ -73,7 +73,7 @@ int	redirect(char *str, int i, t_arg *args, int num)
 		i++;
 	new->file_name = lexe(ft_substr(str, j, i - j), args, 1);
 	if (!new->file_name)
-		my_exit(args, "malloc", 12);
+		my_exit(args, "malloc", 12, 0);
 	new->cmd_list_num = num;
 	add_redir(&args->redir, new);
 	while (str[i] == ' ' || str[i] == '\t')

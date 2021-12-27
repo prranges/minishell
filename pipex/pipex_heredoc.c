@@ -25,9 +25,9 @@ void	heredoc_cycle(char *name, char *line, int fd, t_arg *data)
 		if (ft_strcmp(line, name) == 0)
 			break ;
 		if (write(fd, line, ft_strlen(line)) == -1)
-			my_exit(data, name, errno);
+			my_exit(data, name, errno, 0);
 		if (write(fd, "\n", 1) == -1)
-			my_exit(data, name, errno);
+			my_exit(data, name, errno, 0);
 		free(line);
 	}
 }
@@ -61,14 +61,14 @@ void	heredoc(char *name, t_arg *data)
 	line = NULL;
 	pid = fork();
 	if (pid < 0)
-		my_exit(data, "fork", errno);
+		my_exit(data, "fork", errno, 0);
 	if (pid == 0)
 	{
 		signal(SIGINT, &ft_here_sig);
 		signal(SIGQUIT, &ft_here_sig);
 		fd = open("heredoc_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd == -1)
-			my_exit(data, name, errno);
+			my_exit(data, name, errno, 0);
 		check_fd_exist(fd, "heredoc_file", data);
 		heredoc_cycle(name, line, fd, data);
 		close(fd);

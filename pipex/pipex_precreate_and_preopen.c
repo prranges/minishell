@@ -42,7 +42,7 @@ void	redirect_dbl(t_redir *redirect, t_arg *data)
 	free(redirect->file_name);
 	redirect->file_name = ft_strdup("heredoc_file");
 	if (!redirect->file_name)
-		my_exit(data, "malloc", 12);
+		my_exit(data, "malloc", 12, 0);
 }
 
 int	open_file(t_redir *redirect, t_arg *data)
@@ -53,12 +53,12 @@ int	open_file(t_redir *redirect, t_arg *data)
 	if (redirect->out_in == 0 && redirect->dbl == 1)
 		fd = open(redirect->file_name, O_WRONLY | O_CREAT | O_APPEND, 0644);
 	if (fd == -1)
-		my_exit(data, redirect->file_name, errno);
+		my_exit(data, redirect->file_name, errno, 0);
 	else if (redirect->out_in == 0 && redirect->dbl == 0)
 	{
 		fd = open(redirect->file_name, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd == -1)
-			my_exit(data, redirect->file_name, errno);
+			my_exit(data, redirect->file_name, errno, 0);
 	}
 	else
 	{
@@ -66,7 +66,7 @@ int	open_file(t_redir *redirect, t_arg *data)
 			redirect_dbl(redirect, data);
 		fd = open(redirect->file_name, O_RDONLY);
 		if (fd == -1)
-			my_exit(data, redirect->file_name, errno);
+			my_exit(data, redirect->file_name, errno, 0);
 	}
 	check_fd_exist(fd, redirect->file_name, data);
 	close(fd);

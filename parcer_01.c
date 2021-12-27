@@ -30,14 +30,14 @@ void	parcer(char *str, t_arg *args)
 		start_end_i[1] = malloc(sizeof(int *) * number_of_parts);
 		cmd = malloc(sizeof(char **) * number_of_parts + 1);
 		if (!cmd || !start_end_i || !start_end_i[0] || !start_end_i[1])
-			my_exit(args, "malloc", 12);
+			my_exit(args, "malloc", 12, 0);
 		find_parts_of_str(*sub_strs, start_end_i, args, args->num);
 		s = -1;
 		while (number_of_parts > ++s)
 		{
 			cmd[s] = ft_substr(sub_strs[0], start_end_i[0][s], start_end_i[1][s] - start_end_i[0][s]);
 			if (!(cmd[s]))
-				my_exit(args, "malloc", 12);
+				my_exit(args, "malloc", 12, 0);
 			cmd[s] = lexe(cmd[s], args,0);
 		}
 		cmd[s] = NULL;
