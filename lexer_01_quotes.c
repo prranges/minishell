@@ -16,7 +16,6 @@ void	init_lexer(t_lexer *lex)
 {
 	lex->j = 0;
 	lex->e = 0;
-	lex->p = NULL;
 	lex->key = NULL;
 	lex->before = NULL;
 	lex->in = NULL;
@@ -25,8 +24,6 @@ void	init_lexer(t_lexer *lex)
 
 void	free_lexer(t_lexer *lex)
 {
-	if (lex->p)
-		lex->p = NULL;
 	if (lex->key)
 		free(lex->key);
 	if (lex->before)

@@ -98,9 +98,18 @@ void	env_lists_to_str(t_arg *args)
 {
 	t_env	*env;
 	int		len;
+	char	**envp;
+	int		i;
 
+	i = 0;
 	env = args->env;
+	envp = args->env_str;
 	len = env_lists_len(env);
+	if (envp)
+	{
+		while (envp[i])
+			free(envp[i++]);
+	}
 	args->env_str = malloc(sizeof(char *) * (len + 1));
 	if (!args->env_str)
 		my_exit(args, "malloc", 12, 0);

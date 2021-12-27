@@ -30,7 +30,6 @@ void	sig_int(int signal)
 		ft_putstr_fd("\n", 1);
 		g_signals.exit_status = 130;
 	}
-	g_signals.sigint = 1;
 }
 
 void	sig_quit(int signal)
@@ -50,7 +49,6 @@ void	sig_quit(int signal)
 		ft_putstr_fd("Quit: ", 2);
 		ft_putendl_fd(nbr, 2);
 		g_signals.exit_status = 131;
-		g_signals.sigquit = 1;
 	}
 	free(nbr);
 }

@@ -48,10 +48,10 @@ void	read_and_parce_input(t_arg *args, char *str)
 {
 	args->num = 0;
 	sig_init();
-	str = readline("🔷 minishell-0.80$ ");
+	str = readline("🔷 minishell-0.90$ ");
 	if (!str)
 	{
-		ft_putstr_fd("\033[A🔷 minishell-0.80$ exit\n", 1);
+		ft_putstr_fd("\033[A🔷 minishell-0.90$ exit\n", 1);
 		rl_redisplay();
 		exit (0);
 	}

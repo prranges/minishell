@@ -12,71 +12,84 @@
 
 #include "minishell.h"
 
-int	find_number_of_parts(char *str)
+int	find_number_of_parts(t_arg *args, char *s)
 {
 	int	i;
 	int	count;
-	int	flag_sq = 2;
-	int	flag_dq = 2;
 
-	i = - 1;
+	args->flag_sq = 2;
+	args->flag_dq = 2;
+	i = -1;
 	count = 0;
-	if (str[0] != '\0' && str[0] != ' ' && str[0] != '\t' && str[0] != '>' && str[0] != '<')
+	if (s[0] && s[0] != ' ' && s[0] != '\t' && s[0] != '>' && s[0] != '<')
 		count++;
-	while (str[++i])
+	while (s[++i])
 	{
-		if ((str[i] == ' ' || str[i] == '\t')
-		&& (str[i + 1] != ' ' && str[i + 1] != '\t' && str[i + 1] != '>'
-		&& str[i + 1] != '<' && str[i + 1] != '\0') && (!(flag_sq % 2))
-		&& (!(flag_dq % 2)))
+		if ((s[i] == ' ' || s[i] == '\t') && (s[i + 1] != ' '
+				&& s[i + 1] != '\t' && s[i + 1] != '>'
+				&& s[i + 1] != '<' && s[i + 1] != '\0')
+			&& (!(args->flag_sq % 2)) && (!(args->flag_dq % 2)))
 			count++;
-		if ((str[i] == '<' || str[i] == '>') && (str[i + 1] == ' ' || str[i + 1] == '\t'))
+		if ((s[i] == '<' || s[i] == '>')
+			&& (s[i + 1] == ' ' || s[i + 1] == '\t'))
 			count--;
-		if (str[i] == '\'' && (!(flag_dq % 2)))
-			flag_sq++;
-		if (str[i] == '\"' && (!(flag_sq % 2)))
-			flag_dq++;
+		set_quotes_flag(args, s, i);
 	}
 	if (!count)
 		count = 1;
 	return (count);
 }
 
-void	find_parts_of_str(char *str, int **start_end_i, t_arg *args, int num)
+void	if_space_tab(t_arg *args, char *s, int i, int **start_end_i)
+{
+	if ((s[i] == ' ' || s[i] == '\t'))
+	{
+		if (i != 0 && (s[i - 1] != ' ' && s[i - 1] != '\t'))
+			start_end_i[1][args->ed++] = i;
+		if ((s[i + 1] != ' ' && s[i + 1] != '\t' && s[i + 1] != '>'
+				&& s[i + 1] != '<' && s[i + 1] != '\0'))
+			start_end_i[0][args->st++] = i + 1;
+	}
+}
+
+void	if_first_char(t_arg *args, char *s, int i, int **start_end_i)
+{
+	if (s[0] != '\0' && s[0] != ' ' && s[0] != '\t'
+		&& s[i + 1] != '>' && s[i + 1] != '<')
+		start_end_i[0][args->st++] = 0;
+}
+
+void	if_last_char(t_arg *args, char *s, int i, int **start_end_i)
+{
+	if ((s[i] == '\0') && (s[i - 1] != ' ' && s[i - 1] != '\t')
+		&& (!(args->flag_sq % 2)) && (!(args->flag_dq % 2)))
+		start_end_i[1][args->ed++] = i;
+}
+
+void	find_parts_of_str(char *s, int **start_end_i, t_arg *args, int num)
 {
 	int	i;
-	int s = 0;
-	int e = 0;
-	int flag_sq = 2;
-	int flag_dq = 2;
-	
+
 	i = -1;
-	if (str[0] != '\0' && str[0] != ' ' && str[0] != '\t' && str[i + 1] != '>' && str[i + 1] != '<')
-		start_end_i[0][s++] = 0;
-	while (str[++i])
+	args->st = 0;
+	args->ed = 0;
+	args->flag_sq = 2;
+	args->flag_dq = 2;
+	if_first_char(args, s, i, start_end_i);
+	while (s[++i])
 	{
-		if (!(flag_sq % 2) && !(flag_dq % 2))
+		if (!(args->flag_sq % 2) && !(args->flag_dq % 2))
 		{
-			if ((str[i] == ' ' || str[i] == '\t'))
+			if_space_tab(args, s, i, start_end_i);
+			if ((s[i] == '>' || s[i] == '<'))
 			{
-				if (i != 0 && (str[i - 1] != ' ' && str[i - 1] != '\t'))
-					start_end_i[1][e++] = i;
-				if ((str[i + 1] != ' ' && str[i + 1] != '\t' && str[i + 1] != '>' && str[i + 1] != '<' && str[i + 1] != '\0'))
-					start_end_i[0][s++] = i + 1;
-			}
-			if ((str[i] == '>' || str[i] == '<'))
-			{
-				if (i != 0 && (str[i - 1] != ' ' && str[i - 1] != '\t'))
-					start_end_i[1][e++] = i;
-				i = redirect(str, i, args, num);
-				start_end_i[0][s++] = i;
+				if (i != 0 && (s[i - 1] != ' ' && s[i - 1] != '\t'))
+					start_end_i[1][args->ed++] = i;
+				i = redirect(s, i, args, num);
+				start_end_i[0][args->st++] = i;
 			}
 		}
-		if (str[i] == '\'' && (!(flag_dq % 2)))
-			flag_sq++;
-		if (str[i] == '\"' && (!(flag_sq % 2)))
-			flag_dq++;
+		set_quotes_flag(args, s, i);
 	}
-	if ((str[i] == '\0') && (str[i - 1] != ' ' && str[i - 1] != '\t') && (!(flag_sq % 2)) && (!(flag_dq % 2)))
-		start_end_i[1][e++] = i;
+	if_last_char(args, s, i, start_end_i);
 }
