@@ -34,24 +34,6 @@ int	env_ms(t_env *env)
 	return (0);
 }
 
-int	ft_strisnum(const char *str)
-{
-	int	i;
-
-	i = 0;
-	if (str == NULL)
-		return (0);
-	if (str[0] == '-')
-		i++;
-	while (str[i])
-	{
-		if (str[i] < '0' || str[i] > '9')
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
 int	exit_ms(t_arg *args, t_token *token)
 {
 	if (g_signals.pid == 0)
