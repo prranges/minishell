@@ -26,7 +26,7 @@ This is a group project completed by [prranges](https://github.com/prranges) & [
 
 - ```'``` and ```"``` except for multiline commands
 
-- Redirections ```<``` ```>``` ```>>``` except for file descriptor aggregation
+- Redirections ```<<``` ```<``` ```>``` ```>>``` except for file descriptor aggregation
 
 - ```Environment variables``` ($ followed by characters)
 
